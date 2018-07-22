@@ -10,7 +10,7 @@ class HomePage extends Component {
             <div className="cell">lemin</div>
             <div className="cell">filler</div>
             <div className="cell">fdf</div>
-            <div className="cell">fract'ol</div>
+            <div className="cell">fractol</div>
             <div className="cell">wolf 3D</div>
             <div className="cell">malloc</div>
         </div>
