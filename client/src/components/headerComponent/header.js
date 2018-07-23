@@ -13,10 +13,10 @@ class Header extends Component {
                     <p>Home</p>
                 </div>
                 <div onClick={() => this._selectItem()}>
-                    <p>Sensei</p>
+                    <p id="defaultName">Sensei</p><p id="helpText">Be a mentor</p>
                 </div>
                 <div>
-                    <p>Kyle-San</p>
+                    <p id="defaultName">Kyle-San</p><p id="helpText">Find a mentor</p>
                 </div>
             </nav>
           </div>
