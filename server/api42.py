@@ -12,7 +12,7 @@ class Api42:
 
 	def __init__(self, uid, secret):
 		self.token = None
-		self.expires = 0
+		self.tokenExpires = 0
 		self.apiLimit = int(0.5 * 1000)								# API limit is in milliseconds (0.5 seconds times 1000)
 		self.lastCall = 0
 		self.endpoint = 'https://api.intra.42.fr'
@@ -29,39 +29,57 @@ class Api42:
 			'GET': requests.get,
 			'POST': requests.post
 		}
+		#	Some extra information for debugging / upkeep
+		self.numOfRequestsMade = 0
 
 
+	#	For general GET requests that require a single endpoint
 	def makeRequest(self, endpoint):
 		#	If a new token is needed, update it
 		self.updateToken()
 
 		#	Make the actual request
-		return self.get(endpoint, None, self.headers)
+		returnData = self.get(endpoint, None, self.headers)
+
+		#	If the request failed, but it had to update the token,
+		#	try and perform the request again
+		if returnData is None and self.updateToken():
+			returnData = self.get(endpoint, None, self.headers)
+
+		#	returnData is a list of items, or none if any error happened
+		#	during the request
+		return returnData
 
 
+	#	Returns a True if token needed updating, otherwise False
 	def updateToken(self):
 		#	Check whether token needs updating
-		if _current_milli_time() >= self.expires:
-			r = self.post('/oauth/token', self.authData, None)
-			if r is None:
+		if _current_milli_time() >= self.tokenExpires:
+			tokenData = self.post('/oauth/token', self.authData, None)
+			if tokenData is None:
 				return
 
 			#	Update token, expiry time, and authorization header
-			self.token = r[0]['access_token']
-			self.expires = (r[0]['expires_in'] * 1000) + _current_milli_time()
+			self.token = tokenData[0]['access_token']
+			self.tokenExpires = (tokenData[0]['expires_in'] * 1000) + _current_milli_time()
 			self.headers['Authorization'] = 'Bearer ' + self.token
 			print(IGREEN + "Token Updated!" + ENDCOLOR)
+			return True
+		return False
 
 
+	#	Calls send with the POST method
 	def post(self, uri, data, headers):
-		return self.send(uri, 'POST', data, headers);
+		return self._send(uri, 'POST', data, headers);
 
 
+	#	Calls send with the GET method
 	def get(self, uri, data, headers):
-		return self.send(uri, 'GET', data, headers);
+		return self._send(uri, 'GET', data, headers);
 
 
-	def send(self, uri, method, data, headers):
+	#	In-between method for the get and post methods
+	def _send(self, uri, method, data, headers):
 		#	initializing send request
 		url 		= self.endpoint + uri
 		requestFunc	= self.methodDict.get(method, None)
@@ -90,6 +108,7 @@ class Api42:
 		#	Making the request - only handles get and post requests for now
 		print(IYELLOW + "Requesting data from... " + ICYAN + url + ENDCOLOR, end='')
 		rsp = requestFunc(url, data=data, headers=headers)
+		self.numOfRequestsMade += 1;
 
 		#	Error handling
 		if (rsp is None) or rsp.status_code != 200:
@@ -108,7 +127,12 @@ class Api42:
 			pass
 		self.lastCall = _current_milli_time()
 
-import pprint
+# Example output / usage
+
 myapi = Api42(apikeys.uid, apikeys.secret)
-p = myapi.makeRequest('/v2/users/24794/projects_users?range[final_mark]=50,125')
+p = myapi.makeRequest('/v2/project_data/30')	# Returns rush data
+print(p)
+p = myapi.makeRequest('/v2/me/messages')		# Should return null
+print(p)
+p = myapi.makeRequest('/v2/languages')			# Returns languages
 print(p)
