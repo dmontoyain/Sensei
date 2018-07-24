@@ -46,12 +46,12 @@ class Api42:
 		if returnData is None and self.updateToken():
 			returnData = self.get(endpoint, None, self.headers)
 
-		#	returnData is a list of items, or none if any error happened
+		#	return a list of items, or none if any error happened
 		#	during the request
 		return returnData
 
 
-	#	Returns a True if token needed updating, otherwise False
+	#	Returns a True if token needed updating, otherwise return False
 	def updateToken(self):
 		#	Check whether token needs updating
 		if _current_milli_time() >= self.tokenExpires:
