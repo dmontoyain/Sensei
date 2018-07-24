@@ -139,14 +139,16 @@ class Api42:
 
 # Example output / usage
 
-myapi = Api42(apikeys.uid, apikeys.secret)
+# myapi = Api42(apikeys.uid, apikeys.secret)
 
-# print(myapi.projectsForUserInFinalMarkRange(apikeys.twaltonID, 105, 125))
+# print(myapi.projectsForUserInFinalMarkRange(apikeys.twaltonID, 105, 125))	# Returns just the names of projects that Theo Walton has passed between 105-125
 
 # p = myapi.makeRequest('/v2/project_data/30')	# Returns rush data
 # print(p)
+
 # p = myapi.makeRequest('/v2/me/messages')		# Should return null
 # print(p)
-# p = myapi.makeRequest('/v2/languages')			# Returns languages
+
+# p = myapi.makeRequest('/v2/languages')		# Returns languages
 # print(p)
 
