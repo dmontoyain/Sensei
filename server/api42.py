@@ -1,7 +1,6 @@
 from datetime import datetime
 import sys
 import time
-import json
 import requests
 import itertools
 import apikeys
@@ -136,11 +135,15 @@ class Api42:
 
 	def allProjects(self):
 		return self.makeRequest('/v2/cursus/1/projects')
-
+	
+	#For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff
+	def	openProjectsForUser(self, userID):
+		data = self.makeRequest('/v2/users/' + str(userID) + '/projects_users')
+		return ([i['project']['name'] for i in data if i['status'] == 'in_progress'])
 
 # Example output / usage
 
-# myapi = Api42(apikeys.uid, apikeys.secret)
+#myapi = Api42(apikeys.uid, apikeys.secret)
 
 # print(myapi.onlineStudents())
 
@@ -155,3 +158,4 @@ class Api42:
 # p = myapi.makeRequest('/v2/languages')		# Returns languages
 # print(p)
 
+#print(myapi.openProjectsForUser(apikeys.myID))
