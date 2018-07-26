@@ -3,7 +3,7 @@ import sys
 import time
 import requests
 import itertools
-import apikeys
+from config.apikeys import uid, secret
 from terminalcolors import *
 
 
@@ -67,11 +67,11 @@ class Api42:
 
 
 	def get(self, url, data, headers):	# Calls send with the GET method
-		return self._send('GET', url, data, headers);
+		return self._send('GET', url, data, headers)
 
 
 	def post(self, url, data, headers):	# Calls send with the POST method
-		return self._send('POST', url, data, headers);
+		return self._send('POST', url, data, headers)
 
 
 	def _send(self, method, url, data, headers):	# In-between method for the get and post methods
@@ -104,7 +104,7 @@ class Api42:
 		print(IYELLOW + "Requesting data from... " + ICYAN + url + ENDCOLOR + ' ', end='')
 		sys.stdout.flush()
 		rsp = requests.request(method, url=url, data=data, headers=headers)
-		self.totalRequests += 1;
+		self.totalRequests += 1
 
 		#	Error handling
 		if (rsp is None) or rsp.status_code != 200:
@@ -143,7 +143,7 @@ class Api42:
 
 # Example output / usage
 
-#myapi = Api42(apikeys.uid, apikeys.secret)
+#myapi = Api42(uid, secret)
 
 # print(myapi.onlineStudents())
 

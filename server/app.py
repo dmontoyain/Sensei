@@ -1,28 +1,27 @@
-import pymysql
-import server.config.settings as AppSettings
-from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Blueprint
+from flask_restful import Api
+from resources import *
+import database
 
-app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = AppSettings.dbConnectionString
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+api_bp = Blueprint('api', __name__)
+api = Api(api_bp)
 
-db = SQLAlchemy(app)
+#   routes configuration
 
-'''
-@app.route('/')
-def testdb():
-    try:
-        db.session.query_property("1").
-        db.session.query("1").from_statement("SELECT 1").all()
-        return '<h1>It works.</h1>'
-    except:
-        return '<h1>Something is broken.</h1>'
+#   users endpoints
+api.add_resource(userProjects, '/user/:userId/projects')
+api.add_resource(onlineUsers, '/users/online')
+api.add_resource(Users, '/users')
 
-def index():
-    return "Hello, World!"
+#   mentors endpoints
+api.add_resource(onlineMentors, '/mentors')
+api.add_resource(projectMentors, '/mentors/:projectId')
+api.add_resource(projectMentor, '/mentors/:mentorId')
+api.add_resource(newMentor, 'mentor/:projectId/projects/:userId/users')
 
-if __name__ == '__main__':
-    app.run(debug=True)
-'''
+#   appointments endpoints
+api.add_resource(Appointments, '/appointments')
+api.add_resource(userAppointments, '/appointments/:userId')
+api.add_resource(mentorAppointments, '/appointments/:mentorId')
+api.add_resource(detailedAppointment, '/appointments/:appointmentId')
