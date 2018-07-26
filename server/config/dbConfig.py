@@ -1,10 +1,10 @@
 class dbTest ():
-    mysql_module = ""
-    username = ""
-    password = ""
-    address = ""
-    port = ""
-    dbname = ""
+    mysql_module = "mysql+pymysql://"
+    username = "root:"
+    password = "root"
+    address = "@localhost"
+    port = ":8889"
+    dbname = "/sensei"
     environment = "test"
 
 class dbProduction ():

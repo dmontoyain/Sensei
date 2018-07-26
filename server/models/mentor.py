@@ -1,21 +1,21 @@
-from sqlalchemy import ForeignKey, Column, Integer, String, Boolean, DateTime
-from sqlalchemy.orm import backref, relationship
-from server.app import db
+from datetime import datetime
+from app import db
 
 class Mentor(db.Model):
-    __tablename__ = 'mentors'
+    __tablename__ = 'Mentors'
 
-    id = Column(Integer, primary_key=True, unique=True)
-    id_project = Column(Integer, ForeignKey('projects.id'), nullable=False)
-    id_user = Column(Integer, ForeignKey('users.id'), nullable=False)
-    finalmark = Column(Integer, nullable=False)
-    totalappointments = Column(Integer, nullable=False, server_default=0)
-    weeklyappintments = Column(Integer, nullable=False, server_default=0)
-    dailyappintments = Column(Integer, nullable=False, server_default=0)
-    slot_start = Column(DateTime, nullable=False)
-    slot_end = Column(DateTime, nullable=False)
-    available = Column(Boolean, nullable=False, server_default=False)
-    active = Column(Boolean, nullable=False, server_default=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
+    id_project = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    id_user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    finalmark = db.Column(db.Integer, nullable=False)
+    totalappointments = db.Column(db.Integer, nullable=False, default=0)
+    weeklyappintments = db.Column(db.Integer, nullable=False, default=0)
+    dailyappintments = db.Column(db.Integer, nullable=False, default=0)
+    slot_start = db.Column(db.DateTime, nullable=False)
+    slot_end = db.Column(db.DateTime, nullable=False)
+    available = db.Column(db.Boolean, nullable=False, default=False)
+    active = db.Column(db.Boolean, nullable=False, default=True)
+    started_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    project = relationship("Project", backref-backref('mentors'))
-    user = relationship("User", backref-backref('mentors'))
+    #   relationship with 'Appointments' table, Appointment Model class
+    appointments = db.relationship('Appointment', backref='mentor', lazy=True)

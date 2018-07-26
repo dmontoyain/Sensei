@@ -3,7 +3,7 @@ import time
 import json
 import requests
 import itertools
-import apikeys
+from config.apikeys import uid, secret
 from terminalcolors import *
 
 _current_milli_time = lambda: int(round(time.time() * 1000))
@@ -36,7 +36,7 @@ class Api42:
 	#	For general GET requests that require a single endpoint
 	def makeRequest(self, endpoint):
 		#	If a new token is needed, update it
-		self.updateToken()
+		self.updateToken()as
 
 		#	Make the actual request
 		returnData = self.get(endpoint, None, self.headers)
@@ -75,7 +75,7 @@ class Api42:
 
 	#	Calls send with the GET method
 	def get(self, uri, data, headers):
-		return self._send(uri, 'GET', data, headers);
+		return self._send(uri, 'GET', data, headers)
 
 
 	#	In-between method for the get and post methods
@@ -103,12 +103,12 @@ class Api42:
 	#	Should be a private function
 	def _request(self, url, data, headers, requestFunc):
 		#	Pausing for the api limiter
-		self._waitForRequest();
+		self._waitForRequest()
 
 		#	Making the request - only handles get and post requests for now
 		print(IYELLOW + "Requesting data from... " + ICYAN + url + ENDCOLOR, end='')
 		rsp = requestFunc(url, data=data, headers=headers)
-		self.numOfRequestsMade += 1;
+		self.numOfRequestsMade += 1
 
 		#	Error handling
 		if (rsp is None) or rsp.status_code != 200:
@@ -129,7 +129,7 @@ class Api42:
 
 # Example output / usage
 
-myapi = Api42(apikeys.uid, apikeys.secret)
+myapi = Api42(uid, secret)
 p = myapi.makeRequest('/v2/project_data/30')	# Returns rush data
 print(p)
 p = myapi.makeRequest('/v2/me/messages')		# Should return null
