@@ -1,19 +1,27 @@
-from flask import Flask, jsonify
-from marshmallow import pprint
+from flask import Blueprint
+from flask_restful import Api
+from resources import *
 import database
 
-app = Flask(__name__)
 
-db = database.init_db(app)
+api_bp = Blueprint('api', __name__)
+api = Api(api_bp)
 
-@app.route('/users')
-#users.getOnlineUsers();
-def index():
-    from models.user import User
-    userQuery = User.query.all()
-    print([{'login': user.login} for user in userQuery])
-    return str([{'login': user.login } for user in userQuery])
+#   routes configuration
 
-@
-if __name__ == '__main__':
-    app.run(debug=True)
+#   users endpoints
+api.add_resource(userProjects, '/user/:userId/projects')
+api.add_resource(onlineUsers, '/users/online')
+api.add_resource(Users, '/users')
+
+#   mentors endpoints
+api.add_resource(onlineMentors, '/mentors')
+api.add_resource(projectMentors, '/mentors/:projectId')
+api.add_resource(projectMentor, '/mentors/:mentorId')
+api.add_resource(newMentor, 'mentor/:projectId/projects/:userId/users')
+
+#   appointments endpoints
+api.add_resource(Appointments, '/appointments')
+api.add_resource(userAppointments, '/appointments/:userId')
+api.add_resource(mentorAppointments, '/appointments/:mentorId')
+api.add_resource(detailedAppointment, '/appointments/:appointmentId')

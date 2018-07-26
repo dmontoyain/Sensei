@@ -1,4 +1,4 @@
-from app import db
+from models import db
 
 class User(db.Model):
     __tablename__ = 'Users'
@@ -12,3 +12,4 @@ class User(db.Model):
 
     #   relationship with 'Appointments' table, Appointment Model Class
     #appointments = db.relationship('Appointment', backref='user', lazy=True)
+    

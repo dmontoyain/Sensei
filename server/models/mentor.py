@@ -1,5 +1,5 @@
 from datetime import datetime
-from app import db
+from models import db
 
 class Mentor(db.Model):
     __tablename__ = 'Mentors'
