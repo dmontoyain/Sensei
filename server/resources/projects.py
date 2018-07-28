@@ -4,7 +4,8 @@ from models import User, Project, Mentor, Appointment
 #   api/projects
 class allProjects(Resource):
     def get(self):
-        return Project.query.all()
+        projects = Project.query.all()
+        return [project.serialize for project in projects], 201
     
     def post(self):
         Project.commit()
