@@ -19,9 +19,17 @@ class projectMentors(Resource):
         mentors = Mentor.query.filter_by(id_project=projectId)
         globalOnlineUsers.lock()           
         globList = globalOnlineUsers._onlineUsersList
-        ret = [mentor.serialize for mentor in mentors for x in globList if mentor.user.id_user42 == x['id']]
+        '''
+        result = []
+        for mentor in mentors:
+            for glob in globList:
+                print (glob)
+                if str(mentor.user.id_user42) == str(glob['user']['id']):
+                    result.append(mentor.serialize)
+        '''
+        result = [mentor.serialize for mentor in mentors for x in globList if mentor.user.id_user42 == x['id']]
         globalOnlineUsers.unlock()
-        return jsonify(ret), 201
+        return result, 201
     
     #   Creates a new mentor for the specified project 
     def post(self, projectId):

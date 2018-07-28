@@ -1,6 +1,7 @@
 from datetime import datetime
 from models import db
 
+
 class Mentor(db.Model):
     __tablename__ = 'Mentors'
 
@@ -25,16 +26,17 @@ class Mentor(db.Model):
     @property
     def serialize(self):
         return {
-            'id': str(self.id),
-            'id_project': str(self.id_project),
-            'id_user': str(self.id_user),
-            'finalmark': str(self.finalmark),
-            'totalappointments': str(self.totalappointments),
-            'weeklyappointments': str(self.weeklyappointments),
-            'dailyappointments': str(self.dailyappointments),
-            'slot_start': str(self.slot_start),
-            'slot_end': str(self.slot_end),
-            'available': str(self.available),
-            'active': str(self.active),
-            'started_at': str(self.started_at)
+            'id': self.id,
+            'id_project': self.id_project,
+            'id_user': self.id_user,
+            'login': self.user.login,
+            'finalmark': self.finalmark,
+            'totalappointments': self.totalappointments,
+            'weeklyappointments': self.weeklyappointments,
+            'dailyappointments': self.dailyappointments,
+            'slot_start': self.slot_start,
+            'slot_end': self.slot_end,
+            'available': self.available,
+            'active': self.active,
+            'started_at': self.started_at
         }

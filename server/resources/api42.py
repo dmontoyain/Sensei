@@ -119,7 +119,7 @@ class Api42:
 
 	def onlineStudents(self):
 		data = self.makeRequest('/v2/campus/7/locations?filter[active]=true')
-		return data;
+		#return data;
 		return [ { 'login': i['user']['login'], 'id': i['user']['id'], 'host': i['host'] } for i in data] # Example list comprehension	
 
 	def onlineStudentsAtCampus(self, campusID):
