@@ -3,13 +3,13 @@ from models import User, Project, Mentor, Appointment
 
 #   /api/appointments
 
-class Appointments:
+class Appointments(Resource):
     #   gets all active appointments
     def get(self):
         return Appointment.query.all()
 
 #   /api/appointments/:userId
-class userAppointments:
+class userAppointments(Resource):
 
     #gets all the appintments from the specified user
     def get(self, userId):
@@ -20,14 +20,14 @@ class userAppointments:
         return Appointment
 
 #   /api/appointments/:mentorId
-class mentorAppointments:
+class mentorAppointments(Resource):
 
     #   gets all appointments with the specified mentor
     def get(self, mentorId):
         return Appointment
 
 #   /api/appointments/:appointmentId
-class detailedAppointment:
+class detailedAppointment(Resource):
     #retrieve appointment details
     def get(self, appointmentId):
         return Appointment

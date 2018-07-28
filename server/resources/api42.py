@@ -3,9 +3,7 @@ import sys
 import time
 import requests
 import itertools
-from config.apikeys import uid, secret
-from terminalcolors import *
-
+from resources.terminalcolors import *
 
 class Api42:
 
@@ -13,7 +11,7 @@ class Api42:
 	_dataList			= lambda data: [data] if type(data) is dict else data
 	_chainToList		= lambda chainData: [d for d in chainData]
 
-	def __init__(self, uid, secret):
+	def __init__(self, _uid, _secret):
 		self.token = None
 		self.tokenExpires = 0
 		self.apiLimit = int(0.5 * 1000)
@@ -25,8 +23,8 @@ class Api42:
 			'content-type': 'application/x-www-form-urlencoded'
 		}
 		self.authData = {
-			'client_id': uid,
-			'client_secret': secret,
+			'client_id': _uid,
+			'client_secret': _secret,
 			'grant_type': 'client_credentials'
 		}
 
@@ -140,6 +138,7 @@ class Api42:
 	def	openProjectsForUser(self, userID):
 		data = self.makeRequest('/v2/users/' + str(userID) + '/projects_users')
 		return ([i['project']['name'] for i in data if i['status'] == 'in_progress'])
+
 
 # Example output / usage
 

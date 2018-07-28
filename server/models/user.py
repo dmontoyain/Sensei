@@ -8,7 +8,7 @@ class User(db.Model):
     login = db.Column(db.String(45), nullable=False)
 
     #   relationship with 'Mentors' table, Mentor Model Class
-    #mentors = db.relationship('Mentor', backref='user', lazy=True)
+    mentors = db.relationship('Mentor', backref='user', lazy=True)
 
     #   relationship with 'Appointments' table, Appointment Model Class
     #appointments = db.relationship('Appointment', backref='user', lazy=True)
