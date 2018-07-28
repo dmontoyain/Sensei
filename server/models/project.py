@@ -13,10 +13,13 @@ class Project(db.Model):
     #   relationship with 'Mentors' table, Mentor Model Class
     mentors = db.relationship('Mentor', backref='project', lazy=True)
 
+    @property
     def serialize(self):
-        return {'id' : self.id,
-                'project_id42' : self.project_id42,
-                'name' : self.name,
-                'slug' : self.slug,
-                'tier' : self.tier,
-                'active' : self.active}
+        return {
+            "id": self.id,
+            "project_id42": self.project_id42,
+            "name": self.name,
+            "slug": self.slug,
+            "tier": self.tier,
+            "active" : self.active
+        }
