@@ -105,7 +105,7 @@ class Api42:
 		print(IYELLOW + "Requesting data from... " + ICYAN + url + ENDCOLOR + ' ', end='')
 		sys.stdout.flush()
 		rsp = requests.request(method, url=url, data=data, headers=headers)
-		self.totalRequests += 1;
+		self.totalRequests += 1
 
 		#	Error handling
 		if (rsp is None) or rsp.status_code != 200:
@@ -122,6 +122,7 @@ class Api42:
 
 	def onlineStudents(self):
 		data = self.makeRequest('/v2/campus/7/locations?filter[active]=true')
+		return data;
 		return [ { 'login': i['user']['login'], 'id': i['user']['id'], 'host': i['host'] } for i in data] # Example list comprehension	
 
 	def onlineStudentsAtCampus(self, campusID):
