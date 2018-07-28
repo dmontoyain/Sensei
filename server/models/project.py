@@ -12,13 +12,11 @@ class Project(db.Model):
 
     #   relationship with 'Mentors' table, Mentor Model Class
     mentors = db.relationship('Mentor', backref='project', lazy=True)
-    #mentors = db.relationship('Mentor', foreign_keys=[])
 
-'''
-    def __init__(self, project_id42, name, slug, tier, active):
-        self.project_id42 = project_id42
-        self.name = name
-        self.slug = slug
-        self.tier = tier
-        self.active = active
-        '''
+    def serialize(self):
+        return {'id' : self.id,
+                'project_id42' : self.project_id42,
+                'name' : self.name,
+                'slug' : self.slug,
+                'tier' : self.tier,
+                'active' : self.active}
