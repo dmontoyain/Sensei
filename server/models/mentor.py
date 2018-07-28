@@ -34,4 +34,4 @@ class Mentor(db.Model):
                 'slot_start': self.slot_start,
                 'slot_end': self.slot_end,
                 'available': self.available,
-                'active': self.active,}
+                'active': self.active}
