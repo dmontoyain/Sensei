@@ -1,12 +1,9 @@
 from datetime import datetime
 import sys
 import time
-import json
 import requests
 import itertools
-import apikeys
-from terminalcolors import *
-
+from resources.terminalcolors import *
 
 class Api42:
 
@@ -14,7 +11,7 @@ class Api42:
 	_dataList			= lambda data: [data] if type(data) is dict else data
 	_chainToList		= lambda chainData: [d for d in chainData]
 
-	def __init__(self, uid, secret):
+	def __init__(self, _uid, _secret):
 		self.token = None
 		self.tokenExpires = 0
 		self.apiLimit = int(0.5 * 1000)
@@ -26,8 +23,8 @@ class Api42:
 			'content-type': 'application/x-www-form-urlencoded'
 		}
 		self.authData = {
-			'client_id': uid,
-			'client_secret': secret,
+			'client_id': _uid,
+			'client_secret': _secret,
 			'grant_type': 'client_credentials'
 		}
 
@@ -68,11 +65,11 @@ class Api42:
 
 
 	def get(self, url, data, headers):	# Calls send with the GET method
-		return self._send('GET', url, data, headers);
+		return self._send('GET', url, data, headers)
 
 
 	def post(self, url, data, headers):	# Calls send with the POST method
-		return self._send('POST', url, data, headers);
+		return self._send('POST', url, data, headers)
 
 
 	def _send(self, method, url, data, headers):	# In-between method for the get and post methods
@@ -137,15 +134,20 @@ class Api42:
 
 	def allProjects(self):
 		return self.makeRequest('/v2/cursus/1/projects')
+	
+	#For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff
+	def	openProjectsForUser(self, userID):
+		data = self.makeRequest('/v2/users/' + str(userID) + '/projects_users')
+		return ([i['project']['name'] for i in data if i['status'] == 'in_progress'])
 
 
 # Example output / usage
 
-myapi = Api42(apikeys.uid, apikeys.secret)
+#myapi = Api42(uid, secret)
 
 # print(myapi.onlineStudents())
 
-print(myapi.passingProjectsForUser(31809))
+# print(myapi.passingProjectsForUser(31809))
 
 # print(myapi.projectsForUserInFinalMarkRange(apikeys.twaltonID, 105, 125))	# Returns just the names of projects that Theo Walton has passed between 105-125
 
@@ -158,3 +160,4 @@ print(myapi.passingProjectsForUser(31809))
 # p = myapi.makeRequest('/v2/languages')		# Returns languages
 # print(p)
 
+#print(myapi.openProjectsForUser(apikeys.myID))
