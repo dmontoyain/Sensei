@@ -15,5 +15,4 @@ class onlineUsers(Resource):
 class Users(Resource):
     def get(self):
         userQuery = User.query.all()
-        print([{'login': user.login} for user in userQuery])
-        return str([{'login': user.login } for user in userQuery]), 201
+        return [u.serialize for u in userQuery], 201

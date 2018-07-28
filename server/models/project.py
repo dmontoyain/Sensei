@@ -12,7 +12,6 @@ class Project(db.Model):
 
     #   relationship with 'Mentors' table, Mentor Model Class
     mentors = db.relationship('Mentor', backref='project', lazy=True)
-    #mentors = db.relationship('Mentor', foreign_keys=[])
 
     @property
     def serialize(self):

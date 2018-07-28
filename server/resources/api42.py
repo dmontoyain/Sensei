@@ -119,13 +119,14 @@ class Api42:
 
 	def onlineStudents(self):
 		data = self.makeRequest('/v2/campus/7/locations?filter[active]=true')
+		return data;
 		return [ { 'login': i['user']['login'], 'id': i['user']['id'], 'host': i['host'] } for i in data] # Example list comprehension	
 
 	def onlineStudentsAtCampus(self, campusID):
 		return self.makeRequest('/v2/campus/' + str(campusID) + '/locations?filter[active]=true')
 
 	def passingProjectsForUser(self, userID):
-		return self.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=80,125')
+		return self.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=80,125&filter[cursus]=1')
 
 	def projectsForUserInFinalMarkRange(self, userID, minScore, maxScore):
 		data = self.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=' + str(minScore) + ',' + str(maxScore))
@@ -145,6 +146,8 @@ class Api42:
 #myapi = Api42(uid, secret)
 
 # print(myapi.onlineStudents())
+
+# print(myapi.passingProjectsForUser(31809))
 
 # print(myapi.projectsForUserInFinalMarkRange(apikeys.twaltonID, 105, 125))	# Returns just the names of projects that Theo Walton has passed between 105-125
 
