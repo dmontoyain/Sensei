@@ -3,7 +3,8 @@ import './Assets/css/default.min.css'
 
 //Components
 import Header from './components/headerComponent/header.js';
-import HomePage from './components/pages/homePage.js';
+import ProjectTile from './components/ProjectTile/ProjectTile.js';
+// import ConceptTile from './components/ConceptTile/ConceptTile.js';
 import Footer from './components/footerComponent/footer.js';
 
 
@@ -12,7 +13,8 @@ class App extends Component {
     return (
       <div> 
         <Header />
-        <HomePage />
+        <ProjectTile />
+        {/* <ConceptTile /> */}
         <Footer />
       </div>
     );
