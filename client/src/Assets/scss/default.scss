@@ -57,9 +57,13 @@ body {
     background-color: #FAFAFA;
     font-family: "Futura PT";
 
+    .projectSearch {
+        margin: 50px;
+    }
+
     .grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 0.5fr);
         grid-gap: 15px;
 
         margin-left: 50px;
@@ -70,7 +74,7 @@ body {
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 25vw;
+            height: 20vw;
             font-size: 2vw;
             border: 1px solid #eee;
             box-shadow: rgba(0, 0, 0, 0.06) 0px 2px 4px;
@@ -79,26 +83,33 @@ body {
             font-weight: bold;
             background: #52B7BB;
             color: #fff;
-        }
 
-        #mentorsAvailable {
-            display: none;
-            font-size: 5vw;
-        }
+            #mentorsAvailable {
+                display: none;
+                font-size: 5vw;
+                color: red;
+            }
+            #mentorText {
+                display:none;
+                font-size: 2vw;
+                position: absolute;
+                top: 8px;
+                left: 16px;
+            }
 
-        #mentorText {
-            display:none;
-            font-size: 2vw;
-            position: absolute;
-            top: 8px;
-            left: 16px;
+            #projectNameDisplay {
+                display:none;
+                font-size: 2vw;
+                position: absolute;
+                bottom: 8px;
+                right: 16px;
+            }
         }
-
         div#mentorsAvailableFalse:hover {
             background: #BF464D;
             position: relative;
             top: -5px;
-
+            
             #projectName {
                 display:none;
             }
@@ -108,6 +119,10 @@ body {
             }
 
             #mentorText {
+                display: inline;
+            }
+
+            #projectNameDisplay {
                 display: inline;
             }
         }
@@ -125,6 +140,9 @@ body {
             }
 
             #mentorText {
+                display: inline;
+            }
+            #projectNameDisplay {
                 display: inline;
             }
         }
