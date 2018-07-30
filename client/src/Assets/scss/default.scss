@@ -57,8 +57,19 @@ body {
     background-color: #FAFAFA;
     font-family: "Futura PT";
 
-    .projectSearch {
-        margin: 50px;
+    .searchGrid {
+        display: grid;
+        grid-template-columns: 2;
+        grid-gap: 15px;
+        margin-left: 50px;
+    }
+
+    .search {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 3vw;
+        font-size: 2vw;
     }
 
     .grid {
@@ -87,7 +98,6 @@ body {
             #mentorsAvailable {
                 display: none;
                 font-size: 5vw;
-                color: red;
             }
             #mentorText {
                 display:none;
@@ -105,11 +115,17 @@ body {
                 right: 16px;
             }
         }
+        .projectCell {
+            display: hidden;
+        }
+        .conceptCell {
+            display: hidden;
+        }
         div#mentorsAvailableFalse:hover {
             background: #BF464D;
             position: relative;
             top: -5px;
-            
+
             #projectName {
                 display:none;
             }
