@@ -4,8 +4,8 @@ class ProjectTile extends Component {
     constructor() {
         super();
         this.state = {  projects: [],
-                        concepts: [ {name: "pointers", mentors: 9},
-                                    {name: "linked lists", mentors: 5}] }
+                        concepts: [ {name: "pointers", mentors: 9, isConcept: true},
+                                    {name: "linked lists", mentors: 5, isConcept: false}] }
     }
     componentWillMount(){
         fetch ( 'https://swapi.co/api/people/?format=json')
