@@ -5,10 +5,20 @@ class ProjectTile extends Component {
         super();
         this.state = {  projects: [],
                         concepts: [ {name: "pointers", mentors: 9, isConcept: true},
-                                    {name: "linked lists", mentors: 5, isConcept: false}] }
+                                    {name: "linked lists", mentors: 5, isConcept: true},
+                                    {name: "hash tables", mentors: 0, isConcept: true},
+                                    {name: "C++", mentors: 2, isConcept: true},
+                                    {name: "resume building", mentors: 7, isConcept: true},
+                                    {name: "machine learning", mentors: 0, isConcept: true},
+                                    {name: "NodeJS", mentors: 2, isConcept: true},
+                                    {name: "data structures", mentors: 5, isConcept: true},
+                                    {name: "Java", mentors: 1, isConcept: true},
+                                    {name: "Python", mentors: 7, isConcept: true}
+                                ]
+                    }
     }
     componentWillMount(){
-        fetch ( 'https://swapi.co/api/people/?format=json')
+        fetch ( 'https://swapi.co/api/people/?format=json' )
         .then( response => response.json() )
         .then( ({results:projects}) => this.setState({projects}))
     }
