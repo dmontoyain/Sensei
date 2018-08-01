@@ -3,85 +3,93 @@ import sys
 import time
 import requests
 import itertools
-from resources.terminalcolors import *
+import threading
+import api42config
+from terminalcolors import *
 
 class Api42:
 
 	_currentMilliTime	= lambda: int(round(time.time() * 1000))
 	_dataList			= lambda data: [data] if type(data) is dict else data
 	_chainToList		= lambda chainData: [d for d in chainData]
+	_onlineUsers		= []
+	_onlineUsersLock	= threading.Lock()
 
-	def __init__(self, _uid, _secret):
-		self.token = None
-		self.tokenExpires = 0
-		self.apiLimit = int(0.5 * 1000)
-		self.lastCall = 0
-		self.totalRequests = 0
-		self.endpoint = 'https://api.intra.42.fr'
-		self.headers = {
-			'Authorization': 'Bearer',
-			'content-type': 'application/x-www-form-urlencoded'
-		}
-		self.authData = {
-			'client_id': _uid,
-			'client_secret': _secret,
-			'grant_type': 'client_credentials'
-		}
+	_token				= None
+	_tokenExpires		= 0
+	_apiLimit			= int(0.5 * 1000)
+	_lastCall			= 0
+	_totalRequests		= 0
+	_endpoint			= 'https://api.intra.42.fr'
+	_headers			= { 'Authorization': 'Bearer',
+							'content-type': 'application/x-www-form-urlencoded' }
+	_authData			= { 'client_id': api42config._uid,
+							'client_secret': api42config._secret,
+							'grant_type': 'client_credentials' }
 
+	#	Static Methods that control the online users list
+	#	-------------------------------------------------------------------------------------------
 
-	def updateToken(self):	# Returns True if token was updated, otherwise returns False
+	@staticmethod
+	def updateOnlineUsers():
+		while True:
+			Api42.lock()
+			Api42._onlineUsers = Api42.onlineStudents()
+			Api42.unlock()
+			time.sleep(120)
 
-		#	Check to see if token needs to be updated
-		if Api42._currentMilliTime() >= self.tokenExpires:
-			print(IPURPLE + "Token needs refreshing..." + ENDCOLOR)
-			tokenData = self.post('/oauth/token', self.authData, None)
-			if tokenData is None:
-				return
+	@staticmethod
+	def lock():
+		Api42._onlineUsersLock.acquire()
 
-			#	Update token, expiry time, and authorization header
-			self.token = tokenData[0]['access_token']
-			self.tokenExpires = (tokenData[0]['expires_in'] * 1000) + Api42._currentMilliTime()
-			self.headers['Authorization'] = 'Bearer ' + self.token
-			print(IGREEN + "Token Updated!" + ENDCOLOR)
-			return True
-		return False
+	@staticmethod
+	def unlock():
+		Api42._onlineUsersLock.release()
 
+	@staticmethod
+	def run():
+		threading.Thread(target=Api42.updateOnlineUsers).start()
 
-	def makeRequest(self, endpoint):	# For general GET requests that require a single endpoint
+	#	Api Functionality begins here
+	#	-----------------------------------------------------------------------------------------
+
+	@staticmethod
+	def makeRequest(endpoint):	# For general GET requests that require a single endpoint
 
 		#	If a new token is needed, update it
-		self.updateToken()
+		Api42._updateToken()
 
 		#	Make get request
-		returnData = self.get(endpoint, None, self.headers)
+		returnData = Api42.get(endpoint, None, Api42._headers)
 
-		#	If the request failed, but it had to update the token,
-		#	try and perform the request again
-		if returnData is None and self.updateToken():
-			returnData = self.get(endpoint, None, self.headers)
+		#	If the request failed, but it had to update the token, perform request again
+		if returnData is None and Api42._updateToken():
+			returnData = Api42.get(endpoint, None, Api42._headers)
 
-		#	return is a list of items or None
+		#	Returns a list of request data, or None if it failed
 		return returnData
 
-
-	def get(self, url, data, headers):	# Calls send with the GET method
-		return self._send('GET', url, data, headers)
-
-
-	def post(self, url, data, headers):	# Calls send with the POST method
-		return self._send('POST', url, data, headers)
+	@staticmethod
+	def get(url, data, headers):	# Calls send with the GET method
+		return Api42._send('GET', url, data, headers)
 
 
-	def _send(self, method, url, data, headers):	# In-between method for the get and post methods
+	@staticmethod
+	def post(url, data, headers):	# Calls send with the POST method
+		return Api42._send('POST', url, data, headers)
+
+
+	@staticmethod
+	def _send(method, url, data, headers):	# In-between method for the get and post methods
 
 		#	Make request
-		rsp, returnData = self._request(method, self.endpoint + url, data, headers)
+		rsp, returnData = Api42._request(method, Api42._endpoint + url, data, headers)
 		if rsp is None:
 			return None
 
 		#	Loop to get all data
 		while 'next' in rsp.links:
-			rsp, tmpData = self._request(method, rsp.links['next']['url'], data, headers)
+			rsp, tmpData = Api42._request(method, rsp.links['next']['url'], data, headers)
 			if rsp is None:
 				return None
 			returnData = itertools.chain(returnData, tmpData)
@@ -89,20 +97,21 @@ class Api42:
 
 
 	#	First it waits,
-	#	thne makes an actual request,
+	#	then makes an actual request,
 	#	returns the response and list of data
-	def _request(self, method, url, data, headers):
+	@staticmethod
+	def _request(method, url, data, headers):
 
 		#	Pausing for the api request limit (500 milliseconds)
-		while (Api42._currentMilliTime() - self.apiLimit) < self.lastCall:
+		while (Api42._currentMilliTime() - Api42._apiLimit) < Api42._lastCall:
 			pass
-		self.lastCall = Api42._currentMilliTime()
+		Api42._lastCall = Api42._currentMilliTime()
 
 		#	Making the request - only handles get and post requests for now
 		print(IYELLOW + "Requesting data from... " + ICYAN + url + ENDCOLOR + ' ', end='')
 		sys.stdout.flush()
 		rsp = requests.request(method, url=url, data=data, headers=headers)
-		self.totalRequests += 1
+		Api42._totalRequests += 1
 
 		#	Error handling
 		if (rsp is None) or rsp.status_code != 200:
@@ -114,50 +123,57 @@ class Api42:
 		return rsp, Api42._dataList(rsp.json())
 
 
-	#	A few predefined requests
+	@staticmethod
+	def _updateToken():	# Returns True if token was updated, otherwise returns False
+
+		#	Check to see if token needs to be updated
+		if Api42._currentMilliTime() >= Api42._tokenExpires:
+			print(IPURPLE + "Token needs refreshing..." + ENDCOLOR)
+			tokenData = Api42.post('/oauth/token', Api42._authData, None)
+			if tokenData is None:
+				print(IRED + "Failed to refresh the 42 api token" + ENDCOLOR)
+				return False
+
+			#	Update token, expiry time, and authorization header
+			Api42._token = tokenData[0]['access_token']
+			Api42._tokenExpires = (tokenData[0]['expires_in'] * 1000) + Api42._currentMilliTime()
+			Api42._headers['Authorization'] = 'Bearer ' + Api42._token
+			print(IGREEN + "Token Updated!" + ENDCOLOR)
+			return True
+		return False
+
+
+	#	A few predefined requests with parsed responses
 	#	-------------------------------------------------------------------------------------------
 
-	def onlineStudents(self):
-		data = self.makeRequest('/v2/campus/7/locations?filter[active]=true')
-		#return data;
-		return [ { 'login': i['user']['login'], 'id': i['user']['id'], 'host': i['host'] } for i in data] # Example list comprehension	
+	@staticmethod
+	def onlineStudents():
+		data = Api42.makeRequest('/v2/campus/7/locations?filter[active]=true')
+		return [ { 'login': i['user']['login'], 'id': i['user']['id'], 'host': i['host'] } for i in data]
 
-	def onlineStudentsAtCampus(self, campusID):
-		return self.makeRequest('/v2/campus/' + str(campusID) + '/locations?filter[active]=true')
+	@staticmethod
+	def onlineStudentsAtCampus(campusID):
+		return Api42.makeRequest('/v2/campus/' + str(campusID) + '/locations?filter[active]=true')
 
-	def passingProjectsForUser(self, userID):
-		return self.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=80,125&filter[cursus]=1')
+	@staticmethod
+	def passingProjectsForUser(userID):
+		return Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=80,125&filter[cursus]=1')
 
-	def projectsForUserInFinalMarkRange(self, userID, minScore, maxScore):
-		data = self.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=' + str(minScore) + ',' + str(maxScore))
-		return [i['project']['name'] for i in data]	# An example list comprehension return format - just returns the names of the projects
+	@staticmethod
+	def projectsForUserInFinalMarkRange(userID, minScore, maxScore):
+		data = Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=' + str(minScore) + ',' + str(maxScore))
+		return [i['project']['name'] for i in data]
 
-	def allProjects(self):
-		return self.makeRequest('/v2/cursus/1/projects')
+	@staticmethod
+	def allProjects():
+		return Api42.makeRequest('/v2/cursus/1/projects')
 	
 	#For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff
-	def	openProjectsForUser(self, userID):
-		data = self.makeRequest('/v2/users/' + str(userID) + '/projects_users')
+	@staticmethod
+	def	openProjectsForUser(userID):
+		data = Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users')
 		return ([i['project']['name'] for i in data if i['status'] == 'in_progress'])
 
-
-# Example output / usage
-
-#myapi = Api42(uid, secret)
-
-# print(myapi.onlineStudents())
-
-# print(myapi.passingProjectsForUser(31809))
-
-# print(myapi.projectsForUserInFinalMarkRange(apikeys.twaltonID, 105, 125))	# Returns just the names of projects that Theo Walton has passed between 105-125
-
-# p = myapi.makeRequest('/v2/project_data/30')	# Returns rush data
-# print(p)
-
-# p = myapi.makeRequest('/v2/me/messages')		# Should return null
-# print(p)
-
-# p = myapi.makeRequest('/v2/languages')		# Returns languages
-# print(p)
-
-#print(myapi.openProjectsForUser(apikeys.myID))
+data = Api42.onlineStudents()
+for i in data:
+	print(i['login'])
