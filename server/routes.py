@@ -1,24 +1,26 @@
 from resources import *
 
+#   routes configuration
 def init_routes(api):
-    #   routes configuration
+
+    #   projects endpoints
+    api.add_resource(apiProjects, '/projects')
+
     #   users endpoints
-    api.add_resource(userProjects, '/user/:userId/projects')
-    api.add_resource(onlineUsers, '/users/online')
-    api.add_resource(Users, '/users')
+    api.add_resource(apiUsers, '/users')
+    api.add_resource(apiUser, '/user/<int:userID>')
+    api.add_resource(apiUserProjects, '/user/<int:userId>/projects')
+    api.add_resource(apiUsersOnline, '/users/online')
 
     #   mentors endpoints
-    api.add_resource(Mentors, '/mentors')
-    api.add_resource(projectMentors, '/mentors/project/<int:projectId>')
-    api.add_resource(projectMentor, '/mentors/mentor/<int:mentorId>')
-    api.add_resource(newMentor, '/mentor/:projectId/projects/:userId/users')
-    api.add_resource(userMentors, '/mentors/user/<int:userId>')
+    api.add_resource(apiMentors, '/mentors')
+    api.add_resource(apiMentor, '/mentor/<int:mentorId>')
+    api.add_resource(apiMentorsProject, '/mentors/project/<int:projectId>')
+    api.add_resource(apiMentorsUser, '/mentors/user/<int:userId>')
+    api.add_resource(apiMentorNew, '/mentors/project/<int:projectId>/user/<int:userId>')
 
     #   appointments endpoints
-    api.add_resource(Appointments, '/appointments')
-
-    api.add_resource(userAppointments, '/appointments/<int:userId>')
-    api.add_resource(mentorAppointments, '/appointments/<int:mentorId>')
-    api.add_resource(detailedAppointment, '/appointments/:appointmentId')
-
-    api.add_resource(allProjects, '/projects')
+    api.add_resource(apiAppointments, '/appointments')
+    api.add_resource(apiAppointment, '/appointment/<int:appointmentId>')
+    api.add_resource(apiAppointmentsUser, '/appointments/user/<int:userId>')
+    api.add_resource(apiAppointmentsMentor, '/appointments/mentor/<int:mentorId>')

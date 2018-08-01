@@ -4,68 +4,55 @@ from resources import globalOnlineUsers
 from flask import jsonify
 
 #   api/mentors/
-class Mentors(Resource):
+class apiMentors(Resource):
     def get(self):
         globalOnlineUsers.lock()
         ret = str([mentor for mentor in globalOnlineUsers._onlineUsersList])
         globalOnlineUsers.unlock()
-        return ret, 201
+        return ret, 200
 
-#   api/mentors/project/:projectId
-class projectMentors(Resource):
 
-    #   Gets all mentors for the specified project
-    def get(self, projectId):
-        mentors = Mentor.query.filter_by(id_project=projectId)
-        globalOnlineUsers.lock()           
-        globList = globalOnlineUsers._onlineUsersList
-        '''
-        result = []
-        for mentor in mentors:
-            for glob in globList:
-                print (glob)
-                if str(mentor.user.id_user42) == str(glob['user']['id']):
-                    result.append(mentor.serialize)
-        '''
-        result = [mentor.serialize for mentor in mentors for x in globList if mentor.user.id_user42 == x['id']]
-        globalOnlineUsers.unlock()
-        return result, 201
-    
-    #   Creates a new mentor for the specified project 
-    def post(self, projectId):
-        return Mentor
-
-#   api/mentors/mentor/:mentorId
-class projectMentor(Resource):
+#   api/mentor/:mentorId
+class apiMentor(Resource):
 
     #   Gets specified mentor data
     def get(self, mentorId):
-        return Mentor(mentorId)
+        return Mentor(mentorId), 200
 
     #   Updates any mentor data for the specified project
     def put(self, mentorId):
         #update
-        return Mentor(mentorId)
+        return Mentor(mentorId), 202
 
-#   ???? Is this necessary???????
-#   api/mentors/:mentorId/projects
-class mentorProjects(Resource):
 
-    #   Gets all projects mentor is subscribed
-    def get(self, mentorId):
-        return 
+#   api/mentors/project/:projectId
+class apiMentorsProject(Resource):
 
-#   api/mentor/:projectId/projects/:userId/users
-class newMentor(Resource):
+    #   Gets all mentors for the specified project
+    def get(self, projectId):
+        mentors = Mentor.query.filter_by(id_project=projectId)
+        globalOnlineUsers.lock()
+        onlineUsers = globalOnlineUsers._onlineUsersList
+        result = [mentor.serialize for mentor in mentors for x in onlineUsers if mentor.user.id_user42 == x['id']]
+        globalOnlineUsers.unlock()
+        return result, 200
 
-    def post(self, projectId, userId):
-        return Mentor
+    #   Creates a new mentor for the specified project 
+    def post(self, projectId):
+        return Mentor, 201
+
 
 #   api/mentors/user/:userId
-
-class userMentors(Resource):
+class apiMentorsUser(Resource):
 
     #   Gets user projects he is subscribed to mentor
     def get(self, userId):
         mentors = Mentor.query.filter_by(id_user=userId)
-        return str([{'project': mentor.project.name, 'finalmark': mentor.finalmark } for mentor in mentors]), 201
+        return str([{'project': mentor.project.name, 'finalmark': mentor.finalmark } for mentor in mentors]), 200
+
+
+#   api/mentors/project/:projectId/user/:userId
+class apiMentorNew(Resource):
+
+    def post(self, projectId, userId):
+        return Mentor, 201
