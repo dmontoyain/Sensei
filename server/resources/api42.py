@@ -5,6 +5,8 @@ import requests
 import itertools
 import threading
 import api42config
+import gc
+import copy
 from terminalcolors import *
 
 class Api42:
@@ -15,12 +17,15 @@ class Api42:
 
 	_onlineUsers		= []
 	_onlineUsersLock	= threading.Lock()
+	_timeBetweenUpdates = 0
+	_activeUpdater		= False
 
 	_token				= None
 	_tokenExpires		= 0
 	_apiLimit			= int(0.5 * 1000)
 	_lastCall			= 0
 	_totalRequests		= 0
+
 	_endpoint			= 'https://api.intra.42.fr'
 	_headers			= { 'Authorization': 'Bearer',
 							'content-type': 'application/x-www-form-urlencoded' }
@@ -32,12 +37,33 @@ class Api42:
 	#	-------------------------------------------------------------------------------------------
 
 	@staticmethod
-	def updateOnlineUsers():
-		while True:
+	def updateOnlineUsers(runForever=False):
+		#	Only lock on the first request
+		Api42.lock()
+		data = Api42.makeRequest('/v2/campus/7/locations?filter[active]=true')
+		Api42._onlineUsers = [{'login': i['user']['login'], 'id': i['user']['id'], 'host': i['host'] } for i in data]
+		Api42.unlock()
+		del data[:]
+		#	If a user calls this function directly, default to only making the single request. Else, run forever.
+		while runForever:
+			#	Sleep. Default 120 secs
+			time.sleep(Api42._timeBetweenUpdates)
+
+			#	Request in unlocked state
+			data = Api42.makeRequest('/v2/campus/7/locations?filter[active]=true')
+
+			#	Lock when Api42._onlineUsers list itself is being modified
 			Api42.lock()
-			Api42._onlineUsers = Api42.onlineStudents()
+			del Api42._onlineUsers[:]
+			Api42._onlineUsers = [{'login': i['user']['login'], 'id': i['user']['id'], 'host': i['host'] } for i in data]
 			Api42.unlock()
-			time.sleep(120)
+
+			#	Free some memory for funsies
+			del data[:]
+			gc.collect()
+
+		#	Return if user simply wants to call the update function once
+		return Api42._onlineUsers
 
 	@staticmethod
 	def lock():
@@ -48,8 +74,10 @@ class Api42:
 		Api42._onlineUsersLock.release()
 
 	@staticmethod
-	def run():
-		threading.Thread(target=Api42.updateOnlineUsers).start()
+	def runActiveUserUpdater(timeBetweenUpdates=120):
+		Api42._activeUpdater = True
+		Api42._timeBetweenUpdates = timeBetweenUpdates
+		threading.Thread(target=Api42.updateOnlineUsers, args=[True]).start()
 
 	#	Api Functionality begins here
 	#	-----------------------------------------------------------------------------------------
@@ -149,8 +177,15 @@ class Api42:
 
 	@staticmethod
 	def onlineStudents():
-		data = Api42.makeRequest('/v2/campus/7/locations?filter[active]=true')
-		return [ { 'login': i['user']['login'], 'id': i['user']['id'], 'host': i['host'] } for i in data]
+		#	If the active updater is not running, then update the internal list
+		if not Api42._activeUpdater:
+			Api42.updateOnlineUsers()
+		#	Lock, then deepcopy the internal list
+		Api42.lock()
+		onlineUsersCopy = copy.deepcopy(Api42._onlineUsers)
+		Api42.unlock()
+		return onlineUsersCopy
+
 
 	@staticmethod
 	def onlineStudentsAtCampus(campusID):
@@ -169,12 +204,12 @@ class Api42:
 	def allProjects():
 		return Api42.makeRequest('/v2/cursus/1/projects')
 	
-	#For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff
+	#	For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff
 	@staticmethod
 	def	openProjectsForUser(userID):
 		data = Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users')
 		return ([i['project']['name'] for i in data if i['status'] == 'in_progress'])
 
-data = Api42.onlineStudents()
-for i in data:
-	print(i['login'])
+
+#	Method call to begin running the threaded function that updates all active online users
+Api42.runActiveUserUpdater()
