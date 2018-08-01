@@ -12,6 +12,7 @@ class Api42:
 	_currentMilliTime	= lambda: int(round(time.time() * 1000))
 	_dataList			= lambda data: [data] if type(data) is dict else data
 	_chainToList		= lambda chainData: [d for d in chainData]
+
 	_onlineUsers		= []
 	_onlineUsersLock	= threading.Lock()
 
