@@ -1,13 +1,12 @@
 from datetime import datetime
-from models import db
-
+from api.db import db
 
 class Mentor(db.Model):
-    __tablename__ = 'Mentors'
+    __tablename__ = 'mentors'
 
-    id = db.Column(db.Integer, primary_key=True, unique=True)
-    id_project = db.Column(db.Integer, db.ForeignKey('Projects.id'), nullable=False)
-    id_user = db.Column(db.Integer, db.ForeignKey('Users.id'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    id_project = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
+    id_user = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     finalmark = db.Column(db.Integer, nullable=False)
     totalappointments = db.Column(db.Integer, nullable=False, default=0)
     weeklyappointments = db.Column(db.Integer, nullable=False, default=0)

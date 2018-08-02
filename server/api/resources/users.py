@@ -1,6 +1,6 @@
 from flask_restful import Resource
-from models import User, Project
-from resources import api42Requester
+from api.models import User, Project
+from . import api42Requester, globalOnlineUsers
 
 
 #   /api/users
@@ -14,7 +14,7 @@ class apiUsers(Resource):
 class apiUser(Resource):
 	def get(self, userId):
 		query = User.query.filter_by(id=userId).serialize
-		data = apiRequester.makeRequest("/")	
+		data = api42Requester.makeRequest("/")	
 		return [d['af'] for d in data], 200
 
 
