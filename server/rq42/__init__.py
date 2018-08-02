@@ -1,5 +1,4 @@
 from .api42 import Api42
 
-#	Method call to begin running the threaded function
-#	that updates all active online users
+#   Importing Api42 runs the active updater automatically
 Api42.runActiveUserUpdater()
