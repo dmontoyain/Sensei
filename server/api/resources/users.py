@@ -1,13 +1,39 @@
 from flask_restful import Resource
 from api.models import User, Project
-from . import api42Requester, globalOnlineUsers
-
+from rq42 import Api42
+from flask import request
 
 #   /api/users
 class apiUsers(Resource):
+    #   Returns all users in the database
     def get(self):
         query = User.query.all()
         return [u.serialize for u in query], 200
+
+    #   Creates a new user
+    def post(self):
+        pass
+        # json_data = request.get_json(force=True)
+        # if not json_data:
+        #     return {'message': 'No input data provided'}, 400
+        # # Validate and deserialize input
+        # data, errors = comment_schema.load(json_data)
+        # if errors:
+        #     return {"status": "error", "data": errors}, 422
+        # category_id = Category.query.filter_by(id=data['category_id']).first()
+        # if not category_id:
+        #     return {'status': 'error', 'message': 'comment category not found'}, 400
+        # comment = Comment(
+        #     category_id=data['category_id'], 
+        #     comment=data['comment']
+        #     )
+        # db.session.add(comment)
+        # db.session.commit()
+
+        # result = comment_schema.dump(comment).data
+
+        # return {'status': "success", 'data': result}, 201
+
 
 
 #	/api/user/:userid
