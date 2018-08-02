@@ -104,4 +104,4 @@ venv.bak/
 .mypy_cache/
 
 #config files
-server/resources/api42config.py
+server/api/resources/api42config.py
