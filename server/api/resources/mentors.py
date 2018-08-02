@@ -21,7 +21,7 @@ class apiMentor(Resource):
 
     #   Updates any mentor data for the specified project
     def put(self, mentorId):
-        #update
+        #   update something
         return Mentor(mentorId), 202
 
 
@@ -37,7 +37,7 @@ class apiMentorsProject(Resource):
         globalOnlineUsers.unlock()
         return result, 200
 
-    #   Creates a new mentor for the specified project 
+    #   Creates a new mentor for the specified project
     def post(self, projectId):
         return Mentor, 201
 
