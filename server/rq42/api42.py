@@ -19,6 +19,7 @@ class Api42:
 	#	Online User handling
 	_onlineUsers		= []
 	_onlineUsersLock	= threading.Lock()
+	_requestLock		= threading.Lock()
 	_timeBetweenUpdates = 0
 	_activeUpdater		= False
 
@@ -138,6 +139,7 @@ class Api42:
 	def _request(method, url, data, headers):
 
 		#	Pausing for the api request limit (500 milliseconds)
+		Api42._requestLock.acquire()
 		while (Api42._currentMilliTime() - Api42._apiLimit) < Api42._lastCall:
 			pass
 		Api42._lastCall = Api42._currentMilliTime()
@@ -146,6 +148,7 @@ class Api42:
 		print(tc.IYELLOW + "Requesting data from... " + tc.ICYAN + url + tc.ENDCOLOR + ' ', end='')
 		sys.stdout.flush()
 		rsp = requests.request(method, url=url, data=data, headers=headers)
+		Api42._requestLock.release()
 		Api42._totalRequests += 1
 
 		#	Error handling
