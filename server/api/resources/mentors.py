@@ -1,6 +1,6 @@
 from flask_restful import Resource
-from models import User, Project, Mentor, Appointment
-from resources import globalOnlineUsers
+from api.models import User, Project, Mentor, Appointment
+from api.resources import globalOnlineUsers
 from flask import jsonify
 
 #   api/mentors/

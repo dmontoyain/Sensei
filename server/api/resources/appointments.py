@@ -1,6 +1,5 @@
 from flask_restful import Resource
-from models import User, Project, Mentor, Appointment
-
+from api.models import User, Project, Mentor, Appointment
 
 #   /api/appointments
 class apiAppointments(Resource):

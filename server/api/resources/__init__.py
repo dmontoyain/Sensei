@@ -1,5 +1,5 @@
 import threading, time
-from config.settings import apikeys
+from api.config import apikeys
 from .api42 import *
 
 api42Requester = Api42(apikeys.uid, apikeys.secret)

@@ -3,7 +3,7 @@ import sys
 import time
 import requests
 import itertools
-from resources.terminalcolors import *
+from .terminalcolors import *
 
 class Api42:
 
