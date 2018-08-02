@@ -1,5 +1,6 @@
 #YAY
 
 if __name__ == '__main__':
-	import rq42
-	import api
+	from rq42.api42 import Api42
+	from api.app import app
+	app.run()	#no DEBUGGEREEEEEE

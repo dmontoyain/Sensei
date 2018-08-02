@@ -5,6 +5,7 @@ import requests
 import itertools
 import threading
 import gc
+import copy
 from . import api42config
 import terminalcolors as tc
 
@@ -78,6 +79,8 @@ class Api42:
 
 	@staticmethod
 	def runActiveUserUpdater(timeBetweenUpdates=120):
+		if Api42._activeUpdater == True:
+			return
 		Api42._activeUpdater = True
 		Api42._timeBetweenUpdates = timeBetweenUpdates
 		threading.Thread(target=Api42.updateOnlineUsers, args=[True]).start()
@@ -200,14 +203,20 @@ class Api42:
 	@staticmethod
 	def projectsForUserInFinalMarkRange(userID, minScore, maxScore):
 		data = Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=' + str(minScore) + ',' + str(maxScore))
-		return [i['project']['name'] for i in data]
+		return [d['project']['name'] for d in data]
 
 	@staticmethod
 	def allProjects():
-		return Api42.makeRequest('/v2/cursus/1/projects')
+		projects = Api42.makeRequest('/v2/cursus/1/projects')
+		if projects is None:
+			return None
+		return [{'project_id42': p['id'], \
+				'name': p['name'], \
+				'slug': p['slug'], \
+				'tier': p['tier']} for p in projects]
 	
 	#	For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff
 	@staticmethod
 	def	openProjectsForUser(userID):
 		data = Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users')
-		return ([i['project']['name'] for i in data if i['status'] == 'in_progress'])
+		return ([d['project']['name'] for d in data if d['status'] == 'in_progress'])

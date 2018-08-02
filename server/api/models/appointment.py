@@ -1,5 +1,5 @@
 from datetime import datetime
-from api.db import db
+from api.app import db, ma
 
 class Appointment(db.Model):
     __tablename__ = 'appointments'
@@ -15,3 +15,7 @@ class Appointment(db.Model):
         self.id_user = userid
         self.start_time = starttime
         self.feedback = feedback
+
+class AppointmentSchema(ma.ModelSchema):
+    class Meta:
+        model = Appointment

@@ -1,5 +1,5 @@
 from datetime import datetime
-from api.db import db
+from api.app import db, ma
 
 class Mentor(db.Model):
     __tablename__ = 'mentors'
@@ -22,7 +22,12 @@ class Mentor(db.Model):
     #user = db.relationship("User", foreign_keys=[id_user])
     #appointments = db.relationship('Appointment', backref='mentor', lazy=True)
 
-    @property
+class MentorSchema(ma.ModelSchema):
+    class Meta:
+        model = Mentor
+
+'''
+@property
     def serialize(self):
         return {
             'id': self.id,
@@ -39,3 +44,4 @@ class Mentor(db.Model):
             'active': self.active,
             'started_at': self.started_at
         }
+'''

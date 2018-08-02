@@ -1,4 +1,4 @@
-from .user import User
-from .project import Project
-from .mentor import Mentor
-from .appointment import Appointment
+from .mentor import Mentor, MentorSchema
+from .project import Project, ProjectSchema
+from .user import User, UserSchema
+from .appointment import Appointment, AppointmentSchema

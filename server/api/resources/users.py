@@ -40,7 +40,7 @@ class apiUsers(Resource):
 class apiUser(Resource):
 	def get(self, userId):
 		query = User.query.filter_by(id=userId).serialize
-		data = api42Requester.makeRequest("/")	
+		data = Api42.makeRequest("/")	
 		return [d['af'] for d in data], 200
 
 
@@ -54,8 +54,6 @@ class apiUserProjects(Resource):
 class apiUsersOnline(Resource):
     def get(self):
         allUsers = User.query.all().serialize
-        globalOnlineUsers.lock()
-        onlineUsers = globalOnlineUsers._onlineUsersList
+        onlineUsers = Api42._onlineUsers
         result = [u.serialize for u in allUsers for x in onlineUsers if u.id_user42 == x['id']]
-        globalOnlineUsers.unlock()
         return result, 200
