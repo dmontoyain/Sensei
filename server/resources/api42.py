@@ -6,26 +6,29 @@ import itertools
 import threading
 import api42config
 import gc
-import copy
 from terminalcolors import *
 
 class Api42:
 
+	#	Lambda helper funcs
 	_currentMilliTime	= lambda: int(round(time.time() * 1000))
 	_dataList			= lambda data: [data] if type(data) is dict else data
 	_chainToList		= lambda chainData: [d for d in chainData]
 
+	#	Online User handling
 	_onlineUsers		= []
 	_onlineUsersLock	= threading.Lock()
 	_timeBetweenUpdates = 0
 	_activeUpdater		= False
 
+	#	Api 
 	_token				= None
 	_tokenExpires		= 0
 	_apiLimit			= int(0.5 * 1000)
 	_lastCall			= 0
 	_totalRequests		= 0
 
+	#	Api constants
 	_endpoint			= 'https://api.intra.42.fr'
 	_headers			= { 'Authorization': 'Bearer',
 							'content-type': 'application/x-www-form-urlencoded' }
@@ -186,7 +189,6 @@ class Api42:
 		Api42.unlock()
 		return onlineUsersCopy
 
-
 	@staticmethod
 	def onlineStudentsAtCampus(campusID):
 		return Api42.makeRequest('/v2/campus/' + str(campusID) + '/locations?filter[active]=true')
@@ -212,4 +214,4 @@ class Api42:
 
 
 #	Method call to begin running the threaded function that updates all active online users
-Api42.runActiveUserUpdater()
+Api42.runActiveUserUpdater()	
