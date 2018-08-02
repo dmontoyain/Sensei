@@ -4,9 +4,9 @@ import time
 import requests
 import itertools
 import threading
-import api42config
 import gc
-from terminalcolors import *
+from . import api42config
+import terminalcolors as tc
 
 class Api42:
 
@@ -140,18 +140,18 @@ class Api42:
 		Api42._lastCall = Api42._currentMilliTime()
 
 		#	Making the request - only handles get and post requests for now
-		print(IYELLOW + "Requesting data from... " + ICYAN + url + ENDCOLOR + ' ', end='')
+		print(tc.IYELLOW + "Requesting data from... " + tc.ICYAN + url + tc.ENDCOLOR + ' ', end='')
 		sys.stdout.flush()
 		rsp = requests.request(method, url=url, data=data, headers=headers)
 		Api42._totalRequests += 1
 
 		#	Error handling
 		if (rsp is None) or rsp.status_code != 200:
-			print(BRED + "...Failed!" + ENDCOLOR)
+			print(tc.BRED + "...Failed!" + tc.ENDCOLOR)
 			return None, None
 
 		#	Returning the response object AND a list of data
-		print(BGREEN + "...Success!" + ENDCOLOR)
+		print(tc.BGREEN + "...Success!" + tc.ENDCOLOR)
 		return rsp, Api42._dataList(rsp.json())
 
 
@@ -160,17 +160,17 @@ class Api42:
 
 		#	Check to see if token needs to be updated
 		if Api42._currentMilliTime() >= Api42._tokenExpires:
-			print(IPURPLE + "Token needs refreshing..." + ENDCOLOR)
+			print(tc.IPURPLE + "Token needs refreshing..." + tc.ENDCOLOR)
 			tokenData = Api42.post('/oauth/token', Api42._authData, None)
 			if tokenData is None:
-				print(IRED + "Failed to refresh the 42 api token" + ENDCOLOR)
+				print(tc.IRED + "Failed to refresh the 42 api token" + tc.ENDCOLOR)
 				return False
 
 			#	Update token, expiry time, and authorization header
 			Api42._token = tokenData[0]['access_token']
 			Api42._tokenExpires = (tokenData[0]['expires_in'] * 1000) + Api42._currentMilliTime()
 			Api42._headers['Authorization'] = 'Bearer ' + Api42._token
-			print(IGREEN + "Token Updated!" + ENDCOLOR)
+			print(tc.IGREEN + "Token Updated!" + tc.ENDCOLOR)
 			return True
 		return False
 

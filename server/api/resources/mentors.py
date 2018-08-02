@@ -1,14 +1,14 @@
 from flask_restful import Resource
 from api.models import User, Project, Mentor, Appointment
-from api.resources import globalOnlineUsers
+from rq42 import Api42
 from flask import jsonify
 
 #   api/mentors/
 class apiMentors(Resource):
     def get(self):
-        globalOnlineUsers.lock()
-        ret = str([mentor for mentor in globalOnlineUsers._onlineUsersList])
-        globalOnlineUsers.unlock()
+        Api42.lock()
+        ret = str([mentor for mentor in Api42.onlineStudents()])
+        Api42.unlock()
         return ret, 200
 
 
@@ -31,10 +31,10 @@ class apiMentorsProject(Resource):
     #   Gets all mentors for the specified project
     def get(self, projectId):
         mentors = Mentor.query.filter_by(id_project=projectId)
-        globalOnlineUsers.lock()
-        onlineUsers = globalOnlineUsers._onlineUsersList
+        Api42.lock()
+        onlineUsers = Api42.onlineStudents()
         result = [mentor.serialize for mentor in mentors for x in onlineUsers if mentor.user.id_user42 == x['id']]
-        globalOnlineUsers.unlock()
+        Api42.unlock()
         return result, 200
 
     #   Creates a new mentor for the specified project
