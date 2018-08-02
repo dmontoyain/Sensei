@@ -211,7 +211,3 @@ class Api42:
 	def	openProjectsForUser(userID):
 		data = Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users')
 		return ([i['project']['name'] for i in data if i['status'] == 'in_progress'])
-
-
-#	Method call to begin running the threaded function that updates all active online users
-Api42.runActiveUserUpdater()	
