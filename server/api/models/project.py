@@ -21,17 +21,6 @@ class Project(db.Model):
         self.tier = tier
         self.active = active
 
-    @property
-    def serialize(self):
-        return {
-            "id": self.id,
-            "project_id42": self.project_id42,
-            "name": self.name,
-            "slug": self.slug,
-            "tier": self.tier,
-            "active" : self.active
-        }
-
 class ProjectSchema(ma.ModelSchema):
     class Meta:
         model = Project
