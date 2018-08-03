@@ -5,7 +5,7 @@ from rq42 import Api42
 from api.app import db
 
 #   queries sensei database for user specified by userId
-def queryUser(userId):
+def queryUser(userId=None, login=None):
     query = User.query.filter_by(id_user42=userId).first()
     print("query sqlalchemy")
     if (query is None):
@@ -68,7 +68,7 @@ class apiUser(Resource):
         #   check if user was added
         user, errors = queryUser(userId)
         if (errors):
-            return internalServiceError("Unable to return saved error")
+            return internalServiceError(errors)
 
         #   return new user
         return user, 201
