@@ -8,7 +8,7 @@ def init_routes(api):
 
     #   users endpoints
     api.add_resource(apiUsers, '/users')
-    api.add_resource(apiUser, '/user/<int:userID>')
+    api.add_resource(apiUser, '/user/<int:userId>')
     api.add_resource(apiUserProjects, '/user/<int:userId>/projects')
     api.add_resource(apiUsersOnline, '/users/online')
 

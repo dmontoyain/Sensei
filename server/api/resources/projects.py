@@ -8,14 +8,14 @@ from api.app import db
 class apiProjects(Resource):
     def get(self):
         projects = Project.query.all()
-        return [project.serialize for project in projects], 200
+        return [project for project in projects], 200
 
     def post(self):
         # add filter to find if project already exists
         data = Api42.allProjects()
         if data is None:
             return {"message": "all projects was empty"}, 400
-        
+
         for d in data:
             newProject = Project(d['project_id42'], d['name'], d['slug'], d['tier'])
             db.session.add(newProject)
