@@ -213,11 +213,20 @@ class Api42:
 		projects = Api42.makeRequest('/v2/cursus/1/projects')
 		if projects is None:
 			return None
-		return [{'project_id42': p['id'], \
+		return [{'id_project42': p['id'], \
 				'name': p['name'], \
 				'slug': p['slug'], \
 				'tier': p['tier']} for p in projects]
 	
+	@staticmethod
+	def userProjects(userId):
+		userprojects = Api42.makeRequest('/v2/users/' + str(userId) + '/projects_users?filter[cursus]=1')
+		if userprojects is None:
+			return None
+		return [ {'id_project42': p['project']['id'],
+				'id_user42': p['user']['id'],
+				'finalmark': p['final_mark'] } for p in userprojects]
+
 	#	For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff
 	@staticmethod
 	def	openProjectsForUser(userID):
