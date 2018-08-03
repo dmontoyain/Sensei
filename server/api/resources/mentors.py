@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from api.models import User, Project, Mentor, Appointment
+from api.models import User, Project, Mentor, Appointment, MentorSchema
 from rq42 import Api42
 from flask import jsonify
 
@@ -30,11 +30,11 @@ class apiMentorsProject(Resource):
 
     #   Gets all mentors for the specified project
     def get(self, projectId):
-        mentors = Mentor.query.filter_by(id_project=projectId)
-        Api42.lock()
+        query = Mentor.query.filter_by(id_project=projectId)
+        mentor_schema = MentorSchema()
+        mentors = mentor_schema.dump(query).data
         onlineUsers = Api42.onlineStudents()
-        result = [mentor.serialize for mentor in mentors for x in onlineUsers if mentor.user.id_user42 == x['id']]
-        Api42.unlock()
+        result = [mentor for mentor in mentors for x in onlineUsers if mentor.user.id_user42 == x['id']]
         return result, 200
 
     #   Creates a new mentor for the specified project
@@ -53,6 +53,5 @@ class apiMentorsUser(Resource):
 
 #   api/mentors/project/:projectId/user/:userId
 class apiMentorNew(Resource):
-
     def post(self, projectId, userId):
         return Mentor, 201

@@ -1,6 +1,5 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from .config import configure, Database
-from flask import Blueprint
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -26,5 +25,5 @@ from .routes import init_routes
 init_routes(api)
 
 #	When you need to create a local postgres database for testing
-# with app.app_context():
-# 	db.create_all()
+#with app.app_context():
+    #db.create_all()

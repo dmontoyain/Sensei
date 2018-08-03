@@ -17,7 +17,7 @@ class apiProjects(Resource):
             return {"message": "all projects was empty"}, 400
 
         for d in data:
-            newProject = Project(d['project_id42'], d['name'], d['slug'], d['tier'])
+            newProject = Project(d['id_project42'], d['name'], d['slug'], d['tier'])
             db.session.add(newProject)
         db.session.commit()
         # data = json.loads(json.dumps(data))

@@ -1,12 +1,15 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from api.models import User, UserSchema, Project
+from api.models import Mentor, MentorSchema, User, UserSchema, Project
 from rq42 import Api42
 from api.app import db
 
 #   queries sensei database for user specified by userId
-def queryUser(userId):
-    query = User.query.filter_by(id_user42=userId).first()
+def queryUser(userId=None, login=None):
+    if login is None:
+        query = User.query.filter_by(id_user42=userId).first()
+    else:
+       query = User.query.filter_by(login=login).first() 
     print("query sqlalchemy")
     if (query is None):
         return None, "No User Found for userid42"
@@ -34,6 +37,31 @@ class apiUsers(Resource):
         query = User.query.all()
         return [u.serialize for u in query], 200
 
+import json
+#   /api/user/:userId/init
+class ApiUserInit(Resource):
+    def post(self, userId):
+        data = Api42.userProjects(userId)
+        if data is None:
+            return formatError('Error', 'No projects found for user')
+        print('adding to session..')
+        print(data)
+        for d in data:
+            mentor_schema = MentorSchema()
+            print(d)
+            query = Project.query.filter_by(id_project42 = d['id_project42']).first()
+            if (query is not None):
+                newMentor = Mentor(d['id_project42'], d['id_user42'], d['finalmark'])
+                db.session.add(newMentor)          
+            #newMentor, errors = mentor_schema.load(d)
+            #print(newMentor)
+            #if errors:
+                #print(errors)
+                #return internalServiceError()
+        print('added to session, going to commit')
+        db.session.commit()
+        return {"status":"user initialization successful"}, 201
+
 #   /api/user/:userid
 class apiUser(Resource):
 
@@ -47,11 +75,16 @@ class apiUser(Resource):
     def post(self, userId):
         #   grab the incomming data
         data = request.get_json()
+        print(type(data))
+        print(data)
         if not data:
             return badRequestError()
 
         #   check if the user already exists in the database
-        user, errors = queryUser(userId)
+        user, errors = queryUser(userId=data.get("id_user42"))
+        if user is not None:
+            return resourceExistsError()
+        user, errors = queryUser(login=data.get("login"))
         if user is not None:
             return resourceExistsError()
 
@@ -60,7 +93,7 @@ class apiUser(Resource):
         newUser, errors = user_schema.load(data)
         if errors:
             return internalServiceError(errors)
-
+        
         #   add new user to the database
         db.session.add(newUser)
         db.session.commit()

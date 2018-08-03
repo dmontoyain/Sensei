@@ -7,7 +7,7 @@ class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    id_user42 = db.Column(db.Integer, nullable=False)
+    id_user42 = db.Column(db.Integer, unique=True, nullable=False)
     login = db.Column(db.String(45), nullable=False)
 
     #   relationship with 'Mentors' table, Mentor Model Class
@@ -23,3 +23,12 @@ class User(db.Model):
 class UserSchema(ma.ModelSchema):
     class Meta:
         model = User
+
+'''
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'id_user42': self.id_user42,
+            'login': self.login}
+'''
