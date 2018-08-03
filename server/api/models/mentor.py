@@ -25,23 +25,3 @@ class Mentor(db.Model):
 class MentorSchema(ma.ModelSchema):
     class Meta:
         model = Mentor
-
-'''
-@property
-    def serialize(self):
-        return {
-            'id': self.id,
-            'id_project': self.id_project,
-            'id_user': self.id_user,
-            'login': self.user.login,
-            'finalmark': self.finalmark,
-            'totalappointments': self.totalappointments,
-            'weeklyappointments': self.weeklyappointments,
-            'dailyappointments': self.dailyappointments,
-            'slot_start': self.slot_start,
-            'slot_end': self.slot_end,
-            'available': self.available,
-            'active': self.active,
-            'started_at': self.started_at
-        }
-'''

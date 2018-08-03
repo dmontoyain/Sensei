@@ -13,11 +13,19 @@ def queryUser(userId):
     user_schema = UserSchema()
     return user_schema.dump(query)
 
-def internalServiceError(errorMessage=""):
-    return {"status":"Internal API Service Error. " + errorMessage}, 500
+def formatError(err, errorMessage):
+    if errorMessage is not '':
+        return '{}. {}'.format(err, errorMessage)
+    return err
 
-def badRequestError(errorMessage=""):
-    return {"status":"Bad Request for API Service. " + errorMessage}, 400
+def internalServiceError(errorMessage=''):
+    return {'error': formatError('Internal API Service Error', errorMessage)}, 500
+
+def badRequestError(errorMessage=''):
+    return {'error': formatError('Bad Request for API Service', errorMessage)}, 400
+
+def resourceExistsError(errorMessage=''):
+    return {'error': formatError('Resource already exists', errorMessage)}, 418
 
 #   /api/users
 class apiUsers(Resource):
@@ -26,10 +34,9 @@ class apiUsers(Resource):
         query = User.query.all()
         return [u.serialize for u in query], 200
 
-#	/api/user/:userid
+#   /api/user/:userid
 class apiUser(Resource):
 
-    #   ON GET
     def get(self, userId):
         user, errors = queryUser(userId)
         print(errors)
@@ -37,28 +44,33 @@ class apiUser(Resource):
             return {"status":"error", "data":errors}, 422
         return jsonify(user), 200
     
-    #   ON POST
     def post(self, userId):
+        #   grab the incomming data
         data = request.get_json()
         if not data:
             return badRequestError()
+
+        #   check if the user already exists in the database
         user, errors = queryUser(userId)
         if user is not None:
-            return {"status":"User already created"}, 400
-        print("here111")
+            return resourceExistsError()
+
+        #   load and validate the given data
         user_schema = UserSchema()
         newUser, errors = user_schema.load(data)
-        print("finished loadhere")
         if errors:
-            return {"status":"error", "data":errors}, 422
-        #User(userId, request.form['login'])
+            return internalServiceError(errors)
+
+        #   add new user to the database
         db.session.add(newUser)
         db.session.commit()
-        print("saved")
+
+        #   check if user was added
         user, errors = queryUser(userId)
-        print (user)
         if (errors):
             return internalServiceError("Unable to return saved error")
+
+        #   return new user
         return user, 201
 
 
