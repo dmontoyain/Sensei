@@ -1,6 +1,5 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from .config import configure, Database
-from flask import Blueprint
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow

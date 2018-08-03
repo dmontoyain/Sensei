@@ -1,7 +1,23 @@
+from flask import request, jsonify
 from flask_restful import Resource
-from api.models import User, Project
+from api.models import User, UserSchema, Project
 from rq42 import Api42
-from flask import request
+from api.app import db
+
+#   queries sensei database for user specified by userId
+def queryUser(userId):
+    query = User.query.filter_by(id_user42=userId).first()
+    print("query sqlalchemy")
+    if (query is None):
+        return None, "No User Found for userid42"
+    user_schema = UserSchema()
+    return user_schema.dump(query)
+
+def internalServiceError(errorMessage=""):
+    return {"status":"Internal API Service Error. " + errorMessage}, 500
+
+def badRequestError(errorMessage=""):
+    return {"status":"Bad Request for API Service. " + errorMessage}, 400
 
 #   /api/users
 class apiUsers(Resource):
@@ -10,38 +26,40 @@ class apiUsers(Resource):
         query = User.query.all()
         return [u.serialize for u in query], 200
 
-    #   Creates a new user
-    def post(self):
-        pass
-        # json_data = request.get_json(force=True)
-        # if not json_data:
-        #     return {'message': 'No input data provided'}, 400
-        # # Validate and deserialize input
-        # data, errors = comment_schema.load(json_data)
-        # if errors:
-        #     return {"status": "error", "data": errors}, 422
-        # category_id = Category.query.filter_by(id=data['category_id']).first()
-        # if not category_id:
-        #     return {'status': 'error', 'message': 'comment category not found'}, 400
-        # comment = Comment(
-        #     category_id=data['category_id'], 
-        #     comment=data['comment']
-        #     )
-        # db.session.add(comment)
-        # db.session.commit()
-
-        # result = comment_schema.dump(comment).data
-
-        # return {'status': "success", 'data': result}, 201
-
-
-
 #	/api/user/:userid
 class apiUser(Resource):
-	def get(self, userId):
-		query = User.query.filter_by(id=userId).serialize
-		data = Api42.makeRequest("/")	
-		return [d['af'] for d in data], 200
+
+    #   ON GET
+    def get(self, userId):
+        user, errors = queryUser(userId)
+        print(errors)
+        if errors:
+            return {"status":"error", "data":errors}, 422
+        return jsonify(user), 200
+    
+    #   ON POST
+    def post(self, userId):
+        data = request.get_json()
+        if not data:
+            return badRequestError()
+        user, errors = queryUser(userId)
+        if user is not None:
+            return {"status":"User already created"}, 400
+        print("here111")
+        user_schema = UserSchema()
+        newUser, errors = user_schema.load(data)
+        print("finished loadhere")
+        if errors:
+            return {"status":"error", "data":errors}, 422
+        #User(userId, request.form['login'])
+        db.session.add(newUser)
+        db.session.commit()
+        print("saved")
+        user, errors = queryUser(userId)
+        print (user)
+        if (errors):
+            return internalServiceError("Unable to return saved error")
+        return user, 201
 
 
 #   /api/user/:userid/projects

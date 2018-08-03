@@ -16,8 +16,8 @@ class User(db.Model):
     #   relationship with 'Appointments' table, Appointment Model Class
     #appointments = db.relationship('Appointment', backref='user', lazy=True)
 
-    def __init__(self, id42, login):
-        self.id_user42 = id42
+    def __init__(self, id_user42, login):
+        self.id_user42 = id_user42
         self.login = login
     
 class UserSchema(ma.ModelSchema):
