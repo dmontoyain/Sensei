@@ -13,23 +13,19 @@ def queryUser(userId):
     user_schema = UserSchema()
     return user_schema.dump(query)
 
-def internalServiceError(errorMessage=''):
-    err = 'Internal API Service Error'
+def formatError(err, errorMessage):
     if errorMessage is not '':
-        err = '{}. {}'.format(err, errorMessage)
-    return {'error': err}, 500
+        return '{}. {}'.format(err, errorMessage)
+    return err
 
-def badRequestError(errorMessage=""):
-    err = "Bad Request for API Service"
-    if errorMessage is not "":
-        err = err + str(". ") + errorMessage
-    return {"error": err}, 400
+def internalServiceError(errorMessage=''):
+    return {'error': formatError('Internal API Service Error', errorMessage)}, 500
 
-def resourceExistsError(errorMessage=""):
-    err = "Resource already exists"
-    if errorMessage is not "":
-        err = err + str(". ") + errorMessage
-    return {"error": err}, 418
+def badRequestError(errorMessage=''):
+    return {'error': formatError('Bad Request for API Service', errorMessage)}, 400
+
+def resourceExistsError(errorMessage=''):
+    return {'error': formatError('Resource already exists', errorMessage)}, 418
 
 #   /api/users
 class apiUsers(Resource):
@@ -49,23 +45,32 @@ class apiUser(Resource):
         return jsonify(user), 200
     
     def post(self, userId):
-        #   
+        #   grab the incomming data
         data = request.get_json()
         if not data:
             return badRequestError()
+
+        #   check if the user already exists in the database
         user, errors = queryUser(userId)
         if user is not None:
             return resourceExistsError()
+
+        #   load and validate the given data
         user_schema = UserSchema()
         newUser, errors = user_schema.load(data)
         if errors:
             return internalServiceError(errors)
+
+        #   add new user to the database
         db.session.add(newUser)
         db.session.commit()
-        print("Added to database")
+
+        #   check if user was added
         user, errors = queryUser(userId)
         if (errors):
             return internalServiceError("Unable to return saved error")
+
+        #   return new user
         return user, 201
 
 
