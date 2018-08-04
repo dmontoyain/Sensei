@@ -16,19 +16,22 @@ def queryUser(userId=None, login=None):
     user_schema = UserSchema()
     return user_schema.dump(query)
 
-def formatError(err, errorMessage):
+def formatError(err, errorMessage, statusCode):
     if errorMessage is not '':
-        return '{}. {}'.format(err, errorMessage)
-    return err
+        err = '{}. {}'.format(err, errorMessage)
+    return {'status': 'error', 'data': err}, statusCode
 
 def internalServiceError(errorMessage=''):
-    return {'error': formatError('Internal API Service Error', errorMessage)}, 500
+    return formatError('Internal API Service Error', errorMessage, 500)
 
 def badRequestError(errorMessage=''):
-    return {'error': formatError('Bad Request for API Service', errorMessage)}, 400
+    return formatError('Bad Request for API Service', errorMessage, 400)
 
 def resourceExistsError(errorMessage=''):
-    return {'error': formatError('Resource already exists', errorMessage)}, 418
+    return formatError('Resource already exists', errorMessage, 418)
+
+def postSuccess(message=''):
+    return {'status': 'success', 'data': message}, 201
 
 #   /api/users
 class apiUsers(Resource):
@@ -37,19 +40,56 @@ class apiUsers(Resource):
         query = User.query.all()
         return [u.serialize for u in query], 200
 
-#   /api/user/:userId/init
-class ApiUserInit(Resource):
+#   /api/user/:userId/Update
+class apiUserUpdate(Resource):
+    # def post(self, userId):
+        # data = Api42.userProjects(userId)
+        # if data is None:
+        #    return formatError('Error', 'No projects found for user')
+        # for d in data:
+        #    query = Project.query.filter_by(id_project42 = d.id_project42).first()
+        #    if query is not None:
+        # db.session.add(d)
+        # print('Added mentors to session...going to commit')
+        # db.session.commit()
+        # return {"status":"user initialization successful"}, 201
+
     def post(self, userId):
-        data = Api42.userProjects(userId)
-        if data is None:
-            return formatError('Error', 'No projects found for user')
-        for d in data:
-            query = Project.query.filter_by(id_project42 = d.id_project42).first()
-            if query is not None:
-                db.session.add(d)
-        print('Added mentors to session...going to commit')
-        db.session.commit()
-        return {"status":"user initialization successful"}, 201
+            data = Api42.userProjects(userId)
+            if data is None:
+                return internalServiceError('No projects found for user in 42 Database')
+            print('adding to session..')
+            failedProjectIds = []
+            projectsThatAlreadyExistInMentors = []
+            for d in data:
+                print(d)
+                #   Check that the project id exists in the projects database
+                query = Project.query.filter_by(id_project42=d['id_project42']).first()
+                if query is None:
+                    failedProjectIds.append(d['id_project42'])
+                    continue
+
+                #   Check that the project-user combination does not already exist in the mentors database
+                query = Mentor.query.filter_by(id_project42=d['id_project42'], id_user42=d['id_user42']).first()
+                if not query is None:
+                    projectsThatAlreadyExistInMentors.append(d['id_project42'])
+                    continue
+
+                #   Create a new mentor and add it to the database
+                mentor_schema = MentorSchema()
+                newMentor, error = mentor_schema.load(d)
+                if error:
+                    return badRequestError(error)
+                db.session.add(newMentor)
+            print('Initializing user ' + str(userId) + '. Committing to database')
+            db.session.commit()
+            print('these were the projects that do not exist in the projects database:')
+            for i in failedProjectIds:
+                print(i)
+            print('these were the projects that ALREADY exist for the user in the mentors database:')
+            for i in projectsThatAlreadyExistInMentors:
+                print(i)
+            return postSuccess('user initialization successful')
 
 #   /api/user/:userid
 class apiUser(Resource):

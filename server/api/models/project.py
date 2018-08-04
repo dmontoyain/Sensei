@@ -25,3 +25,4 @@ class Project(db.Model):
 class ProjectSchema(ma.ModelSchema):
     class Meta:
         model = Project
+        include_fk = True

@@ -11,7 +11,7 @@ def init_routes(api):
     api.add_resource(apiUser, '/user/<int:userId>')
     api.add_resource(apiUserProjects, '/user/<int:userId>/projects')
     api.add_resource(apiUsersOnline, '/users/online')
-    api.add_resource(ApiUserInit, '/user/<int:userId>/init')
+    api.add_resource(apiUserUpdate, '/user/<int:userId>/update')
 
     #   mentors endpoints
     api.add_resource(apiMentors, '/mentors')

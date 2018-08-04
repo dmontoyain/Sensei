@@ -22,12 +22,4 @@ class User(db.Model):
 class UserSchema(ma.ModelSchema):
     class Meta:
         model = User
-
-'''
-    @property
-    def serialize(self):
-        return {
-            'id': self.id,
-            'id_user42': self.id_user42,
-            'login': self.login}
-'''
+        include_fk = True

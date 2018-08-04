@@ -18,3 +18,4 @@ class Appointment(db.Model):
 class AppointmentSchema(ma.ModelSchema):
     class Meta:
         model = Appointment
+        include_fk = True

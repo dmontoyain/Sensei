@@ -224,7 +224,8 @@ class Api42:
 		userprojects = Api42.makeRequest('/v2/users/' + str(userId) + '/projects_users?filter[cursus]=1')
 		if userprojects is None:
 			return None
-		return [Mentor(p['project']['id'], p['user']['id'], p['final_mark']) for p in userprojects]
+		return [{'id_user42': p['user']['id'], 'id_project42': p['project']['id'], 'finalmark': p['final_mark'] if p['final_mark'] is not None else 0} for p in userprojects]
+		# return [Mentor(p['project']['id'], p['user']['id'], p['final_mark']) for p in userprojects]
 
 	#	For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff
 	@staticmethod
