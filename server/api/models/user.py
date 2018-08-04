@@ -1,5 +1,4 @@
 from flask_marshmallow import Marshmallow
-from marshmallow import Schema, fields, pre_load, validate
 from api.app import db, ma
 from datetime import datetime
 

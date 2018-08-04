@@ -18,7 +18,6 @@ class Mentor(db.Model):
     active = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.false())
     started_at = db.Column(db.DateTime, nullable=False, server_default=sa.func.now())
 
-    # def __init__(self, id_project=100, id_user=200, finalmark=0, totalappointments=0, weeklyappointments=0, dailyappointments=0, slot_start=datetime.utcnow, slot_end=datetime.utcnow, available=False, active=False, started_at=datetime.utcnow):
     def __init__(self, id_project42, id_user42, finalmark=0):
         self.id_project42 = id_project42
         self.id_user42 = id_user42

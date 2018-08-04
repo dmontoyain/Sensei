@@ -37,28 +37,17 @@ class apiUsers(Resource):
         query = User.query.all()
         return [u.serialize for u in query], 200
 
-import json
 #   /api/user/:userId/init
 class ApiUserInit(Resource):
     def post(self, userId):
         data = Api42.userProjects(userId)
         if data is None:
             return formatError('Error', 'No projects found for user')
-        print('adding to session..')
-        print(data)
         for d in data:
-            mentor_schema = MentorSchema()
-            print(d)
-            query = Project.query.filter_by(id_project42 = d['id_project42']).first()
-            if (query is not None):
-                newMentor = Mentor(d['id_project42'], d['id_user42'], d['finalmark'])
-                db.session.add(newMentor)          
-            #newMentor, errors = mentor_schema.load(d)
-            #print(newMentor)
-            #if errors:
-                #print(errors)
-                #return internalServiceError()
-        print('added to session, going to commit')
+            query = Project.query.filter_by(id_project42 = d.id_project42).first()
+            if query is not None:
+                db.session.add(d)
+        print('Added mentors to session...going to commit')
         db.session.commit()
         return {"status":"user initialization successful"}, 201
 
