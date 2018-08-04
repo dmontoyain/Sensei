@@ -42,18 +42,6 @@ class apiUsers(Resource):
 
 #   /api/user/:userId/Update
 class apiUserUpdate(Resource):
-    # def post(self, userId):
-        # data = Api42.userProjects(userId)
-        # if data is None:
-        #    return formatError('Error', 'No projects found for user')
-        # for d in data:
-        #    query = Project.query.filter_by(id_project42 = d.id_project42).first()
-        #    if query is not None:
-        # db.session.add(d)
-        # print('Added mentors to session...going to commit')
-        # db.session.commit()
-        # return {"status":"user initialization successful"}, 201
-
     def post(self, userId):
             data = Api42.userProjects(userId)
             if data is None:
