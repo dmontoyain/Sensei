@@ -185,7 +185,7 @@ class Api42:
 	#	-------------------------------------------------------------------------------------------
 
 	@staticmethod
-	def onlineStudents():
+	def onlineUsers():
 		#	If the active updater is not running, then update the internal list
 		if not Api42._activeUpdater:
 			Api42.updateOnlineUsers()
@@ -196,7 +196,7 @@ class Api42:
 		return onlineUsersCopy
 
 	@staticmethod
-	def onlineStudentsAtCampus(campusID):
+	def onlineUsersAtCampus(campusID):
 		return Api42.makeRequest('/v2/campus/' + str(campusID) + '/locations?filter[active]=true')
 
 	@staticmethod
@@ -224,7 +224,8 @@ class Api42:
 		userprojects = Api42.makeRequest('/v2/users/' + str(userId) + '/projects_users?filter[cursus]=1')
 		if userprojects is None:
 			return None
-		return [Mentor(p['project']['id'], p['user']['id'], p['final_mark']) for p in userprojects]
+		return [{'id_user42': p['user']['id'], 'id_project42': p['project']['id'], 'finalmark': p['final_mark'] if p['final_mark'] is not None else 0} for p in userprojects]
+		# return [Mentor(p['project']['id'], p['user']['id'], p['final_mark']) for p in userprojects]
 
 	#	For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff
 	@staticmethod

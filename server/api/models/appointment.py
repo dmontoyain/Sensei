@@ -1,5 +1,5 @@
-from datetime import datetime, timedelta
 from api.app import db, ma
+from datetime import datetime, timedelta
 
 class Appointment(db.Model):
     __tablename__ = 'appointments'
@@ -18,3 +18,7 @@ class Appointment(db.Model):
 class AppointmentSchema(ma.ModelSchema):
     class Meta:
         model = Appointment
+        include_fk = True
+
+appointment_schema = AppointmentSchema()
+appointments_schema = AppointmentSchema(many=True)

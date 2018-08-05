@@ -1,5 +1,13 @@
+import json
+from flask import request
 from flask_restful import Resource
-from api.models import User, Project, Mentor, Appointment
+from api.app import db
+from api.models import User, user_schema, users_schema
+from api.models import Mentor, mentor_schema, mentors_schema
+from api.models import Project, project_schema, projects_schema
+from api.models import Appointment, appointment_schema, appointments_schema
+from rq42 import Api42
+from response import Response as res
 
 #   /api/appointments
 class apiAppointments(Resource):

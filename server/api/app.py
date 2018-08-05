@@ -12,6 +12,8 @@ configure(app, 'test')
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+db.session.close()
+
 #	Import models
 
 api_bp = Blueprint('api', __name__)
