@@ -1,32 +1,33 @@
-from flask_restful import Resource
-from api.models import Project, ProjectSchema
-from rq42 import Api42
 import json
+from flask import request
+from flask_restful import Resource
 from api.app import db
+from api.models import User, user_schema, users_schema
+from api.models import Mentor, mentor_schema, mentors_schema
+from api.models import Project, project_schema, projects_schema
+from api.models import Appointment, appointment_schema, appointments_schema
+from rq42 import Api42
+from response import Response as res
+
 
 #   api/projects
 class apiProjects(Resource):
     def get(self):
-        projects = Project.query.all()
-        return [project for project in projects], 200
+        query = Project.query.all()
+        data = projects_schema.dump(query).data
+        return res.getSuccess('found projects', data)
 
     def post(self):
         # add filter to find if project already exists
         data = Api42.allProjects()
         if data is None:
-            return {"message": "all projects was empty"}, 400
+            return res.internalServiceError("unable to query the 42 API")
 
+        newProjects = []
         for d in data:
             newProject = Project(d['id_project42'], d['name'], d['slug'], d['tier'])
             db.session.add(newProject)
-        db.session.commit()
-        # data = json.loads(json.dumps(data))
-        # project_schema = ProjectSchema()
-        # print(data)
-        # output, err = project_schema.dump(data)
-        # if err:
-        #     return err, 422
-#        for proj in allProjects:
+            newProjects.append(newProject)
 
-#        Project.commit()
-        return {"status": "success"}, 201
+        db.session.commit()
+        return res.postSuccess('created new project', newProjects)

@@ -1,5 +1,5 @@
-from datetime import datetime
 from api.app import db, ma
+from datetime import datetime
 import sqlalchemy as sa
 
 class Project(db.Model):
@@ -26,3 +26,6 @@ class ProjectSchema(ma.ModelSchema):
     class Meta:
         model = Project
         include_fk = True
+
+project_schema = ProjectSchema()
+projects_schema = ProjectSchema(many=True)

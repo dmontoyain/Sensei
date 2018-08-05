@@ -185,7 +185,7 @@ class Api42:
 	#	-------------------------------------------------------------------------------------------
 
 	@staticmethod
-	def onlineStudents():
+	def onlineUsers():
 		#	If the active updater is not running, then update the internal list
 		if not Api42._activeUpdater:
 			Api42.updateOnlineUsers()
@@ -196,7 +196,7 @@ class Api42:
 		return onlineUsersCopy
 
 	@staticmethod
-	def onlineStudentsAtCampus(campusID):
+	def onlineUsersAtCampus(campusID):
 		return Api42.makeRequest('/v2/campus/' + str(campusID) + '/locations?filter[active]=true')
 
 	@staticmethod
