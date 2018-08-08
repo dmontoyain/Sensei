@@ -13,8 +13,9 @@ from response import Response as res
 #   api/projects
 class apiProjects(Resource):
     def get(self):
-        query = Project.query.all()
-        data = projects_schema.dump(query).data
+        data, error = Project.queryAll()
+        if error:
+            return res.internalServiceError(error)
         return res.getSuccess('found projects', data)
 
     def post(self):

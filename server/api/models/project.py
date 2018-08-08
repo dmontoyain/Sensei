@@ -22,6 +22,13 @@ class Project(db.Model):
         self.tier = tier
         self.active = active
 
+    @classmethod
+	def queryAll(cls):
+		query = cls.query.all()
+		if query is None:
+			return None, "No projects exist"
+		return projects_schema.dump(query).data, None
+
 class ProjectSchema(ma.ModelSchema):
     class Meta:
         model = Project

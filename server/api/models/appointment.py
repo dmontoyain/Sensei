@@ -14,6 +14,20 @@ class Appointment(db.Model):
         self.id_mentor = mentorid
         self.id_user = userid
         self.feedback = feedback
+    
+    @classmethod
+	def queryAll(cls):
+		query = cls.query.all()
+		if query is None:
+			return None, "No appointments exist"
+		return appointments_schema.dump(query).data, None
+    
+    @classmethod
+	def queryById(cls, appId):
+		query = cls.query.filter_by(id=appId).first()
+		if query is None:
+			return None, "Appointment with id {} does not exist".format(appId)
+		return appointment_schema.dump(query).data, None
 
 class AppointmentSchema(ma.ModelSchema):
     class Meta:

@@ -9,22 +9,35 @@ from api.models import Appointment, appointment_schema, appointments_schema
 from rq42 import Api42
 from response import Response as res
 
+
 #   /api/appointments
 class apiAppointments(Resource):
     #   gets all active appointments
     def get(self):
-        return Appointment.query.all(), 200
+        data, err = Appointment.queryAll()
+        if err:
+            return res.internalServiceError(err)
+        return res.getSuccess("Found appointments", data)
 
 
 #   /api/appointment/:appointmentId
 class apiAppointment(Resource):
     #   retrieve appointment details
     def get(self, appointmentId):
-        return Appointment, 201
+        data, err = Appointment.queryById(appointmentId)
+        if err:
+            return res.badRequestError(err)
+        return res.getSuccess(data)
 
     #   updates the specified appointment 
     #   (should be used after choosing mentor to assign mentor)
     def put(self, appointmentId):
+        #   First check if the appointment record exists
+        data, err = Appointment.queryById(appointmentId)
+        if err:
+            return res.badRequestError(err)
+
+        #   check if put request contains appropriate data
         return Appointment, 201
     
     #   cancel an appointment

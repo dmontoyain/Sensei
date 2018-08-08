@@ -24,6 +24,13 @@ class Mentor(db.Model):
 		self.finalmark = 0 if finalmark is None else finalmark
 
 	@classmethod
+	def queryAll(cls):
+		query = cls.query.all()
+		if query is None:
+			return None, "No mentors exist"
+		return mentors_schema.dump(query).data, None
+
+	@classmethod
 	def queryById(cls, mentorId):
 		query = cls.query.filter_by(id=mentorId).first()
 		if query is None:
