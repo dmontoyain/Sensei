@@ -21,6 +21,20 @@ class Project(db.Model):
         self.slug = slug
         self.tier = tier
         self.active = active
+    
+    @classmethod
+    def queryProject(cls, id42=0, name=""):
+        if id42 is not 0:
+            query = cls.query.filter_by(id_project42=id42).first()
+            if query is None:
+                return None, "No project with 42 id {}".format(id42)
+        elif len(name) > 0:
+            query = cls.query.filter_by(name=name).first()
+            if query is None:
+                return None, "No project named {}".format(name)
+        else:
+            return None, "No data provided to query"
+        return project_schema.dump(query).data, None
 
 class ProjectSchema(ma.ModelSchema):
     class Meta:
