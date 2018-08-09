@@ -108,10 +108,6 @@ class apiPendingAppointmentsAsMentor(Resource):
         if error:
             return res.getSuccess(data=error)
         return res.getSuccess('Pending appointments for user {} to mentor'.format(userId), data=appointments)
-    
-    #   creates a new Appointment for the user specified
-    def post(self, userId):
-        return Appointment, 201
 
 #   /api/appointments/pending/user/:userId
 class apiPendingAppointmentsAsUser(Resource):
