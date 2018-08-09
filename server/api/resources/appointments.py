@@ -95,7 +95,7 @@ class apiAppointmentsAsUser(Resource):
             return res.resourceMissing(message=error)
         
         #   Retrieves appointments for found user
-        appointments, error = Appointment.queryManyAsUser(user.id)
+        appointments, error = Appointment.queryManyAsUser(user["id"])
         if error:
             return res.resourceMissing(message=error)
         return res.getSuccess(message="Appointments for user {}".format(user), data=appointments)
@@ -110,9 +110,9 @@ class apiAppointmentsAsMentor(Resource):
         user, error = User.queryByLogin(login)
         if error:
             return res.resourceMissing(message=error)
-        
         #   Retrieves appointments for found user
-        appointments, error = Appointment.queryManyAsMentor(user.id)
+        print(user)
+        appointments, error = Appointment.queryManyAsMentor(user["id_user42"])
         if error:
             return res.getSuccess(data=error)
         return res.getSuccess('Appointments for user {} as mentor'.format(user), data=appointments)
@@ -129,7 +129,7 @@ class apiPendingAppointmentsAsMentor(Resource):
         user, error = User.queryByLogin(login)
         if error:
             return res.resourceMissing(message=error)
-        appointments, error = Appointment.queryManyPendingAsMentor(user.id)
+        appointments, error = Appointment.queryManyPendingAsMentor(user["id_user42"])
         if error:
             return res.getSuccess(data=error)
         return res.getSuccess('Pending appointments for user {} to mentor'.format(user), data=appointments)
@@ -143,7 +143,7 @@ class apiPendingAppointmentsAsUser(Resource):
         user, error = User.queryByLogin(login)
         if error:
             return res.resourceMissing(message=error)
-        appointments, error = Appointment.queryManyPendingAsUser(user.id)
+        appointments, error = Appointment.queryManyPendingAsUser(user["id"])
         if error:
             return res.resourceMissing(message=error)
         return res.getSuccess(message="Pending appointments for user {}".format(user), data=appointments)
