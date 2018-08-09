@@ -78,10 +78,6 @@ class apiAppointment(Resource):
     #   (should be used after choosing mentor to assign mentor)
     def put(self, appointmentId):
         return Appointment, 201
-    
-    #   cancel an appointment
-    def delete(self, appointmentId):
-        return Appointment, 204
 
 #   /api/appointments/user/:login
 class apiAppointmentsAsUser(Resource):
