@@ -10,11 +10,13 @@ class Appointment(db.Model):
     start_time = db.Column(db.DateTime)
     feedback = db.Column(db.Text)
 
-    def __init__(self, mentorid, userid, feedback=""):
-        self.id_mentor = mentorid
-        self.id_user = userid
+    def __init__(self, id_mentor, id_user, feedback=""):
+        self.id_mentor = id_mentor
+        self.id_user = id_user
         self.feedback = feedback
     
+    #   Creates an appointment for given user and mentor
+    #   Sets up an appointment 15 minutes from actual date
     @classmethod
 	def queryAll(cls):
 		query = cls.query.all()
@@ -29,11 +31,12 @@ class Appointment(db.Model):
         if error:
             return None, error
         #creates an appointment 15 minutes ahead from creation
-        newappointment.start_time = datetime.now + timedelta(minutes=15)
+        newappointment.start_time = datetime.now() + timedelta(minutes=15)
         db.session.add(newappointment)
         db.session.commit()
-        return newappointment, None
+        return appointment_schema.dump(newappointment).data, None
 
+     #   Query one appointment with the given 'id' parameter
     @classmethod
     def queryById(cls, appointmentId):
         query = cls.query.filter_by(id=appointmentId).first()
@@ -41,18 +44,36 @@ class Appointment(db.Model):
             return None, "No appointment with id {} was found".format(appointmentId)
         return appointment_schema.dump(query).data, None
     
+    #   Query all appointments with the given parameters for a user (mentee) perspective
     @classmethod
-    def queryPendingAsUser(cls, userId):
+    def queryManyAsUser(cls, userId):
+        query = cls.query.filter(cls.id_user==userId).all()
+        if query is None:
+            return None, "No appointments requested by user {}".format(userId)
+        return appointments_schema.dump(query).data, None
+
+    #   Query all appointments with the given parameters from a mentor perspective
+    @classmethod
+    def queryManyAsMentor(cls, userId):
+        from api.models import Mentor
+        query = cls.query.join(Mentor, cls.id_mentor == Mentor.id).filter(Mentor.id_user42 == userId).all()
+        if query is None:
+            return None, "No appointments to mentor for user {}".format(userId)
+        return appointments_schema.dump(query).data, None
+
+    #   Query multiple *PENDING* appointments with the given parameters from a user perspective
+    @classmethod
+    def queryManyPendingAsUser(cls, userId):
         query = cls.query.filter(cls.id_user==userId, cls.feedback is None).all()
         if query is None:
             return None, "No pending appointments requested by user {}".format(userId)
         return appointments_schema.dump(query).data, None
-    
+
+    #   Query multiple *PENDING* appointments with the given parameters from a mentor perspective
     @classmethod
-    def queryPendingAsMentor(cls, userId):
+    def queryManyPendingAsMentor(cls, userId):
         from api.models import Mentor
-        query = cls.query.join(Mentor, cls.id_mentor==Mentor.id).filter(cls.feedback is None).filter(Mentor.id_user42 == userId).all()
-        print(query)
+        query = cls.query.join(Mentor, cls.id_mentor == Mentor.id).filter(Mentor.id_user42 == userId, cls.feedback == "").all()
         if query is None:
             return None, "No pending appointments to mentor for user {}".format(userId)
         return appointments_schema.dump(query).data, None

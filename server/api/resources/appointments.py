@@ -29,7 +29,7 @@ class apiAppointments(Resource):
         #   Checks if required data to create an appointment was provided in request
         if not data:
             return res.badRequestError("No data provided")
-        if data.get("topic") is None and data.get("projectname") is None:
+        if data.get("topic") is None and data.get("project") is None:
             return res.badRequestError("Unable to create appointment. No topic/project provided to search for mentors")
         if data.get("login") is None:
             return res.badRequestError("Unable to create appointment. No user login provided")
@@ -43,9 +43,9 @@ class apiAppointments(Resource):
         user, error = User.queryByLogin(data.get("login"))
         if error:
             return res.resourceMissing(message=error)
-
+        
         #   Retrieves availables mentors for such project
-        mentors, error = Mentor.queryManyByFilter(id_project42=project.id_project42, active=True)
+        mentors, error = Mentor.queryManyByFilter(id_project42=project["id_project42"], active=True)
         if error:
             res.internalServiceError(message=error)
         onlineUsers = Api42.onlineUsers()
@@ -56,7 +56,7 @@ class apiAppointments(Resource):
             res.resourceMissing("No mentors online found for {}".format(data.get("project"))) 
 
         #--------------------------
-        #   Algorithm to select mentor from the availablementors list.
+        #   Calls funtion/service to select mentor from the availablementors.
 
         #   temporary for testing creation of appointment
         chosenmentor = availablementors[0]
@@ -64,10 +64,12 @@ class apiAppointments(Resource):
         #--------------------------
 
         #   Creates and returns appointment if valid
-        newappointment, error = Appointment.createAppointment(user.id, chosenmentor.id)
+        if chosenmentor is None:
+            return res.internalServiceError(message="No mentor found/chosen")
+        newappointment, error = Appointment.createAppointment(chosenmentor["id"], user["id"])
         if error:
             return res.internalServiceError, error
-        return res.postSuccess("Appointment created successfully", data=newappointment)
+        return res.postSuccess("Appointment created successfully", newappointment)
 
 #   /api/appointment/:appointmentId
 class apiAppointment(Resource):
@@ -104,61 +106,71 @@ class apiAppointment(Resource):
         db.session.commit()
         return res.deleteSuccess('appointment was deleted', data)
 
-#   /api/appointments/user/:userId
+#   /api/appointments/user/:login
 class apiAppointmentsAsUser(Resource):
 
     #   gets all appointments from specified user as User
-    def get(self, userId):
-        query = Appointment.query.filter_by(id_user=userId).all()
+    def get(self, login):
 
-        #   check if any appointments exist
-        if query is None:
-            return res.getSuccess('No appointments with with a user id of {}'.format(userId))
+        #   Validates user credentials received
+        user, error = User.queryByLogin(login)
+        if error:
+            return res.resourceMissing(message=error)
         
-        #   return the valid data
-        data = appointments_schema.dump(query).data
-        return res.getSuccess('Found results', data)
+        #   Retrieves appointments for found user
+        appointments, error = Appointment.queryManyAsUser(user["id"])
+        if error:
+            return res.resourceMissing(error)
+        return res.getSuccess("Appointments for user {}".format(user), appointments)
 
-
-#   /api/appointments/mentor/:userId
+#   /api/appointments/mentor/:login
 class apiAppointmentsAsMentor(Resource):
 
     #   gets all appointments from specified user as mentor
-    def get(self, userId):
-        query = Appointment.query.filter_by(id_mentor=userId).all()
+    def get(self, login):
 
-        #   check if any appointments exist
-        if query is None:
-            return res.getSuccess('No appointments with with a mentor id of {}'.format(userId))
-
-        #   return the valid data
-        data = appointments_schema.dump(query).data
-        return res.getSuccess('Found results', data)
+        #   Validates user credentials received
+        user, error = User.queryByLogin(login)
+        if error:
+            return res.resourceMissing(message=error)
+        #   Retrieves appointments for found user
+        print(user)
+        appointments, error = Appointment.queryManyAsMentor(user["id_user42"])
+        if error:
+            return res.getSuccess(data=error)
+        return res.getSuccess('Appointments for user {} as mentor'.format(user), appointments)
 
 #   ------------------------------------------
 #   Pending appointments endpoints
+#   searches by **username** not userId as requested by Kmckee
 
-#   /api/appointments/pending/mentor/:userId
+#   /api/appointments/pending/mentor/:login
 class apiPendingAppointmentsAsMentor(Resource):
 
     #   Gets all pending appointments from the user specified as Mentor
-    def get(self, userId):
-        appointments, error = Appointment.queryPendingAsMentor(userId)
+    def get(self, login):
+        user, error = User.queryByLogin(login)
+        if error:
+            return res.resourceMissing(message=error)
+        appointments, error = Appointment.queryManyPendingAsMentor(user["id_user42"])
         if error:
             return res.getSuccess(data=error)
-        return res.getSuccess('Pending appointments for user {} to mentor'.format(userId), data=appointments)
-    
-    #   creates a new Appointment for the user specified
-    def post(self, userId):
-        return Appointment, 201
+        return res.getSuccess('Pending appointments for user {} to mentor'.format(user), data=appointments)
 
-#   /api/appointments/pending/user/:userId
+#   /api/appointments/pending/user/:login
 class apiPendingAppointmentsAsUser(Resource):
 
     #   gets all pending appointments from the user specified as User (Mentee)
-    def get(self, userId):
-
-        return Appointment, 201
+    
+    def get(self, login):
+        user, error = User.queryByLogin(login)
+        if error:
+            return res.resourceMissing(message=error)
+        appointments, error = Appointment.queryManyPendingAsUser(user["id"])
+        retMessage = "appointments for user {}".format(login)
+        keyword = 'No ' if error else 'Pending '
+        retMessage = keyword + retMessage
+        return res.getSuccess(retMessage, appointments)
 
 #   ----------------------------------------
 
