@@ -7,7 +7,7 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	id_user42 = db.Column(db.Integer, unique=True, nullable=False)
 	login = db.Column(db.String(45), nullable=False)
-
+	
 	#   relationship with 'Mentors' table, Mentor Model Class
 	mentors = db.relationship('Mentor', backref='user', lazy=True)
 
