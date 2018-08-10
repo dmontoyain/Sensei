@@ -20,11 +20,10 @@ def init_routes(api):
     api.add_resource(apiUserCapabletoMentor, '/mentors/user/<int:id_user42>/capable')
 
     #   appointments endpoints
-    
     api.add_resource(apiAppointments, '/appointments')
     api.add_resource(apiAppointment, '/appointment/<int:appointmentId>')
-    api.add_resource(apiAppointmentsAsUser, '/appointments/user/<int:userId>')
-    api.add_resource(apiAppointmentsAsMentor, '/appointments/mentor/<int:mentorId>')
+    api.add_resource(apiAppointmentsAsUser, '/appointments/user/<login>')
+    api.add_resource(apiAppointmentsAsMentor, '/appointments/mentor/<login>')
 
-    api.add_resource(apiPendingAppointmentsAsMentor, '/appointments/pending/mentor/<int:userId>')
-    api.add_resource(apiPendingAppointmentsAsUser, '/appointments/pending/user/<int:userId>')
+    api.add_resource(apiPendingAppointmentsAsMentor, '/appointments/pending/mentor/<login>')
+    api.add_resource(apiPendingAppointmentsAsUser, '/appointments/pending/user/<login>')
