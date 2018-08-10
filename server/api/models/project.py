@@ -36,6 +36,13 @@ class Project(db.Model):
             return None, "No data provided to query"
         return project_schema.dump(query).data, None
 
+    @classmethod
+	def queryAll(cls):
+		query = cls.query.all()
+		if query is None:
+			return None, "No projects exist"
+		return projects_schema.dump(query).data, None
+
 class ProjectSchema(ma.ModelSchema):
     class Meta:
         model = Project

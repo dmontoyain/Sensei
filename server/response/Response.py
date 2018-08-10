@@ -26,16 +26,20 @@ def formatSuccess(defaultMessage, message, data, statusCode):
 #	Primary ERROR-return functions
 #	-------------------------------------------------------------------
 
-def internalServiceError(message=''):	# main server-error
+#	main server-error
+def internalServiceError(message=''):
 	return formatError('Internal API service error', message, 500)
 
-def badRequestError(message=''):		# main user-error
+#	main user-error
+def badRequestError(message=''):
 	return formatError('Bad request for API service', message, 400)
 
-def resourceExistsError(message=''):	# attempted to create a duplicate resource
+#	attempted to create a duplicate resource
+def resourceExistsError(message=''):
 	return formatError('Resource already exists', message, 418)
 
-def resourceMissing(message=''):	# empty resource
+#	empty resource
+def resourceMissing(message=''):
 	return formatError('Resource does not exist', message, 400)
 
 
@@ -51,3 +55,6 @@ def postSuccess(message='', data={}):
 
 def putSuccess(message='', data={}):
 	return formatSuccess('PUT request was successful', message, data, 200)
+
+def deleteSuccess(message='', data={})
+	return formatSuccess('DELETE request was successful', message, data, 204)

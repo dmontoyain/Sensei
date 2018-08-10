@@ -18,6 +18,13 @@ class Appointment(db.Model):
     #   Creates an appointment for given user and mentor
     #   Sets up an appointment 15 minutes from actual date
     @classmethod
+	def queryAll(cls):
+		query = cls.query.all()
+		if query is None:
+			return None, "No appointments exist"
+		return appointments_schema.dump(query).data, None
+    
+    @classmethod
     def createAppointment(cls, mentorId, userId):
         data = {"id_mentor": mentorId, "id_user": userId}
         newappointment, error = appointment_schema.load(data)
@@ -31,7 +38,7 @@ class Appointment(db.Model):
 
      #   Query one appointment with the given 'id' parameter
     @classmethod
-    def querybyId(cls, appointmentId):
+    def queryById(cls, appointmentId):
         query = cls.query.filter_by(id=appointmentId).first()
         if query is None:
             return None, "No appointment with id {} was found".format(appointmentId)
