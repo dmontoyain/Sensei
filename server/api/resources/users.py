@@ -95,7 +95,7 @@ class apiUser(Resource):
 			return res.badRequestError("no data was provided")
 
 		#	check if the user already exists in the database
-		user, error = queryUser(userId=data.get("id_user42"))
+		user, error = User.queryById_user42(userId=data.get("id_user42"))
 		if user is not None:
 			return res.resourceExistsError(error)
 

@@ -12,7 +12,7 @@ class User(db.Model):
 	mentors = db.relationship('Mentor', backref='user', lazy=True)
 
 	#   relationship with 'Appointments' table, Appointment Model Class
-	#appointments = db.relationship('Appointment', backref='user', lazy=True)
+	appointments = db.relationship('Appointment', backref='user', lazy=True)
 
 	def __init__(self, id_user42, login):
 		self.id_user42 = id_user42

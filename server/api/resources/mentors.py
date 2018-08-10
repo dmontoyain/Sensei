@@ -125,7 +125,7 @@ class apiMentorsProject(Resource):
 			res.badRequestError(error)
 
 		#	grab the current online students at 42
-		onlineUsers = Api42.onlineStudents()
+		onlineUsers = Api42.onlineUsers()
 
 		#	find intersection between online students and active mentors
 		result = [mentor for mentor in mentors for x in onlineUsers if mentor['id_user42'] == x['id']]

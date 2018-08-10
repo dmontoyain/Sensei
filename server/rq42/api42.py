@@ -138,8 +138,10 @@ class Api42:
 	@staticmethod
 	def _request(method, url, data, headers):
 
-		#	Pausing for the api request limit (500 milliseconds)
+		#	Lock to prevent duplicate calls to request
 		Api42._requestLock.acquire()
+
+		#	Pausing for the api request limit (500 milliseconds)
 		while (Api42._currentMilliTime() - Api42._apiLimit) < Api42._lastCall:
 			pass
 		Api42._lastCall = Api42._currentMilliTime()
@@ -148,7 +150,11 @@ class Api42:
 		print(tc.IYELLOW + "Requesting data from... " + tc.ICYAN + url + tc.ENDCOLOR + ' ', end='')
 		sys.stdout.flush()
 		rsp = requests.request(method, url=url, data=data, headers=headers)
+
+		#	Unlock to allow the next request to execute
 		Api42._requestLock.release()
+
+		#	Track the total number of requests made
 		Api42._totalRequests += 1
 
 		#	Error handling
@@ -165,20 +171,22 @@ class Api42:
 	def _updateToken():	# Returns True if token was updated, otherwise returns False
 
 		#	Check to see if token needs to be updated
-		if Api42._currentMilliTime() >= Api42._tokenExpires:
-			print(tc.IPURPLE + "Token needs refreshing..." + tc.ENDCOLOR)
-			tokenData = Api42.post('/oauth/token', Api42._authData, None)
-			if tokenData is None:
-				print(tc.IRED + "Failed to refresh the 42 api token" + tc.ENDCOLOR)
-				return False
+		if Api42._currentMilliTime() < Api42._tokenExpires:
+			return False
+		
+		#	Refreshing Token
+		print(tc.IPURPLE + "Token needs refreshing..." + tc.ENDCOLOR)
+		tokenData = Api42.post('/oauth/token', Api42._authData, None)
+		if tokenData is None:
+			print(tc.IRED + "Failed to refresh the 42 api token" + tc.ENDCOLOR)
+			return False
 
-			#	Update token, expiry time, and authorization header
-			Api42._token = tokenData[0]['access_token']
-			Api42._tokenExpires = (tokenData[0]['expires_in'] * 1000) + Api42._currentMilliTime()
-			Api42._headers['Authorization'] = 'Bearer ' + Api42._token
-			print(tc.IGREEN + "Token Updated!" + tc.ENDCOLOR)
-			return True
-		return False
+		#	Update class token, expiry time, and authorization header
+		Api42._token = tokenData[0]['access_token']
+		Api42._tokenExpires = (tokenData[0]['expires_in'] * 1000) + Api42._currentMilliTime()
+		Api42._headers['Authorization'] = 'Bearer ' + Api42._token
+		print(tc.IGREEN + "Token Updated!" + tc.ENDCOLOR)
+		return True
 
 
 	#	A few predefined requests with parsed responses

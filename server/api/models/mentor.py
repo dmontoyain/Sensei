@@ -18,6 +18,9 @@ class Mentor(db.Model):
 	active = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.false())
 	started_at = db.Column(db.DateTime, nullable=False, server_default=sa.func.now())
 
+	#   relationship with 'Appointments' table, Appointment Model Class
+	appointments = db.relationship('Appointment', backref='mentor', lazy=True)
+
 	def __init__(self, id_project42, id_user42, finalmark):
 		self.id_project42 = id_project42
 		self.id_user42 = id_user42

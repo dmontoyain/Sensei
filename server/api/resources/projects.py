@@ -31,4 +31,7 @@ class apiProjects(Resource):
             newProjects.append(newProject)
 
         db.session.commit()
-        return res.postSuccess('created new project', newProjects)
+
+        #   change return message if projects were updated
+        retMessage = 'created new project' if newProjects else 'no new projects were updated'
+        return res.postSuccess(retMessage, newProjects)

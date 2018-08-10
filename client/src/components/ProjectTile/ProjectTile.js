@@ -8,8 +8,8 @@ class ProjectTile extends Component {
                                     {name: "linked lists", mentors: 5, isConcept: true},
                                     {name: "hash tables", mentors: 0, isConcept: true},
                                     {name: "C++", mentors: 2, isConcept: true},
-                                    {name: "resume building", mentors: 7, isConcept: true},
-                                    {name: "machine learning", mentors: 0, isConcept: true},
+                                    {name: "resume building", mentors: 7, isConcept: false},
+                                    {name: "machine learning", mentors: 0, isConcept: false},
                                     {name: "NodeJS", mentors: 2, isConcept: true},
                                     {name: "data structures", mentors: 5, isConcept: true},
                                     {name: "Java", mentors: 1, isConcept: true},
@@ -22,7 +22,7 @@ class ProjectTile extends Component {
         .then( response => response.json() )
         .then( ({results:projects}) => this.setState({projects}))
     }
-    filterProjects (e) {
+    filterProjects (e) { 
         this.setState({userInputProjects: e.target.value})
     }
     filterConcepts (e) {
@@ -44,6 +44,7 @@ class ProjectTile extends Component {
         concepts = concepts.filter( concept =>
             concept.name.toLowerCase()
             .includes(this.state.userInputConcepts.toLowerCase()))
+            .filter( concept => concept.isConcept === true)
     }
 
     return (
