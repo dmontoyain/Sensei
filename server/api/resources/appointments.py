@@ -9,11 +9,15 @@ from api.models import Appointment, appointment_schema, appointments_schema
 from rq42 import Api42
 from response import Response as res
 
+
 #   /api/appointments
 class apiAppointments(Resource):
     #   gets all active appointments
     def get(self):
-        return Appointment.query.all(), 200
+        data, err = Appointment.queryAll()
+        if err:
+            return res.internalServiceError(err)
+        return res.getSuccess("Found appointments", data)
     
     #   Creates an appointment for a user in a specified project or topic
     #   Requires structuring of the request body:
@@ -76,13 +80,36 @@ class apiAppointments(Resource):
 class apiAppointment(Resource):
     #   retrieve appointment details
     def get(self, appointmentId):
-
-        return Appointment, 201
+        data, err = Appointment.queryById(appointmentId)
+        if err:
+            return res.badRequestError(err)
+        return res.getSuccess(data)
 
     #   updates the specified appointment 
     #   (should be used after choosing mentor to assign mentor)
     def put(self, appointmentId):
-        return Appointment, 201
+        #   First check if the appointment record exists
+        data, err = Appointment.queryById(appointmentId)
+        if err:
+            return res.badRequestError(err)
+
+        #   check if put request contains appropriate data
+        return res.postSuccess('appointment was updated', data)
+
+    #   cancel an appointment
+    def delete(self, appointmentId):
+        #   first check if appointment record exists
+        record = Appointment.query.filter_by(id=appointmentId).first()
+        if record is None:
+            return res.badRequestError('No appointment with id {} was found'.format(appointmentId))
+
+        #   save return data
+        data = appointment_schema.dump(record).data
+
+        #   delete appointment
+        db.session.delete(record)
+        db.session.commit()
+        return res.deleteSuccess('appointment was deleted', data)
 
 #   /api/appointments/user/:login
 class apiAppointmentsAsUser(Resource):
@@ -98,8 +125,8 @@ class apiAppointmentsAsUser(Resource):
         #   Retrieves appointments for found user
         appointments, error = Appointment.queryManyAsUser(user["id"])
         if error:
-            return res.resourceMissing(message=error)
-        return res.getSuccess(message="Appointments for user {}".format(user), data=appointments)
+            return res.resourceMissing(error)
+        return res.getSuccess("Appointments for user {}".format(user), appointments)
 
 #   /api/appointments/mentor/:login
 class apiAppointmentsAsMentor(Resource):
@@ -116,7 +143,7 @@ class apiAppointmentsAsMentor(Resource):
         appointments, error = Appointment.queryManyAsMentor(user["id_user42"])
         if error:
             return res.getSuccess(data=error)
-        return res.getSuccess('Appointments for user {} as mentor'.format(user), data=appointments)
+        return res.getSuccess('Appointments for user {} as mentor'.format(user), appointments)
 
 #   ------------------------------------------
 #   Pending appointments endpoints
@@ -145,9 +172,10 @@ class apiPendingAppointmentsAsUser(Resource):
         if error:
             return res.resourceMissing(message=error)
         appointments, error = Appointment.queryManyPendingAsUser(user["id"])
-        if error:
-            return res.resourceMissing(message=error)
-        return res.getSuccess(message="Pending appointments for user {}".format(user), data=appointments)
+        retMessage = "appointments for user {}".format(login)
+        keyword = 'No ' if error else 'Pending '
+        retMessage = keyword + retMessage
+        return res.getSuccess(retMessage, appointments)
 
 #   ----------------------------------------
 

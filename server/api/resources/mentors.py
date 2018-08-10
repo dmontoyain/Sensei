@@ -10,7 +10,7 @@ from rq42 import Api42
 from response import Response as res
 
 
-#   api/mentors/
+#   api/mentors
 class apiMentors(Resource):
 	def get(self):
 		query = Mentor.query.all()
@@ -53,6 +53,66 @@ class apiSubscribeUnSubscribeMentor(Resource):
 		mentor.active = not mentor.active
 		db.session.commit()
 		return res.putSuccess('Updated mentor {} to \'active\' state of {}'.format(mentorId, mentor.active))
+
+#   api/mentor/:mentorId/subscribe
+class apiSubscribeMentor(Resource):
+
+	#   Subscribes or unsibscribes mentor to a specific project.
+	#   Updates 'active' to true in DB to give permission.
+	#   Contraint: mentor's 'abletomentor' in DB needs to be True.
+	def put(self, mentorId):
+		#   get mentor record
+		mentor = Mentor.query.filter_by(id=mentorId).first()
+
+		#   check if mentor exists in database
+		if mentor is None:
+			return res.badRequestError("No mentor with id {} was found".format(mentorId))
+
+		#   check if mentor CAN mentor a project
+		if mentor.abletomentor is False:
+			errMessage = 'Subscribe Error for mentor record id {}. User {} does not qualify for mentoring project {}'.format(mentor.id, mentor.id_user42, mentor.id_project42)
+			return res.badRequestError(errMessage)
+
+		#	check if mentor is already subscribed
+		if mentor.active is True:
+			errMessage = 'Mentor with id {} is already subscribed to 42 project id {}'.format(mentor.id, mentor.project.id_project42)
+			return res.badRequestError(errMessage)
+
+		#   subscribe mentor to project
+		mentor.active = True
+		db.session.commit()
+		mentorData = mentor_schema.dump(mentor).data
+		return res.putSuccess('Mentor {} has successfully subscribed to project {}'.format(mentorId, mentor.project.id_project42), mentorData)
+
+#   api/mentor/:mentorId/unsubscribe
+class apiUnsubscribeMentor(Resource):
+
+	#   Updates 'active' to true in DB to give permission.
+	#   Contraint: mentor's 'abletomentor' in DB needs to be True.
+	def put(self, mentorId):
+		#   get mentor record
+		mentor = Mentor.query.filter_by(id=mentorId).first()
+
+		#   check if mentor exists in database
+		if mentor is None:
+			return res.badRequestError("No mentor with id {} was found".format(mentorId))
+
+		#   check if mentor CAN mentor a project
+		if mentor.abletomentor is False:
+			errMessage = 'Subscribe Error for mentor record id {}. User {} does not qualify for mentoring project {}'.format(mentor.id, mentor.id_user42, mentor.id_project42)
+			return res.badRequestError(errMessage)
+
+		#	check if mentor is already unsubscribed
+		if mentor.active is False:
+			errMessage = 'Mentor with id {} is already unsubscribed to 42 project id {}'.format(mentor.id, mentor.project.id_project42)
+			return res.badRequestError(errMessage)
+
+		#   unsubscribe mentor to project
+		mentor.active = False
+		db.session.commit()
+		mentorData = mentor_schema.dump(mentor).data
+		successMessage = 'Mentor {} has successfully unsubscribed to project {}'.format(mentorId, mentor.project.id_project42)
+		return res.putSuccess(successMessage, mentorData)
 
 #   api/mentors/project/:projectId
 class apiMentorsProject(Resource):
