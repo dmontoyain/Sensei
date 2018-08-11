@@ -4,7 +4,7 @@ import '../assets/css/default.min.css'
 //Components
 import Header from '../components/Header/Header.js';
 import ProjectTile from '../components/ProjectTile/ProjectTile.js';
-// import ConceptTile from './components/ConceptTile/ConceptTile.js';
+import ConceptTile from '../components/ConceptTile/ConceptTile.js';
 import Footer from '../components/Footer/Footer.js';
 
 
