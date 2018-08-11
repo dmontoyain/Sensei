@@ -35,6 +35,14 @@ class Appointment(db.Model):
         db.session.add(newappointment)
         db.session.commit()
         return appointment_schema.dump(newappointment).data, None
+    
+    @classmethod
+    def queryCountProjectAppointmentsbyUser(cls, projectId, userId):
+        from api.models import Mentor
+        today = datetime.day;
+        appointmentCount = cls.query.join(Mentor, cls.id_mentor == Mentor.id).filter(Mentor.id_project42 == projectId, cls.id_user == userId, cls.start_time > today).count()
+        print(appointmentCount)
+        return appointmentCount
 
      #   Query one appointment with the given 'id' parameter
     @classmethod

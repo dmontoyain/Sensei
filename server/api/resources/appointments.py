@@ -44,6 +44,11 @@ class apiAppointments(Resource):
         if error:
             return res.resourceMissing(message=error)
         
+        #   check appointments made by user for project
+        projectAppointmentsCount = Appointment.queryCountProjectAppointmentsbyUser(project["id_project42"], user["id"])
+        if projectAppointmentsCount > 1:
+            return res.badRequestError("User reached limit appointments for project {}".format(data.get("project")))
+
         #   Retrieves availables mentors for such project
         mentors, error = Mentor.queryManyByFilter(id_project42=project["id_project42"], active=True)
         if error:
