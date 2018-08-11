@@ -21,35 +21,35 @@ class User(db.Model):
 	@classmethod
 	def queryByAll(cls):
 		query = cls.query.all()
-		if query is None:
+		if not query:
 			return None, "User table is empty"
 		return users_schema.dump(query).data, None
 
 	@classmethod
 	def queryById(cls, userId):
 		query = cls.query.filter_by(id=userId).first()
-		if query is None:
+		if not query:
 			return None, "No user with id {} was found".format(id)
 		return user_schema.dump(query).data, None
 
 	@classmethod
 	def queryById_user42(cls, userId):
 		query = cls.query.filter_by(id_user42=userId).first()
-		if query is None:
+		if not query:
 			return None, "No user with id_user42 {} was found".format(userId)
 		return user_schema.dump(query).data, None
 
 	@classmethod
 	def queryByLogin(cls, login):
 		query = cls.query.filter_by(login=login).first()
-		if query is None:
+		if not query:
 			return None, "No user with login {} was found".format(login)
 		return user_schema.dump(query).data, None
 
 	@classmethod
 	def queryByFilter(cls, **kwargs):
 		query = cls.query.filter_by(**kwargs).first()
-		if query is None:
+		if not query:
 			return None, "No user found"
 		return user_schema.dump(query).data, None
 

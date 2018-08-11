@@ -56,5 +56,5 @@ def postSuccess(message='', data={}):
 def putSuccess(message='', data={}):
 	return formatSuccess('PUT request was successful', message, data, 200)
 
-def deleteSuccess(message='', data={})
+def deleteSuccess(message='', data={}):
 	return formatSuccess('DELETE request was successful', message, data, 204)

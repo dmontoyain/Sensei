@@ -8,8 +8,8 @@ def init_routes(api):
 
     #   users endpoints
     api.add_resource(apiUsers, '/users')
-    api.add_resource(apiUser, '/user/<int:userId>')
-    api.add_resource(apiUserUpdate, '/user/<int:userId>/update')
+    api.add_resource(apiUser, '/user/<login>')
+    api.add_resource(apiUserUpdate, '/user/<login>/update')
 
     #   mentors endpoints
     api.add_resource(apiMentors, '/mentors')
@@ -24,6 +24,7 @@ def init_routes(api):
     #   appointments endpoints
     api.add_resource(apiAppointments, '/appointments')
     api.add_resource(apiAppointment, '/appointment/<int:appointmentId>')
+
     api.add_resource(apiAppointmentsAsUser, '/appointments/user/<login>')
     api.add_resource(apiAppointmentsAsMentor, '/appointments/mentor/<login>')
 

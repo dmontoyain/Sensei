@@ -63,7 +63,7 @@ class Mentor(db.Model):
 
 	@classmethod
 	def queryManyByFilter(cls, **kwargs):
-		query = cls.query.filter_by(**kwargs).all()
+		query = cls.query.filter(**kwargs).all()
 		if query is None:
 			return None, "No mentors found"
 		return mentors_schema.dump(query).data, None
