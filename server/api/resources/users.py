@@ -19,14 +19,17 @@ class apiUsers(Resource):
 		return res.getSuccess('all users', data)
 
 
-#	/api/user/:userId/update
+#	/api/user/:login/update
 class apiUserUpdate(Resource):
-	def post(self, userId):
+	def post(self, login):
+		#   set defaults
+		minToMentor = 90
+
 		#	check if user exists
-		user, errors = User.queryById_user42(userId)
+		user, errors = User.queryByLogin(login)
 		if errors:
 			return res.badRequestError(errors)
-		data = Api42.userProjects(userId)
+		data = Api42.userProjects(user['id_user42'])
 		if data is None:
 			return res.internalServiceError('No projects found for user in 42 Database')
 		print('adding to session..')
@@ -43,9 +46,11 @@ class apiUserUpdate(Resource):
 				continue
 
 			#	Check that the project-user combination does not already exist in the mentors database
-			# query = Mentor.query.filter_by(id_project42=d['id_project42'], id_user42=d['id_user42']).first()
-			# query = Mentor.queryByFilter(id_project42=d['id_project42'], id_user42=d['id_user42'])
-			if query is not None:
+			mentorQuery = Mentor.query.filter_by(id_project42=d['id_project42'], id_user42=d['id_user42']).first()
+			if mentorQuery is not None:
+				#   set the abletomentor field to true if final mark is higher than minToMentor
+				if d['finalmark'] >= minToMentor:
+					mentorQuery.abletomentor = True
 				projectsThatAlreadyExistInMentors.append(d['id_project42'])
 				continue
 
@@ -55,12 +60,16 @@ class apiUserUpdate(Resource):
 				db.session.rollback()
 				return res.badRequestError(error)
 
+			#   set the abletomentor field to true if final mark is higher than minToMentor
+			if newMentor.finalmark >= minToMentor:
+				newMentor.abletomentor = True
+
 			#	Add new mentor to the transactional session
 			db.session.add(newMentor)
 			projectsAddedToMentorTable.append(newMentor)
 
 		#	Success was achieved, so commit new records
-		print('Initializing user {}. Committing to database'.format(userId))
+		print('Initializing user {}. Committing to database'.format(login))
 		db.session.commit()
 
 		#	Debugging - print out project ids that failed
@@ -73,29 +82,29 @@ class apiUserUpdate(Resource):
 		for i in projectsThatAlreadyExistInMentors:
 			print(i)
 
-		message = 'updated user {}'.format(userId)
+		message = 'updated user {}'.format(login)
 		if not projectsAddedToMentorTable:
 			message = message + ', however no new projects needed to be added to mentor table'
 		return res.postSuccess(message, projectsAddedToMentorTable)
 
 
-#	/api/user/:userid
+#	/api/user/:login
 class apiUser(Resource):
 
-	def get(self, userId):
-		user, errors = User.queryById_user42(userId)
+	def get(self, login):
+		user, errors = User.queryByLogin(login)
 		if errors:
 			return res.badRequestError(errors)
 		return res.getSuccess('user exists in database', user)
 
-	def post(self, userId):
+	def post(self, login):
 		#	grab the incomming data
 		data = request.get_json()
 		if not data:
 			return res.badRequestError("no data was provided")
 
 		#	check if the user already exists in the database
-		user, error = User.queryById_user42(userId=data.get("id_user42"))
+		user, error = User.queryByLogin(login=data.get("login"))
 		if user is not None:
 			return res.resourceExistsError(error)
 
@@ -109,7 +118,7 @@ class apiUser(Resource):
 		db.session.commit()
 
 		#	check if user was added
-		user, errors = User.queryById_user42(userId)
+		user, errors = User.queryByLogin(login)
 		if errors:
 			return res.internalServiceError(errors)
 
