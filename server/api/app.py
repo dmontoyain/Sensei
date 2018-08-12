@@ -13,8 +13,6 @@ configure(app, 'test')
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-#	Import models
-
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp)
 
