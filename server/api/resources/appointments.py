@@ -88,36 +88,38 @@ class apiAppointments(Resource):
 class apiAppointment(Resource):
 	#   retrieve appointment details
 	def get(self, appointmentId):
-		data, err = Appointment.queryById(appointmentId)
+		appointment, err = Appointment.queryById(appointmentId)
 		if err:
 			return res.badRequestError(err)
-		return res.getSuccess(data)
+		return res.getSuccess(appointment)
 
-	#   updates the specified appointment 
-	#   (should be used after choosing mentor to assign mentor)
+	#   updates the specified appointment feedback
+	#	request body should contain the user feedback for this appointment
+	#	{"feedback": "Great mentor, knew his stuff"}
 	def put(self, appointmentId):
+		data = request.get_json()
 		#   First check if the appointment record exists
-		data, err = Appointment.queryById(appointmentId)
-		if err:
-			return res.badRequestError(err)
-
-		#   check if put request contains appropriate data
-		return res.postSuccess('appointment was updated', data)
-
-	#   cancel an appointment
-	def delete(self, appointmentId):
-		#   first check if appointment record exists
-		record = Appointment.query.filter_by(id=appointmentId).first()
-		if record is None:
-			return res.badRequestError('No appointment with id {} was found'.format(appointmentId))
-
-		#   save return data
-		data = appointment_schema.dump(record).data
-
-		#   delete appointment
-		db.session.delete(record)
+		appointment = Appointment.query.filter_by(id=appointmentId)
+		if not appointment:
+			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
+		feedback = data.get('feedback')
+		if len(feedback) == 0:
+			return res.badRequestError("User must feedback mentor")
+		#	Cancel appointment by setting status = 3
+		appointment.feedback = feedback
 		db.session.commit()
-		return res.deleteSuccess('appointment was deleted', data)
+		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)
+
+	def delete(self, appointmentId):
+		#   First check if the appointment record exists
+		appointment = Appointment.query.filter_by(id=appointmentId)
+		if not appointment:
+			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
+
+		#	Cancel appointment by setting status = 3
+		appointment.status = 3
+		db.session.commit()
+		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)
 
 #   /api/appointments/user/:login
 class apiAppointmentsAsUser(Resource):
@@ -177,7 +179,6 @@ class apiPendingAppointmentsAsMentor(Resource):
 class apiPendingAppointmentsAsUser(Resource):
 
 	#   gets all pending appointments from the user specified as User (Mentee)
-	
 	def get(self, login):
 		user, error = User.queryByLogin(login)
 		if error:
@@ -189,4 +190,3 @@ class apiPendingAppointmentsAsUser(Resource):
 		keyword = 'No ' if error else 'Pending '
 		retMessage = keyword + retMessage
 		return res.getSuccess(retMessage, appointments)
-
