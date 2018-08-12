@@ -1,5 +1,6 @@
 from api.app import db, ma
 from datetime import datetime, timedelta
+import sqlalchemy as sa
 
 class Appointment(db.Model):
 	__tablename__ = 'appointments'
@@ -9,6 +10,7 @@ class Appointment(db.Model):
 	id_user = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 	start_time = db.Column(db.DateTime)
 	feedback = db.Column(db.Text)
+	status = db.Column(db.Integer, nullable=False, server_default='2')
 
 	def __init__(self, id_mentor, id_user, feedback=""):
 		self.id_mentor = id_mentor
@@ -17,13 +19,6 @@ class Appointment(db.Model):
 
 	#   Creates an appointment for given user and mentor
 	#   Sets up an appointment 15 minutes from actual date
-	@classmethod
-	def queryAll(cls):
-		query = cls.query.all()
-		if not query:
-			return None, "No appointments exist"
-		return appointments_schema.dump(query).data, None
-
 	@classmethod
 	def createAppointment(cls, mentorId, userId):
 		data = {"id_mentor": mentorId, "id_user": userId}
@@ -42,7 +37,6 @@ class Appointment(db.Model):
 		dateObject = datetime.now().date()
 		today = datetime(dateObject.year, dateObject.month, dateObject.day)
 		appointmentCount = cls.query.join(Mentor, cls.id_mentor == Mentor.id).filter(Mentor.id_project42 == projectId, cls.id_user == userId, cls.start_time > today).count()
-		print(appointmentCount)
 		return appointmentCount
 
 	 #   Query one appointment with the given 'id' parameter
@@ -73,7 +67,7 @@ class Appointment(db.Model):
 	#   Query multiple *PENDING* appointments with the given parameters from a user perspective
 	@classmethod
 	def queryManyPendingAsUser(cls, userId):
-		query = cls.query.filter(cls.id_user==userId, cls.feedback == "").all()
+		query = cls.query.filter(cls.id_user==userId, cls.status == 2).all()
 		if not query:
 			return None, "No pending appointments requested by user {}".format(userId)
 		return appointments_schema.dump(query).data, None
@@ -82,7 +76,7 @@ class Appointment(db.Model):
 	@classmethod
 	def queryManyPendingAsMentor(cls, userId):
 		from api.models import Mentor
-		query = cls.query.join(Mentor, cls.id_mentor == Mentor.id).filter(Mentor.id_user42 == userId, cls.feedback == "").all()
+		query = cls.query.join(Mentor, cls.id_mentor == Mentor.id).filter(Mentor.id_user42 == userId, cls.status == 2).all()
 		if not query:
 			return None, "No pending appointments to mentor for user {}".format(userId)
 		return appointments_schema.dump(query).data, None
