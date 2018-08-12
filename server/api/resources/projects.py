@@ -35,3 +35,4 @@ class apiProjects(Resource):
         #   change return message if projects were updated
         retMessage = 'created new project' if newProjects else 'no new projects were updated'
         return res.postSuccess(retMessage, newProjects)
+     

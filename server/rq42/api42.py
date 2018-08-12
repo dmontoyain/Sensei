@@ -29,6 +29,7 @@ class Api42:
 	_apiLimit			= int(0.5 * 1000)
 	_lastCall			= 0
 	_totalRequests		= 0
+	_multiplePages		= True
 
 	#	Api constants
 	_endpoint			= 'https://api.intra.42.fr'
@@ -45,6 +46,7 @@ class Api42:
 	def updateOnlineUsers(runForever=False):
 		#	Only lock on the first request
 		Api42.lock()
+		print('{}updating online users{}'.format(tc.GREEN, tc.ENDCOLOR))
 		data = Api42.makeRequest('/v2/campus/7/locations?filter[active]=true')
 		Api42._onlineUsers = [{'login': i['user']['login'], 'id': i['user']['id'], 'host': i['host'] } for i in data]
 		Api42.unlock()
@@ -55,6 +57,7 @@ class Api42:
 			time.sleep(Api42._timeBetweenUpdates)
 
 			#	Request in unlocked state
+			print('{}updating online users{}'.format(tc.GREEN, tc.ENDCOLOR))			
 			data = Api42.makeRequest('/v2/campus/7/locations?filter[active]=true')
 
 			#	Lock when Api42._onlineUsers list itself is being modified
@@ -124,11 +127,12 @@ class Api42:
 			return None
 
 		#	Loop to get all data
-		while 'next' in rsp.links:
-			rsp, tmpData = Api42._request(method, rsp.links['next']['url'], data, headers)
-			if rsp is None:
-				return None
-			returnData = itertools.chain(returnData, tmpData)
+		if Api42._multiplePages is True:
+			while 'next' in rsp.links:
+				rsp, tmpData = Api42._request(method, rsp.links['next']['url'], data, headers)
+				if rsp is None:
+					return None
+				returnData = itertools.chain(returnData, tmpData)
 		return Api42._chainToList(returnData)
 
 

@@ -136,19 +136,29 @@ class apiMentorsProject(Resource):
 		return Mentor, 201
 
 
-#   api/mentors/user/:id_user42/active
+#   api/mentors/user/:login/active
 class apiUserMentoring(Resource):
 
 	#   Gets projects user is subscribed to mentor
-	def get(self, id_user42):
-		mentors = Mentor.queryManyByFilter(id_user42=id_user42, active=True)
+	def get(self, login):
+		user, error = User.queryByLogin(login)
+		if error:
+			return res.resourceMissing(error)
+		mentors, error = Mentor.queryManyByFilter(id_user42=user["id_user42"], active=True)
+		if error:
+			return res.internalServiceError(error)
 		return res.getSuccess(data=mentors)
 
-#   api/mentors/user/:id_user42/capable
+#   api/mentors/user/:login/capable
 class apiUserCapabletoMentor(Resource):
 
 	#   Gets projects the user is not subscribed and is capable of subscribing to be a mentor
 	#   To be capable of mentoring user has to have passed project with a finalmark > 90
-	def get(self, id_user42):
-		mentors = Mentor.queryManyByFilter(id_user42=id_user42, abletomentor=True, active=False)
+	def get(self, login):
+		user, error = User.queryByLogin(login)
+		if error:
+			return res.resourceMissing(error)
+		mentors, error = Mentor.queryManyByFilter(id_user42=user["id_user42"], abletomentor=True, active=False)
+		if error:
+			return res.internalServiceError(error)
 		return res.getSuccess(data=mentors)

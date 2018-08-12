@@ -18,6 +18,37 @@ class apiUsers(Resource):
 		data = users_schema.dump(query).data
 		return res.getSuccess('all users', data)
 
+#	/api/user/:login/projects/availablementors
+class apiUserProjectsAvailableMentors(Resource):
+	def get(self, login):
+
+		#	Validate User exists
+		user, error = User.queryByLogin(login)
+		if error:
+			return res.resourceMissing(error)
+
+		#	Retrieving user projects
+		records = Mentor.query.filter_by(id_user42=user['id_user42']).all()
+		if not records:
+			res.resourceMissing("No projects found for user {}".format(login))
+		
+		#	Retrieving online users
+		onlineUsers = Api42.onlineUsers()
+
+		returnList = []
+		for rec in records:
+			data = mentor_schema.dump(rec).data
+
+			#	Retrieve registered users for project in 'rec'
+			query = Mentor.query.filter_by(id_project42=data['id_project42'], active=True).all()
+			queryData = mentors_schema.dump(query).data
+
+			#	Matching only online users and excluding self (user with login = login)
+			tmpList = [q for q in queryData for o in onlineUsers if q['id_user42'] == o['id'] and o['login'] != login]
+			data['project'] = {'name': rec.project.name, 'id': rec.project.id, 'onlineMentors': len(tmpList)}
+			returnList.append(data)
+		return res.getSuccess(data=returnList)
+
 
 #	/api/user/:login/update
 class apiUserUpdate(Resource):
@@ -48,11 +79,13 @@ class apiUserUpdate(Resource):
 			#	Check that the project-user combination does not already exist in the mentors database
 			mentorQuery = Mentor.query.filter_by(id_project42=d['id_project42'], id_user42=d['id_user42']).first()
 			if mentorQuery is not None:
+				#	update the final mark
+				mentorQuery.finalmark = d['finalmark']				
 				#   set the abletomentor field to true if final mark is higher than minToMentor
 				if d['finalmark'] >= minToMentor:
 					mentorQuery.abletomentor = True
 				projectsThatAlreadyExistInMentors.append(d['id_project42'])
-				continue
+				continue	# do not create a new record, and skip to the next data item
 
 			#	Validate using mentor schema
 			newMentor, error = mentor_schema.load(d)
@@ -85,7 +118,7 @@ class apiUserUpdate(Resource):
 		message = 'updated user {}'.format(login)
 		if not projectsAddedToMentorTable:
 			message = message + ', however no new projects needed to be added to mentor table'
-		return res.postSuccess(message, projectsAddedToMentorTable)
+		return res.postSuccess(message, mentors_schema.dump(projectsAddedToMentorTable).data)
 
 
 #	/api/user/:login
@@ -108,6 +141,16 @@ class apiUser(Resource):
 		if user is not None:
 			return res.resourceExistsError(error)
 
+		
+		print(user)
+		#	********************************************************
+		#	For testing purposes only ***** Remove in production
+		user42 = Api42.makeRequest('/v2/users?filter[login]={}'.format(login))
+		print(user42)
+		data = {"login":login, "id_user42":user42[0]["id"]}
+		#	********************************************************
+		print("*****")
+		print(data)
 		#	load and validate the given data
 		newUser, errors = user_schema.load(data)
 		if errors:
