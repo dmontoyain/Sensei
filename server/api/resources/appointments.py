@@ -8,16 +8,19 @@ from api.models import Project, project_schema, projects_schema
 from api.models import Appointment, appointment_schema, appointments_schema
 from rq42 import Api42
 from response import Response as res
-
+_maxAppointmentsPerDay = 2
 
 #   /api/appointments
 class apiAppointments(Resource):
 	#   gets all active appointments
 	def get(self):
-		data, err = Appointment.queryAll()
-		if err:
-			return res.internalServiceError(err)
-		return res.getSuccess("Found appointments", data)
+		query, error = Appointment.query.all()
+		if not query:
+			return res.getSuccess("No appointments found.")
+		appointments, error = appointments_schema.dump(query)
+		if error:
+			return res.internalServiceError(error)
+		return res.getSuccess("Found appointments", appointments)
 	
 	#   Creates an appointment for a user in a specified project or topic
 	#   Requires structuring of the request body:
@@ -25,22 +28,24 @@ class apiAppointments(Resource):
 	#   login = user login ('dmontoya', 'bpierce')
 	#   {'project':'fillit', 'login':'bpierce'}
 	def post(self):
-		#	set default values
-		maxAppointmentsPerDay
+
 		data = request.get_json()
 
 		#   Checks if required data to create an appointment was provided in request
 		if not data:
 			return res.badRequestError("No data provided")
-		if data.get("topic") is None and data.get("project") is None:
-			return res.badRequestError("Unable to create appointment. No topic/project provided to search for mentors")
-		if data.get("login") is None:
+		if not data.get("topic") and not data.get("project"):
+			return res.badRequestError("Unable to create appointment. No topic or project provided to search for mentors")
+		if not data.get("login"):
 			return res.badRequestError("Unable to create appointment. No user login provided")
 		
 		#   Checks if project name exists in database
-		project, error = Project.queryProject(name=data.get("project"))
+		query = Project.query.filter_by(name=data.get("project")).first()
+		if not query:
+			return res.resourceMissing("No project {} found.".format(data.get("project")))
+		project, error = project_schema.dump(query)
 		if error:
-			return res.resourceMissing(error)
+			return res.internalServiceError(error)
 		
 		#   Checks if user with provided login exists in database
 		user, error = User.queryByLogin(data.get("login"))
@@ -49,19 +54,19 @@ class apiAppointments(Resource):
 		
 		#   check appointments made by user for project
 		projectAppointmentsCount = Appointment.queryCountProjectAppointmentsbyUser(project["id_project42"], user["id"])
-		if projectAppointmentsCount > 1:
+		if projectAppointmentsCount > _maxAppointmentsPerDay:
 			return res.badRequestError("User reached limit appointments for project {}".format(data.get("project")))
-
+		
 		#   Retrieves availables mentors for such project
 		query = Mentor.query.filter(Mentor.id_project42==project["id_project42"], Mentor.active==True, Mentor.id_user42!=user['id_user42'])
-		if query is None:
+		if not query:
 			res.resourceMissing('No mentors exist for project id {}'.format(data.get('project')))
 		mentors = mentors_schema.dump(query).data
 		onlineUsers = Api42.onlineUsers()
 		availablementors = [mentor for mentor in mentors for x in onlineUsers if mentor['id_user42'] == x['id']]
 		#   Checks if there is avaliable online mentors for the project/topic
 		if not availablementors:
-			return res.resourceMissing("No mentors online found for {}".format(data.get("project"))) 
+			return res.resourceMissing("No mentors online found for {}.".format(data.get("project"))) 
 
 		#--------------------------
 		#   Calls funtion/service to select mentor from the availablementors.
@@ -72,8 +77,8 @@ class apiAppointments(Resource):
 		#--------------------------
 
 		#   Creates and returns appointment if valid
-		if chosenmentor is None:
-			return res.internalServiceError(message="No mentor found/chosen")
+		if not chosenmentor:
+			return res.internalServiceError("Error selecting mentor")
 		newappointment, error = Appointment.createAppointment(chosenmentor["id"], user["id"])
 		if error:
 			return res.internalServiceError, error
