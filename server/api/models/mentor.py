@@ -29,42 +29,42 @@ class Mentor(db.Model):
 	@classmethod
 	def queryAll(cls):
 		query = cls.query.all()
-		if query is None:
+		if not query:
 			return None, "No mentors exist"
 		return mentors_schema.dump(query).data, None
 
 	@classmethod
 	def queryById(cls, mentorId):
 		query = cls.query.filter_by(id=mentorId).first()
-		if query is None:
+		if not query:
 			return None, "No mentor with id {} was found".format(mentorId)
 		return mentor_schema.dump(query).data, None
 
 	@classmethod
 	def queryManyByProject(cls, id):
 		query = cls.query.filter_by(id_project42=id).all()
-		if query is None:
+		if not query:
 			return None, "No mentors for project {}".format(id)
 		return mentors_schema.dump(query).data, None
 
 	@classmethod
 	def queryManyByUser(cls, id):
 		query = cls.query.filter_by(id_user42=id).all()
-		if query is None:
+		if not query:
 			return None, "No mentors for project {}".format(id)
 		return mentors_schema.dump(query).data, None
 
 	@classmethod
 	def queryByFilter(cls, **kwargs):
 		query = cls.query.filter_by(**kwargs).first()
-		if query is None:
+		if not query:
 			return None, "No mentor found"
 		return mentor_schema.dump(query).data, None
 
 	@classmethod
 	def queryManyByFilter(cls, **kwargs):
 		query = cls.query.filter_by(**kwargs).all()
-		if query is None:
+		if not query:
 			return None, "No mentors found"
 		return mentors_schema.dump(query).data, None
 

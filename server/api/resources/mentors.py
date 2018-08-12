@@ -119,10 +119,13 @@ class apiMentorsProject(Resource):
 
 	#   Gets all mentors for the specified project
 	def get(self, projectId):
-		mentors, error = Mentor.queryManyByFilter(id_project42=projectId, active=True)
-		#	check if mentors exist for that project
-		if error:
-			res.badRequestError(error)
+		#   get mentors that exist for that project
+		query = Mentor.query.filter_by(id_project42=projectId, active=True).all()
+		if not query:
+			return res.badRequestError('No Projects with id {} exist'.format(projectId))
+
+		#   get mentors
+		mentors = mentors_schema.dump(query).data
 
 		#	grab the current online students at 42
 		onlineUsers = Api42.onlineUsers()
@@ -144,9 +147,14 @@ class apiUserMentoring(Resource):
 		user, error = User.queryByLogin(login)
 		if error:
 			return res.resourceMissing(error)
-		mentors, error = Mentor.queryManyByFilter(id_user42=user["id_user42"], active=True)
-		if error:
-			return res.internalServiceError(error)
+
+		#   get the mentor records for that user on which projects they can mentor
+		query = Mentor.query.filter_by(id_user42=user['id_user42'], active=True)
+		if not query:
+			return res.internalServiceError('no mentor records for user {}'.format(login))
+
+		#   return the mentor data
+		mentors = mentors_schema.dump(query).data
 		return res.getSuccess(data=mentors)
 
 #   api/mentors/user/:login/capable
@@ -158,7 +166,12 @@ class apiUserCapabletoMentor(Resource):
 		user, error = User.queryByLogin(login)
 		if error:
 			return res.resourceMissing(error)
-		mentors, error = Mentor.queryManyByFilter(id_user42=user["id_user42"], abletomentor=True, active=False)
-		if error:
-			return res.internalServiceError(error)
+
+		#   get the mentor records for that user on which projects they can mentor
+		query = Mentor.query.filter_by(id_user42=user['id_user42'], abletomentor=True, active=True)
+		if not query:
+			return res.internalServiceError('no mentor records for user {}'.format(login))
+
+		#   return the mentor data
+		mentors = mentors_schema.dump(query).data
 		return res.getSuccess(data=mentors)
