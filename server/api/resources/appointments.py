@@ -8,6 +8,8 @@ from api.models import Project, project_schema, projects_schema
 from api.models import Appointment, appointment_schema, appointments_schema
 from rq42 import Api42
 from response import Response as res
+from .mentorAlgo import mentorAlgorithm
+
 _maxAppointmentsPerDay = 2
 
 #   /api/appointments
@@ -26,7 +28,8 @@ class apiAppointments(Resource):
 	#   Requires structuring of the request body:
 	#   project = project name 'or' topic = specific topic ('linked lists', 'hashtables', etc.)
 	#   login = user login ('dmontoya', 'bpierce')
-	#   {'project':'fillit', 'login':'bpierce'}
+	#   {"project":"fillit", "login":"bpierce"}
+
 	def post(self):
 
 		data = request.get_json()
@@ -70,10 +73,7 @@ class apiAppointments(Resource):
 
 		#--------------------------
 		#   Calls funtion/service to select mentor from the availablementors.
-
-		#   temporary for testing creation of appointment
-		chosenmentor = availablementors[0]
-
+		chosenmentor = mentorAlgorithm(availablementors)
 		#--------------------------
 
 		#   Creates and returns appointment if valid
