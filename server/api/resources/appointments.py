@@ -16,12 +16,12 @@ _maxAppointmentsPerDay = 2
 class apiAppointments(Resource):
 	#   gets all active appointments
 	def get(self):
-		query, error = Appointment.query.all()
+		query = Appointment.query.all()
 		if not query:
 			return res.getSuccess("No appointments found.")
-		appointments, error = appointments_schema.dump(query)
-		if error:
-			return res.internalServiceError(error)
+		appointments = appointments_schema.dump(query).data
+		if not appointments:
+			return res.internalServiceError("Failed to create appointment schema.")
 		return res.getSuccess("Found appointments", appointments)
 	
 	#   Creates an appointment for a user in a specified project or topic
