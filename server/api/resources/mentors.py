@@ -22,13 +22,18 @@ class apiMentors(Resource):
 class apiMentor(Resource):
 
 	#   Gets specified mentor data
-	def get(self, mentorId):
-		return None, 200
+	def	get(self, mentorId):
+		query = Mentor.query.filter_by(id=mentorId).first()
+		if not query:
+			return res.badRequestError('no mentor record with id {} exists'.format(mentorId))
+		data = mentor_schema.dump(query).data
+		if not data:
+			return res.internalServiceError('failed to build mentor data')
+		return res.getSuccess('mentor data retrieved for user {} on project {}'.format(query.user.login, query.project.name), data)
 
 	#   Updates any mentor data for the specified project
-	def put(self, mentorId):
+	def	put(self, mentorId):
 		return None, 202
-
 
 #   api/mentor/:mentorId/subscribeunsubscribe
 class apiSubscribeUnSubscribeMentor(Resource):

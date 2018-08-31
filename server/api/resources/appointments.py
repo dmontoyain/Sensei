@@ -8,25 +8,28 @@ from api.models import Project, project_schema, projects_schema
 from api.models import Appointment, appointment_schema, appointments_schema
 from rq42 import Api42
 from response import Response as res
+from .mentorAlgo import mentorAlgorithm
+
 _maxAppointmentsPerDay = 2
 
 #   /api/appointments
 class apiAppointments(Resource):
 	#   gets all active appointments
 	def get(self):
-		query, error = Appointment.query.all()
+		query = Appointment.query.all()
 		if not query:
 			return res.getSuccess("No appointments found.")
-		appointments, error = appointments_schema.dump(query)
-		if error:
-			return res.internalServiceError(error)
+		appointments = appointments_schema.dump(query).data
+		if not appointments:
+			return res.internalServiceError("Failed to create appointment schema.")
 		return res.getSuccess("Found appointments", appointments)
 	
 	#   Creates an appointment for a user in a specified project or topic
 	#   Requires structuring of the request body:
 	#   project = project name 'or' topic = specific topic ('linked lists', 'hashtables', etc.)
 	#   login = user login ('dmontoya', 'bpierce')
-	#   {'project':'fillit', 'login':'bpierce'}
+	#   {"project":"fillit", "login":"bpierce"}
+
 	def post(self):
 
 		data = request.get_json()
@@ -70,10 +73,7 @@ class apiAppointments(Resource):
 
 		#--------------------------
 		#   Calls funtion/service to select mentor from the availablementors.
-
-		#   temporary for testing creation of appointment
-		chosenmentor = availablementors[0]
-
+		chosenmentor = mentorAlgorithm(availablementors)
 		#--------------------------
 
 		#   Creates and returns appointment if valid
