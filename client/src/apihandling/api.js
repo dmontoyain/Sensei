@@ -2,7 +2,6 @@ import React from 'react';
 import axios from 'axios';
 
 const AxiosHandler = function() {
-
 	this._onSuccess = function(response) {
 		console.log('Request Successful!', response);
 		return response.data;
@@ -60,38 +59,253 @@ const headers = {
 const apiUsers = function() {
 	this.endpoint = `${API_URL}/api/users`;
 
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}`;
+	}
+
 	this.get = () => {
 		return axHandler._get(this.endpoint, null, headers);
 	}
 
 	this.post = () => {
-		return axHandler._post(this.endpoint)
+		return axHandler._post(this.endpoint, null, headers);
 	}
+}
+
+const apiUserProjectsAvailableMentors = function() {
+	this.endpoint = `${API_URL}/api/user`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}/projects/availablementors`;
+	}
+
+	this.get = (id) => {
+		return axHandler._get(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiUserUpdate = function () {
+	this.endpoint = `${API_URL}/api/user`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}/update`;
+	}
+
+	this.post = (id) => {
+		return axHandler._post(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiUser = function() {
+	this.endpoint = `${API_URL}/api/user`;
 
 	this.newEndpoint = (id) => {
 		return `${this.endpoint}/${id}`;
+	}
+
+	this.get = (id) => {
+		return axHandler._get(this.newEndpoint(id), null, headers);
+	}
+
+	this.post = (id) => {
+		return axHandler._post(this.newEndpoint(id), null, headers);
 	}
 }
 
 // APPOINTMENTS
+const apiAppointments = function() {
+	this.endpoint = `${API_URL}/api/appointments`;
+
+	this.get = () => {
+		return axHandler._get(this.endpoint, null, headers);
+	}
+
+	this.post = () => {
+		return axHandler._post(this.endpoint);
+	}
+}
 
 const apiAppointment = function() {
-	this.endpoint = `${API_URL}/api/appointment`
-	
+	this.endpoint = `${API_URL}/api/appointment`;
+
 	this.newEndpoint = (id) => {
 		return `${this.endpoint}/${id}`;
+	}
+
+	this.get = (id) => {
+		return axHandler._get(this.newEndpoint(id), null, headers);
 	}
 
 	this.put = (id, data) => {
 		return axHandler._put(this.newEndpoint(id), data, headers);
 	}
 
+	this.delete = (id) => {
+		return axHandler._delete(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiAppointmentsAsUser = function() {
+	this.endpoint = `${API_URL}/api/appointments/user`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}`;
+	}
+
+	this.get = (id) => {
+	return axHandler._get(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiAppointmentsAsMentor = function() {
+	this.endpoint = `${API_URL}/api/appointments/mentor`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}`;
+	}
+
+	this.get = (id) => {
+	return axHandler._get(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiPendingAppointmentsAsUser = function() {
+	this.endpoint = `${API_URL}/api/appointments/pending/user`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}`;
+	}
+
+	this.get = (id) => {
+		return axHandler._get(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiPendingAppointmentsAsMentor = function() {
+	this.endpoint = `${API_URL}/api/appointments/pending/mentor`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}`;
+	}
+
+	this.get = (id) => {
+		return axHandler._get(this.newEndpoint(id), null, headers);
+	}
 }
 
 // MENTORS
+const apiMentors = function() {
+	this.endpoint = `${API_URL}/api/mentors`;
+
+	this.get = () => {
+		return axHandler._get(this.endpoint, null, headers);
+	}
+}
+
+const apiMentor = function() {
+	this.endpoint = `${API_URL}/api/mentor`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}`;
+	}
+
+	this.get = (id) => {
+		return axHandler._get(this.newEndpoint(id), null, headers);
+	}
+
+	this.put = (id) => {
+		return axHandler._put(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiSubscribeUnSubscribeMentor = function() {
+	this.endpoint = `${API_URL}/api/mentor`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}/subscribesunsubscribe`;
+	}
+
+	this.put = (id) => {
+		return axHandler._put(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiSubscribeMentor = function() {
+	this.endpoint = `${API_URL}/api/mentor`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}/subscribe`;
+	}
+
+	this.put = (id) => {
+		return axHandler._put(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiUnsubscribeMentor = function() {
+	this.endpoint = `${API_URL}/api/mentor`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}/unsubscribe`;
+	}
+
+	this.put = (id) => {
+		return axHandler._put(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiMentorsProject = function() {
+	this.endpoint = `${API_URL}/api/mentors/project`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}`;
+	}
+
+	this.get = (id) => {
+		return axHandler._get(this.newEndpoint(id), null, headers);
+	}
+
+	this.post = (id) => {
+		return axHandler._post(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiUserMentoring = function() {
+	this.endpoint = `${API_URL}/mentors/user`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}/active`;
+	}
+
+	this.get = (id) => {
+		return axHandler.get(this.newEndpoint(id), null, headers);
+	}
+}
+
+const apiUserCapableToMentor = function() {
+	this.endpoint = `${API_URL}/mentors/user`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}/capable`;
+	}
+
+	this.get = (id) => {
+		return axHandler.get(this.newEndpoint(id), null, headers);
+	}
+}
 
 // PROJECTS
+const apiProjects = function() {
+	this.endpoint = `${API_URL}/api/projects`;
 
+	this.get = () => {
+		return axHandler._get(this.endpoint, null, headers);
+	}
+
+	this.post = () => {
+		return axHandler._post(this.endpoint, null, headers);
+	}
+}
 
 // EXPORTS ------------------------------------------------------------------------------
 

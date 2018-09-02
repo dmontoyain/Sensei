@@ -1,5 +1,5 @@
 
-import { Component, Framgent } from 'react';
+import { Component, Fragment } from 'react';
 
 class Avatar extends Component {
 	constructor(props){
