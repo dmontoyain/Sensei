@@ -1,5 +1,5 @@
 
-import { Component } from 'react';
+import { Component, Framgent } from 'react';
 
 class Avatar extends Component {
 	constructor(props){
@@ -30,7 +30,7 @@ class Avatar extends Component {
 
 	render() {
 		return (
-			<React.Fragment>
+			<Fragment>
 				<select onChange={this.changeSize}>
 					<option value="small">small</option>
 					<option value="medium">mEdIuM</option>
@@ -38,7 +38,7 @@ class Avatar extends Component {
 				</select>
 				<input onChange={this.changeUser}/>
 				<img src={`https://cdn.intra.42.fr/users/${this.state.size}_${this.state.user}.jpg`} />
-			</React.Fragment>
+			</Fragment>
 		)
 	}
 }
