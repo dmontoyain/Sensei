@@ -182,11 +182,3 @@ class apiUserCapabletoMentor(Resource):
 		#   return the mentor data
 		mentors = mentors_schema.dump(query).data
 		return res.getSuccess(data=mentors)
-
-# ------------------------------------------------------------------------------------------------------------
-#   A few different endpoints that might make more sense
-#
-#
-#
-#
-# ------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,7 @@
+@import "basscss";
+@import "basscss-colors";
+@import "basscss-background-colors";
+
+.bg-purple {
+	background-color: #666699;
+}
