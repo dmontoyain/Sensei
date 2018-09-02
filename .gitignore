@@ -106,5 +106,13 @@ venv.bak/
 #config files
 server/rq42/api42config.py
 server/api/config/dbConfig.py
+
 #Pycache
 *__pycache__*
+
+#Other Stuff
+dorfenv
+npm-debug.log
+node_modules
+.env
+*DS_*
