@@ -14,6 +14,7 @@ from response import Response as res
 class apiMentors(Resource):
 	def get(self):
 		query = Mentor.query.all()
+        if not query
 		data = mentors_schema.dump(query).data
 		return res.getSuccess('all mentors', data)
 
@@ -26,9 +27,11 @@ class apiMentor(Resource):
 		query = Mentor.query.filter_by(id=mentorId).first()
 		if not query:
 			return res.badRequestError('no mentor record with id {} exists'.format(mentorId))
+
 		data = mentor_schema.dump(query).data
 		if not data:
 			return res.internalServiceError('failed to build mentor data')
+
 		return res.getSuccess('mentor data retrieved for user {} on project {}'.format(query.user.login, query.project.name), data)
 
 	#   Updates any mentor data for the specified project
@@ -46,7 +49,7 @@ class apiSubscribeUnSubscribeMentor(Resource):
 		mentor = Mentor.query.filter_by(id=mentorId).first()
 
 		#   check if mentor exists in database
-		if mentor is None:
+		if not mentor:
 			return res.badRequestError("No mentor with id {} was found".format(mentorId))
 
 		#   check if mentor CAN mentor a project
@@ -166,17 +169,24 @@ class apiUserMentoring(Resource):
 class apiUserCapabletoMentor(Resource):
 
 	#   Gets projects the user is not subscribed and is capable of subscribing to be a mentor
-	#   To be capable of mentoring user has to have passed project with a finalmark > 90
 	def get(self, login):
 		user, error = User.queryByLogin(login)
 		if error:
 			return res.resourceMissing(error)
 
 		#   get the mentor records for that user on which projects they can mentor
-		query = Mentor.query.filter_by(id_user42=user['id_user42'], abletomentor=True, active=True)
+		query = Mentor.query.filter_by(id_user42=user['id_user42'], abletomentor=True, active=False)
 		if not query:
 			return res.internalServiceError('no mentor records for user {}'.format(login))
 
 		#   return the mentor data
 		mentors = mentors_schema.dump(query).data
 		return res.getSuccess(data=mentors)
+
+# ------------------------------------------------------------------------------------------------------------
+#   A few different endpoints that might make more sense
+#
+#
+#
+#
+# ------------------------------------------------------------------------------------------------------------

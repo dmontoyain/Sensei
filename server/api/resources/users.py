@@ -133,15 +133,14 @@ class apiUser(Resource):
 	def post(self, login):
 		#	grab the incomming data
 		data = request.get_json()
-		if not data:
-			return res.badRequestError("no data was provided")
+                if not data:
+                    return res.badRequestError("Missing data to process request")
 
 		#	check if the user already exists in the database
 		user, error = User.queryByLogin(login=data.get("login"))
 		if user is not None:
 			return res.resourceExistsError(error)
 
-		
 		print(user)
 		#	********************************************************
 		#	For testing purposes only ***** Remove in production
