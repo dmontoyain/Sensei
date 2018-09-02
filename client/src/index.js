@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from '../src/containers/App';
-import registerServiceWorker from './registerServiceWorker';
+import App from './containers/App';
+import './index.css';
 
-ReactDOM.render(<App />, document.getElementById('root'));
-registerServiceWorker();
+const MOUNT_ELEMENT = document.getElementById('root');
+
+ReactDOM.render(<App />, MOUNT_ELEMENT);
