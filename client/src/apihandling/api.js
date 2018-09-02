@@ -107,8 +107,8 @@ const apiUser = function() {
 		return axHandler._get(this.newEndpoint(id), null, headers);
 	}
 
-	this.post = (id) => {
-		return axHandler._post(this.newEndpoint(id), null, headers);
+	this.post = (id, data) => {
+		return axHandler._post(this.newEndpoint(id), data, headers);
 	}
 }
 
@@ -120,8 +120,8 @@ const apiAppointments = function() {
 		return axHandler._get(this.endpoint, null, headers);
 	}
 
-	this.post = () => {
-		return axHandler._post(this.endpoint);
+	this.post = (data) => {
+		return axHandler._post(this.endpoint, data, headers);
 	}
 }
 
