@@ -12,15 +12,18 @@ import {
 
 import '../assets/css/default.min.css'
 
-//Components
-import Header from '../components/Header/Header.js';
+// Higher-Order Components
+import withHeaderFooter from '../components/Header_Footer/HeaderFooter.js';
+
+// Components
 import PrivateRoute from '../security/PrivateRoute.js';
-import NotFound from '../components/NotFound/NotFound.js';
 import ProjectTile from '../components/ProjectTile/ProjectTile.js';
+
+// Page Components
+import NotFound from '../components/NotFound/NotFound.js';
+import LogInPage from '../components/LogInPage/LogInPage';
 import Home from '../components/Home/Home.js';
 
-// import ConceptTile from './components/ConceptTile/ConceptTile.js';
-import Footer from '../components/Footer/Footer.js';
 
 
 class App extends Component {
@@ -39,14 +42,12 @@ class App extends Component {
 		return (
 			<Router>
 				<div>
-					<Header />
 					<Switch>
-						<Redirect from="/home" to="/" />
-						<PrivateRoute exact path="/" component={Home} />
-						<PrivateRoute path="/projects" component={ProjectTile} />
+						<Route exact path="/" component={LogInPage} />
+						<PrivateRoute path="/home" component={withHeaderFooter(Home)} />
+						<PrivateRoute path="/projects" component={withHeaderFooter(ProjectTile)} />
 						<Route component={NotFound} />
 					</Switch>
-					<Footer />
 				</div>
 			</Router>
 		);

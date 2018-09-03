@@ -1,0 +1,33 @@
+/* CSS class definitions for the Log-In Page */
+
+.logInSenseiBox {
+	min-height: 80vw;
+	width: 100%;
+}
+
+.bg-purple {
+	background-color: #9867d6;
+}
+
+.bg-blue {
+	background-color: #6a6ad6;
+}
+
+.bg-green {
+	background-color: #00FF00;
+}
+
+
+.logInSenseiText {
+	align-items: center;
+	text-align: center;
+	font-size: 3rem;
+	font-family: 'Indie Flower';
+	font-weight: bold;
+}
+
+.getSenseid {
+	background-color: #6a6ad6;
+	text-align: center;
+	flex: auto;
+}
