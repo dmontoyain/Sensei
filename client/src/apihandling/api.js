@@ -45,14 +45,16 @@ const AxiosHandler = function() {
 			.then(this._onSuccess)
 			.catch(this._onError);
 	}
+
 }
 
 // --------------------------------------------------------------------------------------
 
 console.log(API_URL)
 const axHandler = new AxiosHandler();
+
 const headers = {
-	'content-type': 'application/json',	
+	'content-type': 'application/json',
 }
 
 // USER
@@ -111,6 +113,7 @@ const apiUser = function() {
 		return axHandler._post(this.newEndpoint(id), data, headers);
 	}
 }
+
 
 // APPOINTMENTS
 const apiAppointments = function() {

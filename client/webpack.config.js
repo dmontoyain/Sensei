@@ -40,6 +40,7 @@ module.exports = {
 		}),
 		new webpack.DefinePlugin({
 			API_URL: JSON.stringify(process.env.API_URL),
+			WEBSITE: JSON.stringify(process.env.WEBSITE),
 		})
 	],
 }
