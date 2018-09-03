@@ -46,19 +46,25 @@ const AxiosHandler = function() {
 			.then(this._onSuccess)
 			.catch(this._onError);
 	}
+
 }
 
 // --------------------------------------------------------------------------------------
 
 console.log(API_URL)
 const axHandler = new AxiosHandler();
+
 const headers = {
-	'content-type': 'application/json',	
+	'content-type': 'application/json',
 }
 
 // USER
 const apiUsers = function() {
 	this.endpoint = `${API_URL}/api/users`;
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}`;
+	}
 
 	this.get = () => {
 		return axHandler._get(this.endpoint, null, headers);
@@ -68,10 +74,8 @@ const apiUsers = function() {
 		return axHandler._post(this.endpoint)
 	}
 
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}`;
-	}
 }
+
 
 // APPOINTMENTS
 

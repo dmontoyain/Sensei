@@ -3,3 +3,4 @@
 @import "basscss-background-colors";
 
 @import './components/Home/Home.css';
+@import './components/LogInPage/LogInPage.css';

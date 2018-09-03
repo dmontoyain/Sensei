@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { apiUsers } from '../../apihandling/api.js';
+import { apiUsers } from '../../apihandling/api';
+import authClient from '../../security/Authentication';
 
 class Home extends Component {
 	constructor(props) {

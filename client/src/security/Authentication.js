@@ -35,6 +35,7 @@ class Authentication {
 	}
 
 	isAuthenticated = () => {
+		return true; // DELETE LATER -------------------------------------------------
 		return new Date().getTime() < this.expiresAt;
 	}
 

@@ -1,7 +1,5 @@
-@import "basscss";
-@import "basscss-colors";
-@import "basscss-background-colors";
+/* CSS class definitions for the Home Page */
 
 .bg-purple {
-	background-color: #666699;
+	background-color: #9867d6;
 }
