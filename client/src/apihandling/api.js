@@ -311,4 +311,22 @@ const apiProjects = function() {
 
 module.exports = {
 	apiUsers: new apiUsers(),
+	apiUserProjectsAvailableMentors: new apiUserProjectsAvailableMentors(),
+	apiUserUpdate: new apiUserUpdate(),
+	apiUser: new apiUser(),
+	apiAppointments: new apiAppointments(),
+	apiAppointment: new apiAppointment(),
+	apiAppointmentsAsUser: new apiAppointmentsAsUser(),
+	apiAppointmentsAsMentor: new apiAppointmentsAsMentor(),
+	apiPendingAppointmentsAsUser: new apiPendingAppointmentsAsUser(),
+	apiPendingAppointmentsAsMentor: new apiPendingAppointmentsAsMentor(),
+	apiMentors: new apiMentors(),
+	apiMentor: new apiMentor(),
+	apiSubscribeUnSubscribeMentor: new apiSubscribeUnSubscribeMentor(),
+	apiSubscribeMentor: new apiSubscribeMentor(),
+	apiUnsubscribeMentor: new apiUnsubscribeMentor(),
+	apiMentorsProject: new apiMentorsProject(),
+	apiUserMentoring: new apiUserMentoring(),
+	apiUserCapableToMentor: new apiUserCapableToMentor(),
+	apiProjects: new apiProjects()
 }
