@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ProjectsList from "./ProjectsList"
+import ProjectList from "./ProjectList"
 
 class ProjectTile extends Component {
     constructor() {
@@ -38,30 +38,30 @@ class ProjectTile extends Component {
                 listProjects.map()
             }
         </div>
-        <div>
-            {/* <div className="gridSearch">
-                <input className="search" type="text" placeholder="Search for a project" onChange={this.filterProjects.bind(this)}/>
-                <input className="search" type="text" placeholder="Search for a concept" onChange={this.filterConcepts.bind(this)}/>
-            </div> */}
-            <div className="grid">
-                {listProjects.map(item =>
-                                    <div key={item.name} className="cell" id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
-                                            <span id="projectName">{item.name}</span>
-                                            <span id="mentorText">Mentors Available:</span>
-                                            <span id="mentorsAvailable">{item.mass}</span>
-                                            <span id="projectNameDisplay">{item.name}</span>
-                                    </div>
-                                )}
-                {concepts.map(concept =>
-                            <div key={concept.name} className="cell" id={concept.mentors > 0 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
-                                    <span id="projectName">{concept.name}</span>
-                                    <span id="mentorText">Mentors Available:</span>
-                                    <span id="mentorsAvailable">{concept.mentors}</span>
-                                    <span id="projectNameDisplay">{concept.name}</span>
-                            </div>
-                        )}
-            </div>
-        </div>
+        // <div>
+        //     {/* <div className="gridSearch">
+        //         <input className="search" type="text" placeholder="Search for a project" onChange={this.filterProjects.bind(this)}/>
+        //         <input className="search" type="text" placeholder="Search for a concept" onChange={this.filterConcepts.bind(this)}/>
+        //     </div> */}
+        //     <div className="grid">
+        //         {listProjects.map(item =>
+        //                             <div key={item.name} className="cell" id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
+        //                                     <span id="projectName">{item.name}</span>
+        //                                     <span id="mentorText">Mentors Available:</span>
+        //                                     <span id="mentorsAvailable">{item.mass}</span>
+        //                                     <span id="projectNameDisplay">{item.name}</span>
+        //                             </div>
+        //                         )}
+        //         {concepts.map(concept =>
+        //                     <div key={concept.name} className="cell" id={concept.mentors > 0 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
+        //                             <span id="projectName">{concept.name}</span>
+        //                             <span id="mentorText">Mentors Available:</span>
+        //                             <span id="mentorsAvailable">{concept.mentors}</span>
+        //                             <span id="projectNameDisplay">{concept.name}</span>
+        //                     </div>
+        //                 )}
+        //     </div>
+        // </div>
     );
   }
 }

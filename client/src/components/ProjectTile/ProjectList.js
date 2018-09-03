@@ -1,5 +1,6 @@
 import React from "react";
-import Project from "./"
+import apiUserProjectsAvailableMentors from "../../apihandling/api" 
+import ProjectListItem from "./ProjectListItem"
 import authClient from "../../security/Authentication"
 
 class ProjectList extends React.Component {
@@ -13,7 +14,7 @@ class ProjectList extends React.Component {
 
     componentWillMount(props) {
         //	/api/user/:login/projects/availablementors
-        apiUserProjects.get(authClient.profile.login)
+        apiUserProjectsAvailableMentors.get("bpierce") //authClient.profile.login
         .then(response => {
             this.setState({
                 listProjects: response.data

@@ -77,11 +77,11 @@ const apiUsers = function() {
 const apiUserProjectsAvailableMentors = function() {
 	this.endpoint = `${API_URL}/api/user`;
 
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}/projects/availablementors`;
+	this.newEndpoint = (login) => {
+		return `${this.endpoint}/${login}/projects/availablementors`;
 	}
 
-	this.get = (id) => {
+	this.get = (login) => {
 		return axHandler._get(this.newEndpoint(id), null, headers);
 	}
 }
