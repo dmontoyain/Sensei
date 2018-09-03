@@ -13,14 +13,14 @@ const LogInPage = () => {
 		<Fragment>
 			<div className="flex flex-column">
 				<div className="sm-flex">
-					<div className="flex-auto logInSenseiBox bg-purple">
-						<h1 className="becomeSensei">Become a Sensei</h1>
+					<div className="m1 flex flex-center justify-center logInSenseiBox bg-purple">
+						<p className="flex logInSenseiText">Become a Sensei</p>
 					</div>
-					<div className="flex-auto logInSenseiBox bg-blue">
-						<h1>Get Sensei'd</h1>
+					<div className="m1 flex flex-center justify-center logInSenseiBox bg-blue">
+						<p className="flex logInSenseiText">Get Sensei'd</p>
 					</div>
 				</div>
-				<div className="">
+				<div className="m1 flex flex-center justify-center bg-green">
 					<h1>Sign In</h1>
 				</div>
 			</div>

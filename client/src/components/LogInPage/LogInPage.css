@@ -1,7 +1,8 @@
 /* CSS class definitions for the Log-In Page */
 
 .logInSenseiBox {
-	min-height: 80vh;
+	min-height: 80vw;
+	width: 100%;
 }
 
 .bg-purple {
@@ -12,12 +13,17 @@
 	background-color: #6a6ad6;
 }
 
+.bg-green {
+	background-color: #00FF00;
+}
+
 
 .logInSenseiText {
-	/*text-align: center;
-	vertical-align: middle;
-	flex: auto;*/
-	min-height: 80vh;
+	align-items: center;
+	text-align: center;
+	font-size: 3rem;
+	font-family: 'Indie Flower';
+	font-weight: bold;
 }
 
 .getSenseid {
