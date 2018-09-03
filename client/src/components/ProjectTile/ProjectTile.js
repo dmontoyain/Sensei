@@ -1,26 +1,13 @@
 import React, { Component } from 'react';
+import ProjectsList from "./ProjectsList"
 
 class ProjectTile extends Component {
     constructor() {
         super();
-        this.state = {  projects: [],
-                        concepts: [ {name: "pointers", mentors: 9, isConcept: true},
-                                    {name: "linked lists", mentors: 5, isConcept: true},
-                                    {name: "hash tables", mentors: 0, isConcept: true},
-                                    {name: "C++", mentors: 2, isConcept: true},
-                                    {name: "resume building", mentors: 7, isConcept: false},
-                                    {name: "machine learning", mentors: 0, isConcept: false},
-                                    {name: "NodeJS", mentors: 2, isConcept: true},
-                                    {name: "data structures", mentors: 5, isConcept: true},
-                                    {name: "Java", mentors: 1, isConcept: true},
-                                    {name: "Python", mentors: 7, isConcept: true}
-                                ]
-                    }
-    }
-    componentWillMount(){
-        fetch ( 'https://swapi.co/api/people/?format=json' )
-        .then( response => response.json() )
-        .then( ({results:projects}) => this.setState({projects}))
+        this.state = {
+            listProjects: [],
+            topics: [],
+        }
     }
     filterProjects (e) { 
         this.setState({userInputProjects: e.target.value})
@@ -30,31 +17,34 @@ class ProjectTile extends Component {
     }
 
   render() {
+    const { listProjects } = this.state;
+    // const { topics } = this.state;
+    // if (this.state.userInputProjects) {
+    //     projects = projects.filter( project =>
+    //         project.name.toLowerCase()
+    //         .includes(this.state.userInputProjects.toLowerCase()))
+    // }
 
-    let projects = this.state.projects;
-    let concepts = this.state.concepts;
-
-    if (this.state.userInputProjects) {
-        projects = projects.filter( project =>
-            project.name.toLowerCase()
-            .includes(this.state.userInputProjects.toLowerCase()))
-    }
-
-    if (this.state.userInputConcepts) {
-        concepts = concepts.filter( concept =>
-            concept.name.toLowerCase()
-            .includes(this.state.userInputConcepts.toLowerCase()))
-            .filter( concept => concept.isConcept === true)
-    }
+    // if (this.state.userInputConcepts) {
+    //     concepts = concepts.filter( concept =>
+    //         concept.name.toLowerCase()
+    //         .includes(this.state.userInputConcepts.toLowerCase()))
+    //         .filter( concept => concept.isConcept === true)
+    // }
 
     return (
+        <div className="ProjectsList">
+            {
+                listProjects.map()
+            }
+        </div>
         <div>
-            <div className="gridSearch">
+            {/* <div className="gridSearch">
                 <input className="search" type="text" placeholder="Search for a project" onChange={this.filterProjects.bind(this)}/>
                 <input className="search" type="text" placeholder="Search for a concept" onChange={this.filterConcepts.bind(this)}/>
-            </div>
+            </div> */}
             <div className="grid">
-                {projects.map(item =>
+                {listProjects.map(item =>
                                     <div key={item.name} className="cell" id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
                                             <span id="projectName">{item.name}</span>
                                             <span id="mentorText">Mentors Available:</span>
@@ -63,13 +53,13 @@ class ProjectTile extends Component {
                                     </div>
                                 )}
                 {concepts.map(concept =>
-                                    <div key={concept.name} className="cell" id={concept.mentors > 0 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
-                                            <span id="projectName">{concept.name}</span>
-                                            <span id="mentorText">Mentors Available:</span>
-                                            <span id="mentorsAvailable">{concept.mentors}</span>
-                                            <span id="projectNameDisplay">{concept.name}</span>
-                                    </div>
-                                )}
+                            <div key={concept.name} className="cell" id={concept.mentors > 0 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
+                                    <span id="projectName">{concept.name}</span>
+                                    <span id="mentorText">Mentors Available:</span>
+                                    <span id="mentorsAvailable">{concept.mentors}</span>
+                                    <span id="projectNameDisplay">{concept.name}</span>
+                            </div>
+                        )}
             </div>
         </div>
     );
