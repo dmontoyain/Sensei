@@ -14,7 +14,8 @@ from response import Response as res
 class apiMentors(Resource):
 	def get(self):
 		query = Mentor.query.all()
-        if not query
+		if not query:
+			return res.badRequestError("No mentors")
 		data = mentors_schema.dump(query).data
 		return res.getSuccess('all mentors', data)
 
