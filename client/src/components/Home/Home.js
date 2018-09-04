@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { apiUsers } from '../../apihandling/api';
 import authClient from '../../security/Authentication';
 
+// CSS
+import './Home.css';
+
+
 class Home extends Component {
 	constructor(props) {
 		super(props);
@@ -14,11 +18,9 @@ class Home extends Component {
 	componentWillMount() {
 		apiUsers.get()
 			.then(data => {
-				console.log(data.data);
 				this.setState({ listOfUsers: data.data });
 			})
 			.catch(err => {
-				console.log(err);
 			})
 	}
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -9,7 +10,7 @@ const withHeaderFooter = (WrappedComponent) => {
 	return class extends React.Component {
 		render () {
 			return (
-				<div className="flex flex-column">
+				<div className="flex flex-column" onClick={this.redirect}>
 					<Header />
 					<div className="flex-none">
 						<WrappedComponent />

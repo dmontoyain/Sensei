@@ -54,4 +54,6 @@ class Authentication {
 
 const authClient = new Authentication();
 
+console.log("CLIENTTTTTTTTTT")
+
 export default authClient;

@@ -45,7 +45,8 @@ class App extends Component {
 					<Switch>
 						<Route exact path="/" component={LogInPage} />
 						<PrivateRoute path="/home" component={withHeaderFooter(Home)} />
-						<PrivateRoute path="/projects" component={withHeaderFooter(ProjectTile)} />
+						<PrivateRoute path="/gimmehelp" component={withHeaderFooter(ProjectTile)} />
+						<PrivateRoute path="/iwannahelp" component={withHeaderFooter(ProjectTile)} />
 						<Route component={NotFound} />
 					</Switch>
 				</div>

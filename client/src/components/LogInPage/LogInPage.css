@@ -1,11 +1,31 @@
 /* CSS class definitions for the Log-In Page */
 
-.logInSenseiBox {
-	min-height: 80vw;
+.logInFull {
+	height: 100%;
 	width: 100%;
 }
 
-.bg-purple {
+.logInSenseiBox {
+	height: 80%;
+	border-radius: 5px;
+	margin: 5px;
+}
+
+.logInSenseiSignInBox {
+	border-radius: 5px;
+	margin: 5px;
+	width: 100%;
+}
+
+.bg-intra {
+	background-color: #292d39;
+}
+
+.bg-intra-light {
+	background-color: #4E5566;
+}
+
+/*.bg-purple {
 	background-color: #9867d6;
 }
 
@@ -15,14 +35,14 @@
 
 .bg-green {
 	background-color: #00FF00;
-}
+}*/
 
 
 .logInSenseiText {
 	align-items: center;
 	text-align: center;
-	font-size: 3rem;
-	font-family: 'Indie Flower';
+	font-size: 4rem;
+	font-family: 'Karla', sans-serif;
 	font-weight: bold;
 }
 
