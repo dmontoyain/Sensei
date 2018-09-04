@@ -14,6 +14,7 @@ _maxAppointmentsPerDay = 2
 
 #   /api/appointments
 class apiAppointments(Resource):
+
 	#   gets all active appointments
 	def get(self):
 		query = Appointment.query.all()
@@ -29,18 +30,17 @@ class apiAppointments(Resource):
 	#   project = project name 'or' topic = specific topic ('linked lists', 'hashtables', etc.)
 	#   login = user login ('dmontoya', 'bpierce')
 	#   {"project":"fillit", "login":"bpierce"}
-
 	def post(self):
 
 		data = request.get_json()
 
 		#   Checks if required data to create an appointment was provided in request
 		if not data:
-			return res.badRequestError("No data provided")
+			return res.badRequestError("Missing data to process request.")
 		if not data.get("topic") and not data.get("project"):
-			return res.badRequestError("Unable to create appointment. No topic or project provided to search for mentors")
+			return res.badRequestError("Missing data to process request. No topic or project provided to search for mentors")
 		if not data.get("login"):
-			return res.badRequestError("Unable to create appointment. No user login provided")
+			return res.badRequestError("Missing data to process request. No user login provided")
 		
 		#   Checks if project name exists in database
 		query = Project.query.filter_by(name=data.get("project")).first()
@@ -60,29 +60,35 @@ class apiAppointments(Resource):
 		if projectAppointmentsCount > _maxAppointmentsPerDay:
 			return res.badRequestError("User reached limit appointments for project {}".format(data.get("project")))
 		
-		#   Retrieves availables mentors for such project
-		query = Mentor.query.filter(Mentor.id_project42==project["id_project42"], Mentor.active==True, Mentor.id_user42!=user['id_user42'])
-		if not query:
+		#   Retrieves available mentors for the specified project
+		queryMentor = Mentor.query.filter(Mentor.id_project42==project["id_project42"], Mentor.active==True, Mentor.id_user42!=user['id_user42'])
+		if not queryMentor:
 			res.resourceMissing('No mentors exist for project id {}'.format(data.get('project')))
-		mentors = mentors_schema.dump(query).data
+		mentors = mentors_schema.dump(queryMentor).data
 		onlineUsers = Api42.onlineUsers()
+
+		#	Checks online students is not empty
+		if len(onlineUsers) == 0:
+			return res.resourceMissing("No mentors found on campus.")
+
 		availablementors = [mentor for mentor in mentors for x in onlineUsers if mentor['id_user42'] == x['id']]
+		
 		#   Checks if there is avaliable online mentors for the project/topic
 		if not availablementors:
 			return res.resourceMissing("No mentors online found for {}.".format(data.get("project"))) 
 
-		#--------------------------
-		#   Calls funtion/service to select mentor from the availablementors.
+		#   Calls 'mentor algorithm' to select a mentor from availablementors.
 		chosenmentor = mentorAlgorithm(availablementors)
-		#--------------------------
 
 		#   Creates and returns appointment if valid
 		if not chosenmentor:
-			return res.internalServiceError("Error selecting mentor")
+			return res.internalServiceError("Error: mentor selection.")
+
 		newappointment, error = Appointment.createAppointment(chosenmentor["id"], user["id"])
 		if error:
-			return res.internalServiceError, error
-		return res.postSuccess("Appointment created successfully", newappointment)
+			return res.internalServiceError(error)
+
+		return res.postSuccess("Appointment created successfully.", newappointment)
 
 #   /api/appointment/:appointmentId
 class apiAppointment(Resource):
