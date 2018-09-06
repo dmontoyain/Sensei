@@ -10,7 +10,7 @@ import {
 	BrowserRouter as Router,
 } from 'react-router-dom';
 
-import '../assets/css/default.min.css'
+// import '../assets/css/default.min.css'
 
 // Higher-Order Components
 import withHeaderFooter from '../components/Header_Footer/HeaderFooter.js';
@@ -45,7 +45,8 @@ class App extends Component {
 					<Switch>
 						<Route exact path="/" component={LogInPage} />
 						<PrivateRoute path="/home" component={withHeaderFooter(Home)} />
-						<PrivateRoute path="/projects" component={withHeaderFooter(ProjectTile)} />
+						<PrivateRoute path="/gimmehelp" component={withHeaderFooter(ProjectTile)} />
+						<PrivateRoute path="/iwannahelp" component={withHeaderFooter(ProjectTile)} />
 						<Route component={NotFound} />
 					</Switch>
 				</div>

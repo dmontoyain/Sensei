@@ -1,11 +1,11 @@
 
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 
 class Avatar extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			imgAddr: 'https://cdn.intra.42.fr'
+			imgAddr: 'https://cdn.intra.42.fr',
 			size: 'small',
 			user: '',
 		};
@@ -29,6 +29,8 @@ class Avatar extends Component {
 	}
 
 	render() {
+		const { user } = this.state;
+
 		return (
 			<Fragment>
 				<select onChange={this.changeSize}>
@@ -36,7 +38,7 @@ class Avatar extends Component {
 					<option value="medium">mEdIuM</option>
 					<option value="large">LARGE</option>
 				</select>
-				<input onChange={this.changeUser}/>
+				<input onChange={this.changeUser} value={user}/>
 				<img src={`https://cdn.intra.42.fr/users/${this.state.size}_${this.state.user}.jpg`} />
 			</Fragment>
 		)

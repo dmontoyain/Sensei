@@ -35,7 +35,7 @@ class Authentication {
 	}
 
 	isAuthenticated = () => {
-		return true; // DELETE LATER -------------------------------------------------
+		return false; // DELETE LATER -------------------------------------------------
 		return new Date().getTime() < this.expiresAt;
 	}
 
@@ -53,5 +53,7 @@ class Authentication {
 }
 
 const authClient = new Authentication();
+
+console.log("CLIENTTTTTTTTTT")
 
 export default authClient;

@@ -1,0 +1,28 @@
+@import 'basscss';
+
+.home-icon {
+	height: 100px;
+}
+
+.nav-bar {
+	text-align: center;
+}
+
+.nav-link {
+	flex: auto;
+	text-decoration: none;
+	background-image: linear-gradient(to bottom, #292d39, #4E5566);
+	border-right: 1px solid grey;
+	border-left: 1px solid grey;
+}
+
+.nav-text {
+	font-family: 'Nanum Brush Script', cursive;
+	font-size: 30px;
+	color: #dfdfdf;
+}
+
+.nav-link:hover .nav-text {
+	transform: scale(1.1);
+	color: white;
+}
