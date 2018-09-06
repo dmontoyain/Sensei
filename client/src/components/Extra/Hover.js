@@ -1,13 +1,6 @@
 import React, { Component } from 'react';
 
-import './Extra.css';
-
-// const Hover = ({ onHover, children }) => (
-// 	<div className="hover">
-// 		<div className="hover__no-hover">{children}</div>
-// 		<div className="hover__hover">{onHover}</div>
-// 	</div>
-// );
+import classNames from 'classnames';
 
 class Hover extends Component {
 	constructor(props) {
@@ -22,16 +15,26 @@ class Hover extends Component {
 		this.setState({ isHovering: !this.state.isHovering });
 	}
 
+	// enableHover = () => {
+	// 	this.setState({ isHovering: true });
+	// }
+
+	// disableHover = () => {
+	// 	this.setState({ isHovering: false });
+	// }
+
 	render() {
-		const { children } = this.props;
+		const { hoverElement, hideOnHover, className, children } = this.props;
+		const { isHovering } = this.state;
+
 		return (
-			<div onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
-				<div
-				>
-					Hover Me
-				</div>
-				<div>
-					{ this.state.isHovering && children }
+			<div
+				onMouseEnter={this.toggleHover}
+				onMouseLeave={this.toggleHover}
+			>
+				<div className={classNames(className)}>
+					{ hideOnHover && isHovering ? null : hoverElement}
+					{ isHovering && children }
 				</div>
 			</div>
 		);

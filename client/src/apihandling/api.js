@@ -4,7 +4,7 @@ import axios from 'axios';
 const AxiosHandler = function() {
 	this._onSuccess = function(response) {
 		console.log('Request Successful!', response);
-		return response.data;
+		return Promise.resolve(response.data);
 	}
 
 	this._onError = function(error) {
@@ -23,9 +23,10 @@ const AxiosHandler = function() {
 	}
 
 	this._get = function(endpoint, data, headers) {
+		console.log(endpoint, data, headers);
 		return axios.get(endpoint, data, headers)
 			.then(this._onSuccess)
-			.catch(this._onError);
+			.catch(this._onError); // Token re-authentication check will go here
 	}
 
 	this._post = function(endpoint, data, headers) {
@@ -48,9 +49,9 @@ const AxiosHandler = function() {
 
 }
 
-// --------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-console.log(API_URL)
+console.log(API_URL);
 const axHandler = new AxiosHandler();
 
 const headers = {
@@ -58,6 +59,8 @@ const headers = {
 }
 
 // USER
+// ----------------------------------------------------------------------------
+
 const apiUsers = function() {
 	this.endpoint = `${API_URL}/api/users`;
 
@@ -116,6 +119,8 @@ const apiUser = function() {
 
 
 // APPOINTMENTS
+// ----------------------------------------------------------------------------
+
 const apiAppointments = function() {
 	this.endpoint = `${API_URL}/api/appointments`;
 
@@ -175,28 +180,30 @@ const apiAppointmentsAsMentor = function() {
 const apiPendingAppointmentsAsUser = function() {
 	this.endpoint = `${API_URL}/api/appointments/pending/user`;
 
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}`;
+	this.newEndpoint = (login) => {
+		return `${this.endpoint}/${login}`;
 	}
 
-	this.get = (id) => {
-		return axHandler._get(this.newEndpoint(id), null, headers);
+	this.get = (login) => {
+		return axHandler._get(this.newEndpoint(login), null, headers);
 	}
 }
 
 const apiPendingAppointmentsAsMentor = function() {
 	this.endpoint = `${API_URL}/api/appointments/pending/mentor`;
 
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}`;
+	this.newEndpoint = (login) => {
+		return `${this.endpoint}/${login}`;
 	}
 
-	this.get = (id) => {
-		return axHandler._get(this.newEndpoint(id), null, headers);
+	this.get = (login) => {
+		return axHandler._get(this.newEndpoint(login), null, headers);
 	}
 }
 
 // MENTORS
+// ----------------------------------------------------------------------------
+
 const apiMentors = function() {
 	this.endpoint = `${API_URL}/api/mentors`;
 
@@ -298,6 +305,8 @@ const apiUserCapableToMentor = function() {
 }
 
 // PROJECTS
+// ----------------------------------------------------------------------------
+
 const apiProjects = function() {
 	this.endpoint = `${API_URL}/api/projects`;
 

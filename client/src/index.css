@@ -14,3 +14,13 @@
 
 
 @import url('https://fonts.googleapis.com/css?family=Karla');
+
+@import url("https://fonts.googleapis.com/css?family=Nanum+Brush+Script");
+
+.bg-intra {
+	background-color: #292d39;
+}
+
+.bg-intra-light {
+	background-color: #4E5566;
+}

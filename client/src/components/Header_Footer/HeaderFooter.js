@@ -10,7 +10,7 @@ const withHeaderFooter = (WrappedComponent) => {
 	return class extends React.Component {
 		render () {
 			return (
-				<div className="flex flex-column" onClick={this.redirect}>
+				<div className="flex flex-column">
 					<Header />
 					<div className="flex-none">
 						<WrappedComponent />

@@ -10,7 +10,7 @@ import {
 	BrowserRouter as Router,
 } from 'react-router-dom';
 
-import '../assets/css/default.min.css'
+// import '../assets/css/default.min.css'
 
 // Higher-Order Components
 import withHeaderFooter from '../components/Header_Footer/HeaderFooter.js';
