@@ -1,7 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 
-import testImage from '../../assets/images/test.png'
+// Icons 
+
+import homeIcon from '../../assets/images/home.png';
+import learnIcon from '../../assets/images/grasshopper.png';
+import teachIcon from '../../assets/images/sensei.png';
 
 // CSS
 
@@ -12,9 +16,9 @@ class NavBar extends Component {
 		super(props);
 		this.state = {
 			pages: [
-				{ name: 'Home', link: '/home', },
-				{ name: 'Help me!', link: '/gimmehelp', },
-				{ name: 'Let me Assist', link: '/iwannahelp', },
+				{ name: 'Home', link: '/home', icon: homeIcon, },
+				{ name: 'Help me!', link: '/gimmehelp', icon: learnIcon, },
+				{ name: 'Let me Assist', link: '/iwannahelp', icon: teachIcon, },
 			],
 		};
 	}
@@ -24,13 +28,10 @@ class NavBar extends Component {
 
 		return (
 			<div className="navbar-main">
-				<div className="navbar-icon-container">
-					<img src={testImage} className="navbar-icon"/>
-				</div>
 				<div className="navlink-container">
 			 		{pages.map((page, idx) => (
 			 			<NavLink key={idx} exact to={page.link} className="navlink">
-		 					<p className="navlink-text">{page.name}</p>
+				 			<img alt={page.name} src={page.icon} className="navbar-icon"/>
 		 				</NavLink>
 			 		))}
 			 	</div>

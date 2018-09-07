@@ -11,8 +11,8 @@ import authClient from '../../security/Authentication';
 
 import './Home.css'
 
-const monthsRef = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-const daysRef = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const monthsRef = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+const daysRef = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Appointments = ({ ...props }) => {
 
