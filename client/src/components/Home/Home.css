@@ -3,3 +3,26 @@
 .bg-purple {
 	background-color: #9867d6;
 }
+
+.home-main {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+
+.home-box {
+	padding: 10px;
+	margin: 10px;
+	min-width: 40%;
+	background-color: white;
+	padding: 20px;
+}
+
+/* --- */
+
+.home-box-title {
+	font-family: "arial";
+	font-weight: bold;
+	padding-bottom: 10px;
+}

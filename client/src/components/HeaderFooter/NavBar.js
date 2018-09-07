@@ -1,14 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 
-import Hover from '../Extra/Hover';
+import testImage from '../../assets/images/test.png'
 
 // CSS
-import './Header.css';
 
-// Image
-
-import testImage from '../../assets/images/test.png'
+import './HeaderFooter.css'
 
 class NavBar extends Component {
 	constructor(props) {
@@ -26,17 +23,21 @@ class NavBar extends Component {
 		const { pages } = this.state;
 
 		return (
-			<div className="flex flex-wrap nav-bar">
-				<img src={testImage} className="home-icon"/>
-		 		{pages.map((page, idx) => (
-		 			<NavLink key={idx} exact to={page.link} className="nav-link">
-	 					<p className="nav-text">{page.name}</p>
-	 				</NavLink>
-		 		))}
+			<div className="navbar-main">
+				<div className="navbar-icon-container">
+					<img src={testImage} className="navbar-icon"/>
+				</div>
+				<div className="navlink-container">
+			 		{pages.map((page, idx) => (
+			 			<NavLink key={idx} exact to={page.link} className="navlink">
+		 					<p className="navlink-text">{page.name}</p>
+		 				</NavLink>
+			 		))}
+			 	</div>
 			</div>
 		);
 	}
-} 
+}
 
 			// <Hover
 			// 	className="flex flex-wrap"
@@ -45,19 +46,4 @@ class NavBar extends Component {
 			// STUFF GOES HERE
 			// </Hover>
 
-class Header extends Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-
-	 	return (
-	 		<header>
-	 			<NavBar />
-	 		</header>
-	 	);
-	}
-}
-
-export default Header;
+export default NavBar;

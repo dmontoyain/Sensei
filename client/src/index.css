@@ -17,6 +17,19 @@
 
 @import url("https://fonts.googleapis.com/css?family=Nanum+Brush+Script");
 
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	height: 100%;
+	width: 100%;
+	position: relative;
+	background-color: #fafafa;
+}
+
 .bg-intra {
 	background-color: #292d39;
 }

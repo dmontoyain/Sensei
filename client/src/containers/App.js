@@ -13,7 +13,7 @@ import {
 // import '../assets/css/default.min.css'
 
 // Higher-Order Components
-import withHeaderFooter from '../components/Header_Footer/HeaderFooter.js';
+import withHeaderFooter from '../components/HeaderFooter/HeaderFooter.js';
 
 // Components
 import PrivateRoute from '../security/PrivateRoute.js';
