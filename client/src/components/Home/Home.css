@@ -50,24 +50,37 @@
 
 /* --- Profile.js --- */
 
+/* THIS SUCKS */
+@media all and (max-width: 780px) {
+	.profile-container {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.profile-avatar {
+		max-height: 180px;
+	}
+}
+
 .profile-container {
 	display: flex;
 	position: relative;
-	flex-wrap: wrap;
 	justify-content: space-around;
 }
 
 .profile-avatar {
-	border-radius: 10px 50px
+	border-radius: 10px 50px;
+	flex-shrink: 1;
 }
 
 .profile-info {
 	display: flex;
-	flex: 0 auto;
+	flex-grow: 1;
 	flex-wrap: wrap;
+	align-content: flex-start;
 	padding-left: 25px;
 }
 
 .info-blurb {
 	padding: 25px;
+	flex: 1;
 }
