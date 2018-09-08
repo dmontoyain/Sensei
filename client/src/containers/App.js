@@ -13,7 +13,7 @@ import {
 // import '../assets/css/default.min.css'
 
 // Higher-Order Components
-import withHeaderFooter from '../components/Header_Footer/HeaderFooter.js';
+import withHeaderFooter from '../components/HeaderFooter/HeaderFooter.js';
 
 // Components
 import PrivateRoute from '../security/PrivateRoute.js';
@@ -41,15 +41,13 @@ class App extends Component {
 	render() {
 		return (
 			<Router>
-				<div>
-					<Switch>
-						<Route exact path="/" component={LogInPage} />
-						<PrivateRoute path="/home" component={withHeaderFooter(Home)} />
-						<PrivateRoute path="/gimmehelp" component={withHeaderFooter(ProjectTile)} />
-						<PrivateRoute path="/iwannahelp" component={withHeaderFooter(ProjectTile)} />
-						<Route component={NotFound} />
-					</Switch>
-				</div>
+				<Switch>
+					<Route exact path="/" component={LogInPage} />
+					<PrivateRoute path="/home" component={withHeaderFooter(Home)} />
+					<PrivateRoute path="/gimmehelp" component={withHeaderFooter(ProjectTile)} />
+					<PrivateRoute path="/iwannahelp" component={withHeaderFooter(ProjectTile)} />
+					<Route component={NotFound} />
+				</Switch>
 			</Router>
 		);
 	}

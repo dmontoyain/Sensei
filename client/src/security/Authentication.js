@@ -35,13 +35,13 @@ class Authentication {
 	}
 
 	isAuthenticated = () => {
-		return false; // DELETE LATER -------------------------------------------------
+		return true; // DELETE LATER -------------------------------------------------
 		return new Date().getTime() < this.expiresAt;
 	}
 
 	signIn = () => {
 		this.authenticate();
-		return (<Redirect to="https://signin.intra.42.fr/users/sign_in" />);
+		return <Redirect to="https://signin.intra.42.fr/users/sign_in" />;
 	}
 
 	signOut = () => {
