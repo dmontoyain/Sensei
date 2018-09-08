@@ -13,7 +13,7 @@ class Header extends Component {
 	render() {
 
 	 	return (
-	 		<header className="header-footer-component">
+	 		<header className="header-container">
 	 			<NavBar />
 	 		</header>
 	 	);
@@ -23,8 +23,8 @@ class Header extends Component {
 class Footer extends Component {
   render() {
     return (
-        <footer className="header-footer-component">
-            Footer
+        <footer className="footer-container">
+            <h4 className="footer-text">@Team Sensei 2018</h4>
         </footer>
     );
   }
@@ -39,7 +39,9 @@ const withHeaderFooter = (WrappedComponent) => {
 			return (
 				<div className="header-footer-component-container">
 					<Header />
-					<WrappedComponent />
+					<div className="wc-container">
+						<WrappedComponent />
+					</div>
 					<Footer />
 				</div>
 			);

@@ -5,11 +5,30 @@
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	align-content: stretch;
 }
 
-.header-footer-component {
+.header-container {
+}
+
+.wc-container {
+	flex: 1 0 auto;
+}
+
+.footer-container {
+	background-color: #292d39;
+	height: 25px;
+	width: 100%;
+	flex-shrink: 0;
 	position: relative;
+	text-align: center;
+}
+
+.footer-text {
+	font-style: italic;
+	font-weight: 100;
+	font-size: .7rem;
+	color: lightgrey;
+	padding-top: 5px;
 }
 
 /* --- */

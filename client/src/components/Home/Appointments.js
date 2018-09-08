@@ -5,7 +5,19 @@ import {
 	apiPendingAppointmentsAsUser
 } from '../../apihandling/api';
 
+
+// Components
+
+import NoData from '../Extra/NoData';
+
+// Security
+
 import authClient from '../../security/Authentication';
+
+// Icons
+
+import noDataOne from '../../assets/images/floatingguru.png';
+import noDataTwo from '../../assets/images/floatingguru2.png';
 
 // CSS
 
@@ -16,7 +28,7 @@ const daysRef = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Appointments = ({ ...props }) => {
 
-	const { myAppointments } = { ...props };
+	const { myAppointments, noDataIcon } = { ...props };
 
 	const formatStartTime = (st) => {
 		const date = new Date(st);
@@ -27,6 +39,10 @@ const Appointments = ({ ...props }) => {
 		const mn = date.getMinutes();
 		const sc = date.getSeconds();
 		return `You have an appointment on ${day}, ${mth} ${dayN} at ${hr}:${mn}:${sc}`;
+	}
+
+	if (myAppointments.length) {
+		return <NoData text="No Appointments" icon={noDataIcon} />;
 	}
 
 	return (
@@ -41,12 +57,13 @@ const Appointments = ({ ...props }) => {
 }
 
 // HOC that wraps the Appointments class
-const appointmentWrap = (WrappedComponent, apiCall, title) => {
+const appointmentWrap = (WrappedComponent, apiCall, title, noDataIcon) => {
 	class HOC extends Component {
 		constructor(props) {
 			super(props);
 			this.state = {
 				myAppointments: [],
+				noDataIcon: noDataIcon,
 			}
 		}
 
@@ -70,7 +87,7 @@ const appointmentWrap = (WrappedComponent, apiCall, title) => {
 				<Fragment>
 					<h4 className="home-box-title">{title}</h4>
 					<WrappedComponent
-						myAppointments={this.state.myAppointments}
+						{ ...this.state }
 						{ ...this.props }
 					/>
 				</Fragment>
@@ -81,9 +98,9 @@ const appointmentWrap = (WrappedComponent, apiCall, title) => {
 	return HOC;
 }
 
-const AppointmentsAsUser = appointmentWrap(Appointments, apiPendingAppointmentsAsUser, "Learning");
+const AppointmentsAsUser = appointmentWrap(Appointments, apiPendingAppointmentsAsUser, "Learning", noDataOne);
 
-const AppointmentsAsMentor = appointmentWrap(Appointments, apiPendingAppointmentsAsMentor, "Teaching");
+const AppointmentsAsMentor = appointmentWrap(Appointments, apiPendingAppointmentsAsMentor, "Teaching", noDataTwo);
 
 export {
 	AppointmentsAsUser,

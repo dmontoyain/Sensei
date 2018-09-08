@@ -16,7 +16,8 @@
 .home-box {
 	padding: 10px;
 	margin: 10px;
-	min-width: 40%;
+	width: 40%;
+	flex-grow: 0;
 	background-color: white;
 	padding: 20px;
 	-webkit-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
@@ -24,6 +25,10 @@
 	box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	-webkit-animation: fadein 0.9s;
 	animation: fadein 0.9s;
+}
+
+.hb-double-width {
+	min-width: 90%;
 }
 
 @keyframes fadein {
@@ -39,7 +44,30 @@
 /* --- */
 
 .home-box-title {
-	font-family: "arial";
 	font-weight: bold;
 	padding-bottom: 10px;
+}
+
+/* --- Profile.js --- */
+
+.profile-container {
+	display: flex;
+	position: relative;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+
+.profile-avatar {
+	border-radius: 10px 50px
+}
+
+.profile-info {
+	display: flex;
+	flex: 0 auto;
+	flex-wrap: wrap;
+	padding-left: 25px;
+}
+
+.info-blurb {
+	padding: 25px;
 }

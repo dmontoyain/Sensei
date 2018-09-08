@@ -1,19 +1,28 @@
 import React, { Component } from 'react';
 
+// Components
+
 import {
 	AppointmentsAsUser,
 	AppointmentsAsMentor
 } from './Appointments';
 
+import Profile from './Profile';
+
+// Security
 import authClient from '../../security/Authentication';
-import classNames from 'classnames';
 
 // CSS
 import './Home.css';
 
-// Bounds the given component within a 'box'
+// Extra
 
-const homeBox = (WrappedComponent) => {
+import classNames from 'classnames';
+
+// Bounds the given component within a Home Box
+// Takes an optional className to add to the container for the wrapped component
+
+const homeBox = (WrappedComponent, className) => {
 	class HOC extends Component {
 		constructor(props) {
 			super(props);
@@ -21,7 +30,7 @@ const homeBox = (WrappedComponent) => {
 
 		render() {
 			return (
-				<div className="home-box">
+				<div className={classNames("home-box", className)}>
 					<WrappedComponent { ...this.props } />
 				</div>
 			)
@@ -43,11 +52,13 @@ class Home extends Component {
 		const { listOfUsers } = this.state;
 		const { className } = this.props; 
 
+		const Pr = homeBox(Profile, "hb-double-width");
 		const Au = homeBox(AppointmentsAsUser);
 		const Am = homeBox(AppointmentsAsMentor);
 
 		return (
 			<div className="home-main">
+				<Pr />
 				<Au />
 				<Am />
 			</div>
