@@ -1,116 +1,66 @@
 import React, { Component } from 'react';
 
-import {
-	apiPendingAppointmentsAsMentor,
-	apiPendingAppointmentsAsUser
-} from '../../apihandling/api';
+// Components
 
+import {
+	AppointmentsAsUser,
+	AppointmentsAsMentor
+} from './Appointments';
+
+import Profile from './Profile';
+
+// Security
 import authClient from '../../security/Authentication';
 
 // CSS
 import './Home.css';
 
+// Extra
 
-function appointmentWrap(WrappedComponent, apiCall) {
-	return class extends React.Component {
+import classNames from 'classnames';
+
+// Bounds the given component within a Home Box
+// Takes an optional className to add to the container for the wrapped component
+
+const homeBox = (WrappedComponent, className) => {
+	class HOC extends Component {
 		constructor(props) {
 			super(props);
-			this.state = {
-				myAppointments: [],
-			}
-		}
-
-		componentWillMount() {
-			apiCall.get("nwang")//authClient.login)
-				.then(data => {
-					this.setState({ myAppointments: data.data === {} ? [] : data.data });
-				})
-				.catch(err => {
-					return ;
-				})
 		}
 
 		render() {
-			const { myAppointments } = this.state;
-
-			return ( <WrappedComponent /> );
+			return (
+				<div className={classNames("home-box", className)}>
+					<WrappedComponent { ...this.props } />
+				</div>
+			)
 		}
 	}
+
+	return HOC;
 }
-
-class Appointments extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			myAppointments: [],
-		};
-	}
-
-	componentWillMount() {
-		const userApts = apiPendingAppointmentsAsUser.get("nwang")//authClient.login)
-			.then(data => {
-				return data.data === {} ? [] : data.data;
-			})
-			.catch(err => {
-				return [];
-			});
-
-		const mentorApts = apiPendingAppointmentsAsMentor.get("nwang")//authClient.login)
-			.then(data => {
-				return data.data === {} ? [] : data.data;
-			})
-			.catch(err => {
-				return [];
-			});
-
-		Promise.all([userApts, mentorApts])
-			.then(values => {
-				console.log(values);
-			})
-			.catch(err => {
-				console.log("PROMISE ALL FAIL", err);
-			})
-	}
-
-	render() {
-		const { myAppointments } = this.state;
-
-		return (
-			<div>
-				{myAppointments.map(apnt => {
-					<span>{apnt}</span>
-				})}
-			</div>
-		);
-	}
-}
-
 
 class Home extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			listOfUsers: [],
 			hello: "hello",
 		}
 	}
 
-	componentWillMount() {
-	}
-
 	render() {
 		const { listOfUsers } = this.state;
+		const { className } = this.props; 
+
+		const Pr = homeBox(Profile, "hb-double-width");
+		const Au = homeBox(AppointmentsAsUser);
+		const Am = homeBox(AppointmentsAsMentor);
 
 		return (
-			<div>
-				<div className="flex flex-wrap">
-					<Appointments />
-				</div>
-				<div className="flex">
-					{listOfUsers.map(user => (
-						<h1 className="" key={user.id}>{user.login}</h1>
-					))}
-				</div>
+			<div className="home-main">
+				<Pr />
+				<Au />
+				<Am />
 			</div>
 		);
 	}
