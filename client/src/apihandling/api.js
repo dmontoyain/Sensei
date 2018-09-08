@@ -80,8 +80,8 @@ const apiUsers = function() {
 const apiUsersOnline = function() {
 	this.endpoint = `${API_URL}/api/users/online`;
 
-	this.get = () => {
-		return axHandler._get(this.endpoint, null, headers);
+	this.get = (data) => {
+		return axHandler._get(this.endpoint, data, headers);
 	}
 }
 
