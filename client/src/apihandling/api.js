@@ -51,11 +51,11 @@ const AxiosHandler = function() {
 
 // ----------------------------------------------------------------------------
 
-console.log(API_URL);
 const axHandler = new AxiosHandler();
 
 const headers = {
 	'content-type': 'application/json',
+	'x-access-token': '',
 }
 
 // USER
@@ -93,7 +93,7 @@ const apiUserProjectsAvailableMentors = function() {
 	}
 
 	this.get = (login) => {
-		return axHandler._get(this.newEndpoint(id), null, headers);
+		return axHandler._get(this.newEndpoint(login), null, headers);
 	}
 }
 
