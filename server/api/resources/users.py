@@ -18,6 +18,17 @@ class apiUsers(Resource):
 		data = users_schema.dump(query).data
 		return res.getSuccess('all users', data)
 
+#	/api/users/online
+class apiUsersOnline(Resource):
+
+	#	Return all online users
+	def get(self):
+		queryUsers = User.queryByAll()
+		onlineStudents = Api42.onlineUsers()
+		onlineSenseiUsers = [u for u in queryUsers for o in onlineStudents if u["id_user42"] == o["id"]]
+		return res.getSuccess(data=onlineSenseiUsers)
+		
+
 #	/api/user/:login/projects/availablementors
 class apiUserProjectsAvailableMentors(Resource):
 	def get(self, login):
