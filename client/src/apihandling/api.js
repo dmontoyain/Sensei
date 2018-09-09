@@ -77,6 +77,14 @@ const apiUsers = function() {
 	}
 }
 
+const apiUsersOnline = function() {
+	this.endpoint = `${API_URL}/api/users/online`;
+
+	this.get = (data) => {
+		return axHandler._get(this.endpoint, data, headers);
+	}
+}
+
 const apiUserProjectsAvailableMentors = function() {
 	this.endpoint = `${API_URL}/api/user`;
 
@@ -323,6 +331,7 @@ const apiProjects = function() {
 
 module.exports = {
 	apiUsers: new apiUsers(),
+	apiUsersOnline: new apiUsersOnline(),
 	apiUserProjectsAvailableMentors: new apiUserProjectsAvailableMentors(),
 	apiUserUpdate: new apiUserUpdate(),
 	apiUser: new apiUser(),
