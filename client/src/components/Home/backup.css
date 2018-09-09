@@ -1,0 +1,94 @@
+/* CSS class definitions for the Home Page */
+
+.bg-purple {
+	background-color: #9867d6;
+}
+
+.home-main {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+
+/* horizontal, vertical, blur radius, spread radius */
+
+.home-box {
+	margin: 10px;
+	padding: 20px;
+	width: 40%;
+	flex-grow: 0;
+	background-color: white;
+	-webkit-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
+	-moz-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
+	box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
+	-webkit-animation: fadein 0.9s;
+	animation: fadein 0.9s;
+}
+
+.hb-double-width {
+	min-width: 90%;
+}
+
+@keyframes fadein {
+	from { opacity: 0; }
+	to	 { opacity: 1; }
+}
+
+@-webkit-keyframes fadein {
+	from { opacity: 0; }
+	to	 { opacity: 1; }
+}
+
+/* --- */
+
+.home-box-title {
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+/* --- Profile.js --- */
+
+/* THIS SUCKS */
+@media all and (max-width: 780px) {
+	.profile-container {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.profile-avatar {
+		max-height: 180px;
+	}
+}
+
+.profile-container {
+	display: flex;
+	position: relative;
+	justify-content: space-around;
+}
+
+.profile-avatar {
+	border-radius: 10px 50px;
+	flex-shrink: 1;
+}
+
+.profile-info {
+	display: flex;
+	flex-grow: 1;
+	flex-wrap: wrap;
+	align-content: flex-start;
+	padding-left: 25px;
+}
+
+@media all and (max-width: 780px) {
+	.profile-container {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+.info-blurb {
+	padding: 25px;
+	flex: 1;
+}
+
+flex box references
+https://www.youtube.com/watch?v=k32voqQhODc
