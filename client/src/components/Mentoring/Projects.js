@@ -27,7 +27,7 @@ class HelpMeList extends Component {
 		return (
 			<div>
 				{myProjects.map(item =>
-					<div key={item.name} className="cell" id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
+					<div key={item.id} className="cell" id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
 			 			<span id="projectName">{item.project.name}</span>
 			 			<span id="mentorText">Mentors Available:</span>
 						<span id="mentorsAvailable">{item.mass}</span>
@@ -64,7 +64,7 @@ class HelpYouList extends Component {
 		return (
 			<div>
 				{myProjects.map(item =>
-					<div key={item.name} className="cell" id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
+					<div key={item.id} className="cell" id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
 			 			<span id="projectName">{item.project.name}</span>
 			 			<span id="mentorText">Mentors Available:</span>
 						<span id="mentorsAvailable">{item.mass}</span>

@@ -17,7 +17,6 @@ import withHeaderFooter from '../components/HeaderFooter/HeaderFooter';
 
 // Components
 import PrivateRoute from '../security/PrivateRoute';
-import ProjectTile from '../components/ProjectTile/ProjectTile';
 import { HelpMe, HelpYou } from '../components/Mentoring/Projects';
 
 // Page Components
