@@ -33,10 +33,10 @@ class Profile extends Component {
 			<div className="profile-container">
 				<Avatar login="nwang"/*{authClient.login}*/ size="medium" className="profile-avatar" />
 				<div className="profile-info">
-					<InfoBlurb label="Something" text="test" />
-					<InfoBlurb label="Something" text="test" />
-					<InfoBlurb label="Something" text="test" />
-					<InfoBlurb label="Something" text="test" />
+					<InfoBlurb label="Level" text="15" />
+					<InfoBlurb label="CP" text="42" />
+					<InfoBlurb label="Apts" text="3" />
+					<InfoBlurb label="Lessons" text="5" />
 				</div>
 			</div>
 		);

@@ -10,16 +10,19 @@ import {
 import Profile from './Profile';
 
 // Security
+
 import authClient from '../../security/Authentication';
 
 // CSS
+
 import './Home.css';
 
 // Extra
 
 import classNames from 'classnames';
 
-// Bounds the given component within a Home Box
+
+// Accepts a component and bounds the given component within a Home Box
 // Takes an optional className to add to the container for the wrapped component
 
 const homeBox = (WrappedComponent, className) => {
@@ -39,6 +42,9 @@ const homeBox = (WrappedComponent, className) => {
 
 	return HOC;
 }
+
+
+// The main render of the home page
 
 class Home extends Component {
 	constructor(props) {

@@ -26,20 +26,21 @@ import './Home.css'
 const monthsRef = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
 const daysRef = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+function formatStartTime(st) {
+	const date = new Date(st);
+	const day = daysRef[date.getDay()];
+	const mth = monthsRef[date.getMonth()];
+	const dayN = date.getDate();
+	const hr = date.getHours();
+	const mn = date.getMinutes();
+	const sc = date.getSeconds();
+	return `You have an appointment on ${day}, ${mth} ${dayN} at ${hr}:${mn}:${sc}`;
+};
+
+
 const Appointments = ({ ...props }) => {
 
 	const { myAppointments, noDataIcon } = { ...props };
-
-	const formatStartTime = (st) => {
-		const date = new Date(st);
-		const day = daysRef[date.getDay()];
-		const mth = monthsRef[date.getMonth()];
-		const dayN = date.getDate();
-		const hr = date.getHours();
-		const mn = date.getMinutes();
-		const sc = date.getSeconds();
-		return `You have an appointment on ${day}, ${mth} ${dayN} at ${hr}:${mn}:${sc}`;
-	}
 
 	if (myAppointments.length) {
 		return <NoData text="No Appointments" icon={noDataIcon} />;
@@ -79,7 +80,7 @@ const appointmentWrap = (WrappedComponent, apiCall, title, noDataIcon) => {
 							{ fake: "DOUBLEfake", deleteme: "This is just a test", start_time: "2018-08-09T14:08:36.695116+00:00", },
 						],
 					})
-				})
+				});
 		}
 
 		render() {

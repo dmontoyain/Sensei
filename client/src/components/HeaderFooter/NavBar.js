@@ -17,8 +17,8 @@ class NavBar extends Component {
 		this.state = {
 			pages: [
 				{ name: 'Home', link: '/home', icon: homeIcon, },
-				{ name: 'Help me!', link: '/gimmehelp', icon: learnIcon, },
-				{ name: 'Let me Assist', link: '/iwannahelp', icon: teachIcon, },
+				{ name: 'Help me!', link: '/helpme', icon: learnIcon, },
+				{ name: 'Let me Assist', link: '/helpyou', icon: teachIcon, },
 			],
 		};
 	}
@@ -39,12 +39,5 @@ class NavBar extends Component {
 		);
 	}
 }
-
-			// <Hover
-			// 	className="flex flex-wrap"
-			// 	hoverElement={<img src={testImage} height='75'/>}
-			// >
-			// STUFF GOES HERE
-			// </Hover>
 
 export default NavBar;

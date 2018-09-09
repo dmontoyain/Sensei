@@ -16,10 +16,10 @@
 .home-box {
 	padding: 10px;
 	margin: 10px;
-	width: 40%;
-	flex-grow: 0;
+	min-width: 45%;
+	flex-grow: 1;
 	background-color: white;
-	padding: 20px;
+	padding: 30px;
 	-webkit-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	-moz-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
