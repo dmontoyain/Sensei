@@ -42,7 +42,7 @@ class Online extends React.Component {
 		const { students } = this.state;
 		let now = new Date().toLocaleString();
 		return (
-			<div>
+			<div className="box">
 				<p>As of {now}</p>
 				<p>There are {students.length} people logged in</p>
 			</div>
