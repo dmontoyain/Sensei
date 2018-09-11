@@ -24,7 +24,6 @@
 }
 
 html, body {
-	height: 100%;
 	width: 100%;
 	margin: 0;
 	position: relative;
@@ -44,3 +43,22 @@ html, body {
 .bg-intra-light {
 	background-color: #4E5566;
 }
+
+.fade-enter {
+	opacity: 0;
+}
+
+.fade-enter.fade-enter-active {
+	opacity: 1;
+	transition: opacity 1000ms ease-in;
+}
+
+.fade-leave {
+	opacity: 1;
+}
+
+.fade-leave.fade-leave-active {
+	opacity: 0;
+	transition: opacity 500ms ease-in;
+}
+

@@ -35,7 +35,7 @@ class Profile extends Component {
 	render() {
 		return (
 			<div className="profile-container">
-				<Avatar login="nwang"/*{authClient.login}*/ size="medium" className="profile-avatar shadow" />
+				<Avatar login={authClient.profile.login} size="medium" className="profile-avatar" />
 				<div className="profile-info">
 					<InfoBlurb label="Level" text="15" />
 					<InfoBlurb label="CP" text="42" />

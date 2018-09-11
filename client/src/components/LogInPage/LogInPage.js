@@ -1,45 +1,47 @@
-import React, { Fragment } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { Fragment, Component } from 'react';
+import { Redirect, Route } from 'react-router-dom';
 
 import authClient from '../../security/Authentication';
+
+import { ErrorModal } from '../Extra/Modal';
 
 // CSS
 import './LogInPage.css';
 
 
-const LogInPage = () => {
-	if (authClient.isAuthenticated()) {
-		return (<Redirect to="/home" />);
+class LogInPage extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			redirect: false,
+		}
+		this.redirect = `https://api.intra.42.fr/oauth/authorize?client_id=${SENSEI_UUID}&redirect_uri=${WEBSITE}/home&response_type=code&state=thebestshakesareatdennysbecarefulthoughsomeonemightsmashyourcarwindow`
 	}
 
-	return (
-		<div className="login-root">
-			<div className="logInFull">
-				<div className="logInSenseiBox">
-					<p className="logInSenseiText">Push Your Skills To a New Level</p>
-				</div>
-				<div className="logInSenseiSignInBox">
-					<input type="submit" name="Sign-In" value="Sign In" class="sign-submit" />
+	render() {
+		const { redirect } = this.state;
+
+		if (authClient.isAuthenticated()) {
+			console.log("login page redirect")
+			return <Redirect to="/home" />;
+		}
+
+		return (
+			<div className="login-root">
+				<ErrorModal>FAILUREadfasdfasfafadsf</ErrorModal>
+				<div className="logInFull">
+					<div className="logInSenseiBox">
+						<p className="logInSenseiText">Push Your Skills To a New Level</p>
+					</div>
+					<div className="logInSenseiSignInBox">
+						<a className="sign-submit" href={this.redirect}>
+							<div className="sign-text">Sign In</div>
+						</a>
+					</div>
 				</div>
 			</div>
-		</div>
-	);
+		);
+	}
 }
-
-{/* <div className="logInFull">
-<div className="flex flex-column">
-<div className="flex flex-wrap logInFull">
-<div className="flex-auto logInSenseiBox">
-<p className="flex justify-center logInSenseiText">Become a Sensei</p>
-</div>
-<div className="flex-auto logInSenseiBox">
-<p className="flex justify-center logInSenseiText">Get Sensei'd</p>
-</div>
-</div>
-<div className="logInSenseiSignInBox">
-<p className="justify-center">Sign In</p>
-		</div>
-		</div>
-</div> */}
 
 export default LogInPage;

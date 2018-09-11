@@ -87,3 +87,9 @@
 .navlink {
 
 }
+
+/* --- LogOutButton.js --- */
+
+.logout-button {
+	cursor: pointer;
+}
