@@ -28,3 +28,55 @@
 	max-height: 50vw;
 	border-radius: 10px 50px;
 }
+
+/* --- Modal.js --- */
+
+.modal-background {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: rgba(0,0,0,0.4);
+	overflow: scroll;
+	z-index: 1;
+}
+
+.modal-window {
+	position: fixed;
+	left: 50%;
+	top: 20%;
+	transform: translate(-50%, -50%);
+	background-color: #fafafa;
+	margin: 0 auto;
+	padding: 20px;
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    z-index: 2;
+}
+
+.modal-header {
+	text-align: right;
+}
+
+.modal-close-button {
+	font-size: 2rem;
+}
+
+.modal-body {
+
+}
+
+.modal-error-window {
+	position: fixed;
+	font-family: 'Roboto Condensed', sans-serif;
+	bottom: 5%;
+	right: 5%;
+	background-color: #F32F07;
+	margin: 0 auto;
+	padding: 20px;
+    z-index: 2;
+    color: white;
+}

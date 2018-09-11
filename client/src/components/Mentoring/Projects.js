@@ -1,7 +1,17 @@
 import React, { Component, Fragment } from 'react';
-import { apiUserProjectsAvailableMentors } from '../../apihandling/api';
 
-import './Projects.css';
+// Components
+
+import {
+	apiUserProjectsAvailableMentors,
+	apiAppointments,
+} from '../../apihandling/api';
+import { ButtonModal } from '../Extra/Modal';
+import ScheduleModal from './ScheduleModal';
+
+// CSS
+
+import './Mentoring.css';
 
 // Main Page Render for /ineedhelp
 
@@ -9,12 +19,30 @@ class HelpMeList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			myProjects: [],
+			myProjects: this.filterSubscribed(props.filteredProjects),
 		};
 	};
 
 	filterSubscribed = (data) => {
 		return data.filter(d => d.abletomentor == false);
+	}
+
+	subscribeForAppointment = (e, item) => {
+		e.preventDefault();
+		// Construct body of post request
+		const body = {
+			project: item.project.name,
+			login: authClient.profile.login,
+		};
+
+		// Api call to create the appointment.
+		apiAppointments.post(body)
+			.then(response => {
+
+			})
+			.catch(err => {
+
+			});
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -26,12 +54,14 @@ class HelpMeList extends Component {
 
 		return (
 			<div>
-				{myProjects.map(item =>
-					<div className="cell" key={item.id} id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
+				{myProjects.map((item, idx) =>
+					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>
 			 			<span id="projectName">{item.project.name}</span>
-			 			<span id="mentorText" className="wrap">Mentors Available:</span>
 						<span id="mentorsAvailable">{item.mass}</span>
 						<span id="projectNameDisplay">{item.name}</span>
+						<ButtonModal value="SCHEDULE APPOINTMENT">
+							<ScheduleModal item={item} />
+						</ButtonModal>
 		 			</div>
 				)}
 			</div>
@@ -155,6 +185,7 @@ const projectWrap = (WrappedComponent, apiCall) => {
 }
 
 const HelpMe = projectWrap(HelpMeList, apiUserProjectsAvailableMentors.get);
+
 const HelpYou = projectWrap(HelpYouList, apiUserProjectsAvailableMentors.get);
 
 export {

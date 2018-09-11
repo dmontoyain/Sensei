@@ -27,6 +27,7 @@ const monthsRef = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug."
 const daysRef = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 function formatStartTime(st) {
+	console.log("ST", st);
 	const date = new Date(st);
 	const day = daysRef[date.getDay()];
 	const mth = monthsRef[date.getMonth()];
@@ -42,7 +43,7 @@ const Appointments = ({ ...props }) => {
 
 	const { myAppointments, noDataIcon } = { ...props };
 
-	if (myAppointments.length) {
+	if (!myAppointments.length) {
 		return <NoData text="No Appointments" icon={noDataIcon} />;
 	}
 
@@ -69,8 +70,9 @@ const appointmentWrap = (WrappedComponent, apiCall, title, noDataIcon) => {
 		}
 
 		componentWillMount() {
-			apiCall.get("nwang")//authClient.login)
+			apiCall.get(authClient.profile.login)
 				.then(data => {
+					console.log("DATA", data);
 					this.setState({ myAppointments: data.data === {} ? [] : data.data });
 				})
 				.catch(err => {
@@ -89,7 +91,6 @@ const appointmentWrap = (WrappedComponent, apiCall, title, noDataIcon) => {
 					<h4 className="home-box-title">{title}</h4>
 					<WrappedComponent
 						{ ...this.state }
-						{ ...this.props }
 					/>
 				</Fragment>
 			);

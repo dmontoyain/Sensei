@@ -76,3 +76,9 @@
 	transition: 75ms ease-in;
 	color: white;
 }
+
+/* --- LogOutButton.js --- */
+
+.logout-button {
+	cursor: pointer;
+}
