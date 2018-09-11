@@ -16,7 +16,7 @@ const LogInPage = () => {
 		<div className="login-root">
 			<div className="logInFull">
 				<div className="logInSenseiBox">
-					<p className="logInSenseiText">Let's Do It!</p>
+					<p className="logInSenseiText">Push Your Skills To a New Level</p>
 				</div>
 				<div className="logInSenseiSignInBox">
 					<input type="submit" name="Sign-In" value="Sign In" class="sign-submit" />

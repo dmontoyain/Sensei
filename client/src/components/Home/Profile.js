@@ -8,13 +8,17 @@ import authClient from '../../security/Authentication';
 
 import Avatar from '../Extra/Avatar';
 
+// CSS
+
+import './Home.css';
+
 // Main Component
 
 const InfoBlurb = ({ ...props }) => {
 	const { label, text } = { ...props };
 
 	return (
-		<div className="info-blurb">
+		<div className="info-blurb shadow">
 			<h4>{label}</h4>
 			<p>{text}</p>
 		</div>
@@ -31,7 +35,7 @@ class Profile extends Component {
 	render() {
 		return (
 			<div className="profile-container">
-				<Avatar login="nwang"/*{authClient.login}*/ size="medium" className="profile-avatar" />
+				<Avatar login="nwang"/*{authClient.login}*/ size="medium" className="profile-avatar shadow" />
 				<div className="profile-info">
 					<InfoBlurb label="Level" text="15" />
 					<InfoBlurb label="CP" text="42" />

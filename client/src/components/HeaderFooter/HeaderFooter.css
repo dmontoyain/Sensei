@@ -33,12 +33,12 @@
 
 /* --- */
 
-.navbar-main {
+/* .navbar-main {
 	display: flex;
 	flex-wrap: wrap;
 	text-align: center;
 	width: 100%;
-}
+} */
 
 
 /* --- */
@@ -49,7 +49,7 @@
 
 /* --- */
 
-.navlink-container {
+/* .navlink-container {
 	display: flex;
 	flex: auto;
 }
@@ -75,4 +75,15 @@
 	transform: scale(1.3) translateY(-50%);
 	transition: 75ms ease-in;
 	color: white;
+} */
+
+.navbar-main {
+	width: 100%;
+	background: #2f3036;
+	height: 80px;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14);
+}
+
+.navlink {
+
 }
