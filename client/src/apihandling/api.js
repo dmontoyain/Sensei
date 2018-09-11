@@ -320,6 +320,18 @@ const apiUserCapableToMentor = function() {
 	}
 }
 
+const apiMentorPendingAppointments = function() {
+	this.endpoint = `${API_URL}/api/mentors`
+
+	this.newEndpoint = (id) => {
+		return `${this.endpoint}/${id}/pendingappointments`;
+	}
+
+	this.get = (id) => {
+		return axHandler._get(this.newEndpoint(id), null, headers);
+	}
+}
+
 // PROJECTS
 // ----------------------------------------------------------------------------
 
@@ -358,5 +370,6 @@ module.exports = {
 	apiMentorsProject: new apiMentorsProject(),
 	apiUserMentoring: new apiUserMentoring(),
 	apiUserCapableToMentor: new apiUserCapableToMentor(),
+	apiMentorPendingAppointments: new apiMentorPendingAppointments(),
 	apiProjects: new apiProjects()
 }

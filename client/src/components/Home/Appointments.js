@@ -2,7 +2,8 @@ import React, { Component, Fragment } from 'react';
 
 import {
 	apiPendingAppointmentsAsMentor,
-	apiPendingAppointmentsAsUser
+	apiPendingAppointmentsAsUser,
+	apiMentorPendingAppointments,
 } from '../../apihandling/api';
 
 
@@ -70,7 +71,7 @@ const appointmentWrap = (WrappedComponent, apiCall, title, noDataIcon) => {
 		}
 
 		componentWillMount() {
-			apiCall.get(authClient.profile.login)
+			apiCall.get(authClient.profile.id)
 				.then(data => {
 					console.log("DATA", data);
 					this.setState({ myAppointments: data.data === {} ? [] : data.data });
@@ -102,7 +103,7 @@ const appointmentWrap = (WrappedComponent, apiCall, title, noDataIcon) => {
 
 const AppointmentsAsUser = appointmentWrap(Appointments, apiPendingAppointmentsAsUser, "Learning", noDataOne);
 
-const AppointmentsAsMentor = appointmentWrap(Appointments, apiPendingAppointmentsAsMentor, "Teaching", noDataTwo);
+const AppointmentsAsMentor = appointmentWrap(Appointments, apiMentorPendingAppointments, "Teaching", noDataTwo);
 
 export {
 	AppointmentsAsUser,

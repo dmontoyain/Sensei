@@ -7,10 +7,11 @@ import {
 	apiAppointments,
 } from '../../apihandling/api';
 import { ButtonModal } from '../Extra/Modal';
-import ScheduleModal from './ScheduleModal';
+import ScheduleAppointment from './ScheduleAppointment';
+
+import authClient from '../../security/Authentication';
 
 // CSS
-
 import './Mentoring.css';
 
 // Main Page Render for /ineedhelp
@@ -25,24 +26,6 @@ class HelpMeList extends Component {
 
 	filterSubscribed = (data) => {
 		return data.filter(d => d.abletomentor == false);
-	}
-
-	subscribeForAppointment = (e, item) => {
-		e.preventDefault();
-		// Construct body of post request
-		const body = {
-			project: item.project.name,
-			login: authClient.profile.login,
-		};
-
-		// Api call to create the appointment.
-		apiAppointments.post(body)
-			.then(response => {
-
-			})
-			.catch(err => {
-
-			});
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -60,7 +43,7 @@ class HelpMeList extends Component {
 						<span id="mentorsAvailable">{item.mass}</span>
 						<span id="projectNameDisplay">{item.name}</span>
 						<ButtonModal value="SCHEDULE APPOINTMENT">
-							<ScheduleModal item={item} />
+							<ScheduleAppointment item={item} />
 						</ButtonModal>
 		 			</div>
 				)}
@@ -75,12 +58,11 @@ class HelpYouList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			myProjects: [],
+			myProjects: this.filterSubscribed(props.filteredProjects),
 		};
 	};
 
 	filterSubscribed = (data) => {
-		console.log(data);
 		return data.filter(d => d.abletomentor == true);
 	}
 
@@ -96,8 +78,7 @@ class HelpYouList extends Component {
 				{myProjects.map(item =>
 					<div className="cell" key={item.id} id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
 			 			<span id="projectName">{item.project.name}</span>
-						<span id="mentorsAvailable">{item.mass}</span>
-						<span id="projectNameDisplay">{item.name}</span>
+						<span id="projectNameDisplay">{item.project.name}</span>
 		 			</div>
 				)}
 			</div>
@@ -120,7 +101,7 @@ const projectWrap = (WrappedComponent, apiCall) => {
 
 		componentWillMount() {
 			// Makes the api call given through the 
-			apiCall("nwang")//authClient.login)
+			apiCall(authClient.profile.login)
 				.then(data => {
 					this.setState({
 						fullProjects: data.data === {} ? [] : data.data,
