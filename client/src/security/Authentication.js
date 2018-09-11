@@ -1,12 +1,15 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
+import { apiUserLogin } from '../apihandling/api';
+
+// Query string will handle authorization codes
+import queryString from 'query-string';
 
 class Authentication {
 	constructor() {
-		this.profile = null;
-		this.token = null;
-		this.expiresAt = null;
+		this.profile = JSON.parse(sessionStorage.getItem("profile"));
+		this.token = JSON.parse(sessionStorage.getItem("token"));
 	}
 
 	getProfile = () => {
@@ -17,43 +20,61 @@ class Authentication {
 		return this.token;
 	}
 
-	authenticate = () => {
-		// return new Promise((resolve, reject) => {
-		// 	this.auth0.parseHash((err, authResult) => {
-		// 		if (err) return reject(err);
-		// 		if (!authResult || !authResult.token) {
-		// 			return reject(err);
-		// 		}
-		// 		this.token = authResult.token;
-		// 		this.profile = authResult.tokenPayload;
-		// 		// set the time that the id token will expire at
-		// 		this.expiresAt = authResult.expiresIn * 1000 + new Date().getTime();
-		// 		resolve();
-		// 	});
-		// })
-		// LOG IN GOES HERE
+	setCredentials = (profile, token) => {
+		this.profile = profile;
+		this.token = token;
+		sessionStorage.setItem("profile", JSON.stringify(profile));
+		sessionStorage.setItem("token", JSON.stringify(token));
+	}
+
+	clearCredentials = () => {
+		this.profile = null;
+		this.token = null;
+		sessionStorage.removeItem("profile");
+		sessionStorage.removeItem("token");
+	}
+
+	authenticate = (searchParameters) => {
+		return new Promise((resolve, reject) => {
+			// If user is already authenticated, resolve
+			if (this.profile && this.token) {
+				return resolve("User is already authenticated");
+			}
+
+			// Parse out the { state, code }
+			let values = queryString.parse(searchParameters);
+
+			// Check the state sent matches the state that was returned
+			if (values.state != SENSEI_STATE) {
+				this.clearCredentials();
+				return reject("The state did not match");
+			}
+
+			// Send code to the Sensei server
+			delete values['state'];
+			apiUserLogin.post(values)
+				.then(response => {
+					// User successfully Logged in
+					const { user, access } = response.data;
+					this.setCredentials(user, access);
+					return resolve(response);
+				})
+				.catch(err => {
+					// An error occurred while logging in
+					this.clearCredentials();
+					return reject(err);
+				});
+		});
 	}
 
 	isAuthenticated = () => {
-		return true; // DELETE LATER -------------------------------------------------
-		return new Date().getTime() < this.expiresAt;
+		if (!this.token)
+			return false;
+		return new Date().getTime() < ((this.token.created_at + this.token.expires_in) * 1000);
 	}
 
-	signIn = () => {
-		this.authenticate();
-		return <Redirect to="https://signin.intra.42.fr/users/sign_in" />;
-	}
-
-	signOut = () => {
-		// clear id token, profile, and expiration
-		this.token = null;
-		this.profile = null;
-		this.expiresAt = null;
-	}
 }
 
 const authClient = new Authentication();
-
-console.log("CLIENTTTTTTTTTT")
 
 export default authClient;

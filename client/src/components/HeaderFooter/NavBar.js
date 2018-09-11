@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 
+import LogOutButton from './LogOutButton';
+
 // Icons 
 
 import homeIcon from '../../assets/images/home.png';
@@ -35,6 +37,7 @@ class NavBar extends Component {
 		 				</NavLink>
 			 		))}
 			 	</div>
+ 				<LogOutButton />
 			</div>
 		);
 	}
