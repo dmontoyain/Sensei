@@ -141,11 +141,11 @@ const projectWrap = (WrappedComponent, apiCall) => {
 
 			return (
 				<Fragment>
-				<div className="search_box">
-					<input onChange={this.filterProjects} className="bar" value={filter} />
-					<button onClick={this.clearFilter} className="search"> Clear Filter </button>
-				</div>
-				<WrappedComponent { ...this.state } className="container"/>
+					<div className="search_box">
+						<input onChange={this.filterProjects} className="bar" value={filter} />
+						<button onClick={this.clearFilter} className="search"> Clear Filter </button>
+					</div>
+					<WrappedComponent { ...this.state } className="container"/>
 				</Fragment>
 			);
 		}
