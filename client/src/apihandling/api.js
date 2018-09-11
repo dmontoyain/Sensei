@@ -100,28 +100,36 @@ const apiUserProjectsAvailableMentors = function() {
 const apiUserUpdate = function () {
 	this.endpoint = `${API_URL}/api/user`;
 
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}/update`;
+	this.newEndpoint = (login) => {
+		return `${this.endpoint}/${login}/update`;
 	}
 
-	this.post = (id) => {
-		return axHandler._post(this.newEndpoint(id), null, headers);
+	this.post = (login) => {
+		return axHandler._post(this.newEndpoint(login), null, headers);
 	}
 }
 
 const apiUser = function() {
 	this.endpoint = `${API_URL}/api/user`;
 
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}`;
+	this.newEndpoint = (login) => {
+		return `${this.endpoint}/${login}`;
 	}
 
-	this.get = (id) => {
-		return axHandler._get(this.newEndpoint(id), null, headers);
+	this.get = (login) => {
+		return axHandler._get(this.newEndpoint(login), null, headers);
 	}
 
-	this.post = (id, data) => {
-		return axHandler._post(this.newEndpoint(id), data, headers);
+	this.post = (login, data) => {
+		return axHandler._post(this.newEndpoint(login), data, headers);
+	}
+}
+
+const apiUserLogin = function() {
+	this.endpoint = `${API_URL}/api/user/login`;
+
+	this.post = (data) => {
+		return axHandler._post(this.endpoint, data, headers);
 	}
 }
 
@@ -335,6 +343,7 @@ module.exports = {
 	apiUserProjectsAvailableMentors: new apiUserProjectsAvailableMentors(),
 	apiUserUpdate: new apiUserUpdate(),
 	apiUser: new apiUser(),
+	apiUserLogin: new apiUserLogin(),
 	apiAppointments: new apiAppointments(),
 	apiAppointment: new apiAppointment(),
 	apiAppointmentsAsUser: new apiAppointmentsAsUser(),

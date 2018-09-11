@@ -4,8 +4,10 @@ import React, { Component } from 'react';
 
 import {
 	AppointmentsAsUser,
-	AppointmentsAsMentor
+	AppointmentsAsMentor,
 } from './Appointments';
+
+import { apiUserUpdate, apiUser } from '../../apihandling/api';
 
 import Profile from './Profile';
 

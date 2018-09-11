@@ -9,6 +9,10 @@
 	},
 	"globals": {
 		"API_URL": true,
+		"WEBSITE": true,
+		"SENSEI_UUID": true,
+		"SENSEI_SECRET": true,
+		"SENSEI_STATE": true
 	},
 	"rules": {
 		"react/destructuring-assignment": 0, // MAYBE DELETE THIS ONE LATER

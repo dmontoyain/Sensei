@@ -1,0 +1,9 @@
+
+.project-row {
+}
+
+.schedule-modal {
+	display: flex;
+	flex-direction: column;
+}
+
