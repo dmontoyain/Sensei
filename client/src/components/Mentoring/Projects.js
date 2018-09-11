@@ -94,9 +94,8 @@ class HelpYouList extends Component {
 		return (
 			<div>
 				{myProjects.map(item =>
-					<div key={item.id} className="cell" id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
+					<div className="cell" key={item.id} id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
 			 			<span id="projectName">{item.project.name}</span>
-			 			<span id="mentorText">Mentors Available:</span>
 						<span id="mentorsAvailable">{item.mass}</span>
 						<span id="projectNameDisplay">{item.name}</span>
 		 			</div>
@@ -172,9 +171,11 @@ const projectWrap = (WrappedComponent, apiCall) => {
 
 			return (
 				<Fragment>
-					<input onChange={this.filterProjects} value={filter} />
-					<button onClick={this.clearFilter}>Clear Filter </button>
-					<WrappedComponent { ...this.state } />
+				<div className="search_box">
+					<input onChange={this.filterProjects} className="bar" value={filter} />
+					<button onClick={this.clearFilter} className="search"> Clear Filter </button>
+				</div>
+				<WrappedComponent { ...this.state } className="container"/>
 				</Fragment>
 			);
 		}
