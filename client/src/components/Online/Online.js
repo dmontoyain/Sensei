@@ -23,10 +23,10 @@ class Online extends React.Component {
 			})
 			.catch(err => {
 				// FAKE REMOVE LATER
-				this.setState({ students: [
-					{ login:"jmeier", id: 54 },
-					{ login: "bpierce", id: 35353 },
-			]});
+					this.setState({ students: [
+						{ login:"jmeier", id: 54 },
+						{ login: "bpierce", id: 35353 },
+				]});
 			})
 	}
 

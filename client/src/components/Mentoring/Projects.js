@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
 // Components
+import authClient from '../../security/Authentication';
 
 import {
 	apiUserProjectsAvailableMentors,
@@ -120,7 +121,7 @@ const projectWrap = (WrappedComponent, apiCall) => {
 
 		componentWillMount() {
 			// Makes the api call given through the 
-			apiCall("nwang")//authClient.login)
+			apiCall(authClient.profile.login)//authClient.login)
 				.then(data => {
 					this.setState({
 						fullProjects: data.data === {} ? [] : data.data,
