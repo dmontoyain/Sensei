@@ -1,15 +1,43 @@
+.search_box {
+	display:inline;
+	flex-direction:row;
+	align-items:center;
+	padding:10px;
+	margin-right:10px;
+	margin-left:15%;
+}
+
+.schedule {
+	font-size:16px;
+	right:4%;
+	position:absolute;
+}
+
+.switch {
+	font-size:16px;
+	position:relative;
+	left:5px;
+	min-width:60px;
+}
+
+.bar {
+	margin-top:15px;
+	padding:3px;
+	font-size:16px;
+	position:relative;
+	width:65%;
+	margin-bottom:15px;
+/*	min-width:20%;*/
+}
+
+.search {
+	font-size:16px;
+	position:relative;
+	left:5px;
+	min-width:60px;
+}
 
 .project-row {
-}
-
-.schedule-modal {
-	display: flex;
-	flex-direction: column;
-}
-
-/* KYLE's OLD STUFF */
-
-/*.cell {
 	display:flex;
 	align-items:center;
 	margin-left:2.5%;
@@ -23,6 +51,16 @@
 	-webkit-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	-moz-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
+}
+
+.schedule-modal {
+	display: flex;
+	flex-direction: column;
+}
+
+/* KYLE's OLD STUFF */
+
+/*.cell {
 	-webkit-animation: fadein 0.9s;
 	animation: fadein 1s;
 }

@@ -248,7 +248,7 @@ const apiSubscribeUnSubscribeMentor = function() {
 	this.endpoint = `${API_URL}/api/mentor`;
 
 	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}/subscribesunsubscribe`;
+		return `${this.endpoint}/${id}/subscribeunsubscribe`;
 	}
 
 	this.put = (id) => {

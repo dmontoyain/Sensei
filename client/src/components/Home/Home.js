@@ -10,6 +10,7 @@ import {
 import { apiUserUpdate, apiUser } from '../../apihandling/api';
 
 import Profile from './Profile';
+import Online from '../Online/Online';
 
 // Security
 
@@ -67,6 +68,7 @@ class Home extends Component {
 		return (
 			<div className="home-main">
 				<Pr />
+				<Online/>
 				<Au />
 				<Am />
 			</div>

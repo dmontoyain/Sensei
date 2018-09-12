@@ -1,11 +1,11 @@
 import React from 'react';
 
-import classNames from 'classnames';
+import { apiSubscribeUnSubscribeMentor } from '../../apihandling/api';
 
 // CSS
 import './Mentoring.css';
 
-const ScheduleAppointment = ({ ...props }) => {
+const ScheduleModal = ({ ...props }) => {
 
 	const { item } = { ...props }
 
@@ -35,9 +35,23 @@ const ScheduleAppointment = ({ ...props }) => {
 			<span>WARNING: This requires ONE correction point. Do you wish to proceed?</span>
 			{item.project.onlineMentors}
 			<button onClick={e => this.subscribeForAppointment(e, item)}>Request Assistance!</button>
-
 		</div>
 	);
 }
 
-export default ScheduleAppointment;
+
+const ActivationModal = ({ ...props }) => {
+	const { item, toggleActive } = { ...props }
+	return (
+		<div className="schedule-modal" style={{textAlign: 'center'}}>
+			<span>{item.active ? "Stop serving as a Sensei for" : "Serve as a Sensei for"}</span>
+			<span>{item.project.name}?</span>
+			<button onClick={toggleActive}>OK</button>
+		</div>
+	)
+}
+
+export {
+	ScheduleModal,
+	ActivationModal,
+}
