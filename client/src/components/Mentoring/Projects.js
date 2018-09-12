@@ -8,7 +8,8 @@ import {
 	apiAppointments,
 } from '../../apihandling/api';
 import { ButtonModal } from '../Extra/Modal';
-import ScheduleModal from './ScheduleModal';
+import { ScheduleModal,
+		ActivationModal,} from './ScheduleModal';
 
 // CSS
 
@@ -56,14 +57,14 @@ class HelpMeList extends Component {
 		return (
 			<div>
 				{myProjects.map((item, idx) =>
-					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>
+					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }} >
 			 			<span id="projectName">{item.project.name}</span>
 						<span id="mentorsAvailable">{item.mass}</span>
 						<span id="projectNameDisplay">{item.name}</span>
-						<ButtonModal value="SCHEDULE APPOINTMENT">
+						<ButtonModal value="SCHEDULE APPOINTMENT" className="schedule">
 							<ScheduleModal item={item} />
 						</ButtonModal>
-		 			</div>
+	 			</div>
 				)}
 			</div>
 		);
@@ -91,14 +92,32 @@ class HelpYouList extends Component {
 
 	render() {
 		const { myProjects } = this.state;
-
+		const onStyle = {
+			color: 'white',
+			backgroundColor: 'crimson',
+			padding: '5px',
+			border: 'none',
+			borderRadius: '4px',
+		};
+		const offStyle = {
+			color: 'white',
+			backgroundColor: 'darkgreen',
+			padding: '5px',
+			border: 'none',
+			borderRadius: '4px',
+		}
 		return (
 			<div>
 				{myProjects.map(item =>
-					<div className="cell" key={item.id} id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
+					<div className="project-row" key={item.id} id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
 			 			<span id="projectName">{item.project.name}</span>
 						<span id="mentorsAvailable">{item.mass}</span>
 						<span id="projectNameDisplay">{item.name}</span>
+						<ButtonModal className="switch" className="schedule"
+						style={item.active === false ? offStyle : onStyle}
+						value={item.active === false ? "Begin Sensei Service" : "Finish Sensei Service"}>
+							<ActivationModal item={item} id={authClient.id} />
+						</ButtonModal>
 		 			</div>
 				)}
 			</div>
