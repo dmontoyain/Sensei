@@ -15,7 +15,7 @@ from requests_oauthlib import OAuth2Session
 
 #	Registers user to sensei database
 def registerUser(LoggedUser):
-	userDetails = { 'id_user42' : LoggedUser.id, 'login': LoggedUser.login }
+	userDetails = { 'id_user42' : LoggedUser['id'], 'login': LoggedUser['login'] }
 	newUser, err = user_schema.load(userDetails)
 	if err:
 		return res.internalServiceError("Error saving user")
@@ -105,13 +105,12 @@ class apiUserLogin(Resource):
 			'code' : data.get('code'),
 			'redirect_uri' : "http://localhost:8080/auth"
 		}).json()
-		print(accessReq)
 		if not accessReq or 'error' in accessReq:
 			return res.badRequestError(message=accessReq['error_description'])
 		LoggedUser = requests.get('https://api.intra.42.fr/v2/me', headers= { 'Authorization' : 'Bearer {}'.format(accessReq['access_token'])}).json()
 		
-		queryUser = User.query.filter_by(id_user42=LoggedUser.id).first()
-
+		queryUser = User.query.filter_by(id_user42=LoggedUser['id']).first()
+		err = None
 		#	Registers user if record doesn't exist in Sensei database
 		if not queryUser:
 			data, err = registerUser(LoggedUser)
@@ -128,7 +127,7 @@ class apiUserUpdate(Resource):
 		user, err = User.queryByLogin(login)
 		if err:
 			return res.badRequestError(err)
-			
+
 		#	User records updating
 		msg, err = userUpdater.UpdateUserProjects(user['id_user42'])
 		if err:
@@ -181,3 +180,23 @@ class apiUser(Resource):
 
 		#	return new user
 		return res.postSuccess('new user created', user)
+
+#	api/users/:userId/pendingappointments	
+class apiUserPendingAppointments(Resource):
+	def get(self, userId):
+		queryUser = User.query.join(Appointment, Appointment.id_user==User.id).filter(User.id_user42==userId, Appointment.status==2).first()
+		if not queryUser:
+			return res.resourceMissing("No appointments")
+		pendingappointments = []
+		user = user_schema.dump(queryUser).data
+		for a in user['appointments']:
+			queryAppnt = Appointment.query.filter_by(id=a).first()
+			queryMentor = Mentor.query.filter_by(id=queryAppnt.id_mentor).first()
+			queryUserMentoring = User.query.filter_by(id_user42=queryMentor.id_user42).first()
+			queryProject = Project.query.filter_by(id_project42=queryMentor.id_project42).first
+			pendingappointments.append({
+				'appointment' : appointment_schema.dump(queryAppnt).data,
+				'userMentoring' : user_schema.dump(queryUserMentoring).data,
+				'project' : project_schema.dump(queryProject).data
+			})
+		return res.getSuccess(message="Appointmensts as user for user {}".format(user['login']), data=pendingappointments)
