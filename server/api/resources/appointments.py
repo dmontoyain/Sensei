@@ -142,6 +142,7 @@ class apiAppointmentsAsUser(Resource):
 		appointments, error = Appointment.queryManyAsUser(user["id"])
 		if error:
 			return res.getSuccess(error)
+		
 		return res.getSuccess("Appointments for user {}".format(user), appointments)
 
 #   /api/appointments/mentor/:login

@@ -183,3 +183,20 @@ class apiUserCapabletoMentor(Resource):
 		#   return the mentor data
 		mentors = mentors_schema.dump(query).data
 		return res.getSuccess(data=mentors)
+
+class apiMentorPendingAppointments(Resource):
+	def get(self, userId):
+		queryMentor = Mentor.query.join(Appointment, Appointment.id_mentor==Mentor.id).filter(Mentor.id_user42==userId, Appointment.status==2).first()
+		queryMentor = mentor_schema.dump(queryMentor).data
+		queryUser = User.query.filter_by(id_user42=userId).first()
+		queryMentor['id_user42'] = user_schema.dump(queryUser).data
+		print(queryMentor)
+		i = 0
+		for a in queryMentor['appointments']:
+			queryAppnt = Appointment.query.filter_by(id=a).first()
+			appointment = appointment_schema.dump(queryAppnt).data
+			queryMentor['appointments'][i] = appointment
+			queryUser = User.query.filter_by(id=queryMentor['appointments'][i]['id_user']).first()
+			queryMentor['appointments'][i]['id_user'] = user_schema.dump(queryUser).data
+			i += 1;
+		return res.getSuccess(data=queryMentor)
