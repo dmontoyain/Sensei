@@ -1,18 +1,14 @@
 import React, { Component, Fragment } from 'react';
 
 // Components
+import { apiUserProjectsAvailableMentors, apiAppointments } from '../../apihandling/api';
+import { ButtonModal } from '../Extra/Modal';
+import { ScheduleModal, ActivationModal } from './MentorModals';
+
+// Security
 import authClient from '../../security/Authentication';
 
-import {
-	apiUserProjectsAvailableMentors,
-	apiAppointments,
-} from '../../apihandling/api';
-import { ButtonModal } from '../Extra/Modal';
-import { ScheduleModal,
-		ActivationModal,} from './ScheduleModal';
-
 // CSS
-
 import './Mentoring.css';
 
 // Main Page Render for /ineedhelp
@@ -27,24 +23,6 @@ class HelpMeList extends Component {
 
 	filterSubscribed = (data) => {
 		return data.filter(d => d.abletomentor == false);
-	}
-
-	subscribeForAppointment = (e, item) => {
-		e.preventDefault();
-		// Construct body of post request
-		const body = {
-			project: item.project.name,
-			login: authClient.profile.login,
-		};
-
-		// Api call to create the appointment.
-		apiAppointments.post(body)
-			.then(response => {
-
-			})
-			.catch(err => {
-
-			});
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -77,12 +55,11 @@ class HelpYouList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			myProjects: [],
+			myProjects: this.filterSubscribed(props.filteredProjects),
 		};
 	};
 
 	filterSubscribed = (data) => {
-		console.log(data);
 		return data.filter(d => d.abletomentor == true);
 	}
 
@@ -146,7 +123,7 @@ const projectWrap = (WrappedComponent, apiCall) => {
 
 		componentWillMount() {
 			// Makes the api call given through the 
-			apiCall(authClient.profile.login)//authClient.login)
+			apiCall(authClient.profile.login)
 				.then(data => {
 					this.setState({
 						fullProjects: data.data === {} ? [] : data.data,
