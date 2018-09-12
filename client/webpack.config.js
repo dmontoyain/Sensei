@@ -41,6 +41,9 @@ module.exports = {
 		new webpack.DefinePlugin({
 			API_URL: JSON.stringify(process.env.API_URL),
 			WEBSITE: JSON.stringify(process.env.WEBSITE),
+			SENSEI_UUID: JSON.stringify(process.env.SENSEI_UUID),
+			SENSEI_SECRET: JSON.stringify(process.env.SENSEI_SECRET),
+			SENSEI_STATE: JSON.stringify(process.env.SENSEI_STATE),
 		})
 	],
 }

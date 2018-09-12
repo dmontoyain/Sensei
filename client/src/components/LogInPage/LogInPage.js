@@ -1,30 +1,42 @@
-import React, { Fragment } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { Fragment, Component } from 'react';
+import { Redirect, Route } from 'react-router-dom';
+import queryString from 'query-string';
 
 import authClient from '../../security/Authentication';
 
+// Components
+import { SendToIntra } from '../Authentication/Auth';
 
-const LogInPage = () => {
+// CSS
+import './LogInPage.css';
+
+const LogInPage = () =>  {
+	const intraAuth = 'https://api.intra.42.fr/oauth/authorize?' +
+						queryString.stringify({
+							client_id: SENSEI_UUID,
+							redirect_uri: /*`${API_URL}/api/user/login`, */`${WEBSITE}/auth`,
+							response_type: 'code',
+							state: 'thebestshakesareatdennysbecarefulthoughsomeonemightsmashyourcarwindow',
+						});
+
 	if (authClient.isAuthenticated()) {
-		return (<Redirect to="/home" />);
+		return <Redirect to="/home" />;
 	}
 
 	return (
-		<Fragment>
-			<div className="flex flex-column">
-				<div className="sm-flex">
-					<div className="m1 flex flex-center justify-center logInSenseiBox bg-purple">
-						<p className="flex logInSenseiText">Become a Sensei</p>
-					</div>
-					<div className="m1 flex flex-center justify-center logInSenseiBox bg-blue">
-						<p className="flex logInSenseiText">Get Sensei'd</p>
-					</div>
+		<div className="login-root">
+			<div className="logInFull">
+				<div className="logInSenseiBox">
+					<p className="logInSenseiText">Let's Do It!</p>
 				</div>
-				<div className="m1 flex flex-center justify-center bg-green">
-					<h1>Sign In</h1>
+				<div className="logInSenseiSignInBox">
+					<SendToIntra />
+					<a className="sign-submit" href={intraAuth}>
+						<div className="sign-text">Sign In</div>
+					</a>
 				</div>
 			</div>
-		</Fragment>
+		</div>
 	);
 }
 

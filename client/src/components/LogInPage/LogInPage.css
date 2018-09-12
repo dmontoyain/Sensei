@@ -1,33 +1,106 @@
-/* CSS class definitions for the Log-In Page */
+@media all and (min-width: 50px)   {  .login-root  { font-size:0.1em;  } }
+@media all and (min-width: 100px)  {  .login-root  { font-size:0.2em;  } }
+@media all and (min-width: 200px)  {  .login-root  { font-size:0.4em;  } }
+@media all and (min-width: 300px)  {  .login-root  { font-size:0.6em;  } }
+@media all and (min-width: 400px)  {  .login-root  { font-size:0.8em;  } }
+@media all and (min-width: 500px)  {  .login-root  { font-size:1.0em;  } }
+@media all and (min-width: 600px)  {  .login-root  { font-size:1.2em;  } }
+@media all and (min-width: 700px)  {  .login-root  { font-size:1.4em;  } }
+@media all and (min-width: 800px)  {  .login-root  { font-size:1.6em;  } }
+@media all and (min-width: 900px)  {  .login-root  { font-size:1.8em;  } }
+@media all and (min-width: 1000px) {  .login-root  { font-size:2.0em;  } }
+@media all and (min-width: 1100px) {  .login-root  { font-size:2.2em;  } }
+@media all and (min-width: 1200px) {  .login-root  { font-size:2.4em;  } }
+@media all and (min-width: 1300px) {  .login-root  { font-size:2.6em;  } }
+@media all and (min-width: 1400px) {  .login-root  { font-size:2.8em;  } }
+@media all and (min-width: 1500px) {  .login-root  { font-size:3.0em;  } }
+@media all and (min-width: 1500px) {  .login-root  { font-size:3.2em;  } }
+@media all and (min-width: 1600px) {  .login-root  { font-size:3.4em;  } }
+@media all and (min-width: 1700px) {  .login-root  { font-size:3.6em;  } }
 
-.logInSenseiBox {
-	min-height: 80vw;
-	width: 100%;
+@media screen and (max-width: 300px) {
+    span.psw {
+       display: block;
+       float: none;
+	}
 }
 
-.bg-purple {
-	background-color: #9867d6;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.bg-blue {
-	background-color: #6a6ad6;
+.login-root {
+    background-image: url(https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+	min-height: 100vh;
+	height: 100%;
+	font-weight: 300;
+	position: relative;
+	overflow: hidden;
+    font-family: 'Roboto', sans-serif;
 }
 
-.bg-green {
-	background-color: #00FF00;
-}
 
+.logInFull {
+	top: 40%;
+	left: 40%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	display: -webkit-flex; /* Safari */
+    -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+	min-height: 10rem;
+	margin: 0 auto;
+	max-width: 34%;
+	padding: .5rem;
+	position: absolute;
+}
 
 .logInSenseiText {
-	align-items: center;
-	text-align: center;
-	font-size: 3rem;
-	font-family: 'Indie Flower';
-	font-weight: bold;
+    font-size: 1.5em;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 400;
+    margin-top: 20px;
+    margin-bottom: 10px;
+	position: relative;
 }
 
-.getSenseid {
-	background-color: #6a6ad6;
-	text-align: center;
-	flex: auto;
+.sign-submit {
+    border: 1px solid white;
+    background: transparent;
+    color: white;
+    display: block;
+	margin: 1rem auto;
+    min-width: 10px;
+    padding: .25rem;
+	transition: 250ms background ease-in;
+	position: relative;
+	text-decoration: none;
+	width: 100%;
+	height: 100%;
 }
+
+.sign-text {
+    font-family: Arial, Helvetica, sans-serif;
+	font-size: 100%;
+	width: 100%;
+	max-width: 200px;
+  	line-height:3em;
+	margin: 8px auto;
+	overflow: visible;
+	cursor: pointer;
+}
+
+.sign-submit:hover, .sign-submit:focus {
+	background: rgba(30, 139, 39, 0.534);
+	color: rgb(63, 63, 63);
+    transition: 250ms background ease-in;
+}
+
+

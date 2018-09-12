@@ -3,3 +3,129 @@
 .bg-purple {
 	background-color: #9867d6;
 }
+
+.home-main {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+
+/* horizontal, vertical, blur radius, spread radius */
+
+.home-box {
+	margin: 10px;
+	min-width: 45%;
+	flex-grow: 1;
+	background-color: white;
+	padding: 30px;
+	-webkit-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
+	-moz-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
+	box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
+	-webkit-animation: fadein 0.9s;
+	animation: fadein 0.9s;
+}
+
+.hb-double-width {
+	min-width: 90%;
+}
+
+@keyframes fadein {
+	from { opacity: 0; }
+	to	 { opacity: 1; }
+}
+
+@-webkit-keyframes fadein {
+	from { opacity: 0; }
+	to	 { opacity: 1; }
+}
+
+/* --- */
+
+.home-box-title {
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+
+.wc-container {
+	background-image: url(https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png);
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	min-height: 100vh;
+	height: 100%;
+	font-weight: 300;
+	position: relative;
+	overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+.profile-container {
+	margin: 10px auto 0 auto;
+}
+
+.profile-info {
+	flex-basis: 80%;
+}
+.info-blurb:nth-child(1) {background-color: #9867d6;}
+.info-blurb:nth-child(2) {background-color: #c0dbe2;}
+.info-blurb:nth-child(3) {background-color: #cdf1c3;}
+.info-blurb:nth-child(4) {background-color: #ccb9da;}
+
+.info-blurb {
+	display: flex; 
+	padding: 20px;
+	box-sizing: border-box;
+	/* width: 22%; same thing*/
+	margin-bottom: 10px;
+	flex-basis: 23%;
+	justify-content: center;
+    align-items: center;
+}
+
+@media (min-width: 900px){
+	.profile-info {
+		margin: 10px auto 0 auto;
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-around;
+	}
+	.profile-container {
+		display: inline-flex;
+		justify-content: space-between;
+	}
+}
+@media (min-width: 700px){
+	.profile-container {
+		display: flex;
+	}
+}
+
+.avatar-container {
+
+}
+
+.profile-avatar {
+	min-width: 300px;
+	max-width: 350px;
+	padding-right: 10px;
+	margin-bottom: 10px;
+	box-sizing: border-box;	
+	flex-basis: 15%;
+}
+
+.profile-text {
+	font-size: 2rem;
+	text-align: center;
+	font-weight: thin;
+	color: black;
+}
+
+
+/* @media all and (min-width: 50px)   {  .login-root  { font-size:0.1em;  } }
+@media all and (min-width: 100px)  {  .login-root  { font-size:0.2em;  } }
+@media all and (min-width: 200px)  {  .login-root  { font-size:0.4em;  } }
+@media all and (min-width: 300px)  {  .login-root  { font-size:0.6em;  } }
+@media all and (min-width: 400px)  {  .login-root  { font-size:0.8em;  } } */

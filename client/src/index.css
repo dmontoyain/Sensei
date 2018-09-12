@@ -2,8 +2,6 @@
 @import "basscss-colors";
 @import "basscss-background-colors";
 
-@import './components/Home/Home.css';
-@import './components/LogInPage/LogInPage.css';
 /* Custom Font Imports */
 
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
@@ -13,3 +11,54 @@
 
 /* Scribble text */
 @import url('https://fonts.googleapis.com/css?family=Indie+Flower');
+
+
+@import url('https://fonts.googleapis.com/css?family=Karla');
+
+@import url("https://fonts.googleapis.com/css?family=Nanum+Brush+Script");
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html, body {
+	width: 100%;
+	margin: 0;
+	position: relative;
+	background-color: #fafafa;
+	font-family: "arial";
+}
+
+#root {
+	height: 100%;
+	width: 100%;
+}
+
+.bg-intra {
+	background-color: #292d39;
+}
+
+.bg-intra-light {
+	background-color: #4E5566;
+}
+
+.fade-enter {
+	opacity: 0;
+}
+
+.fade-enter.fade-enter-active {
+	opacity: 1;
+	transition: opacity 1000ms ease-in;
+}
+
+.fade-leave {
+	opacity: 1;
+}
+
+.fade-leave.fade-leave-active {
+	opacity: 0;
+	transition: opacity 500ms ease-in;
+}
+

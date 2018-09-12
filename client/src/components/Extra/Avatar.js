@@ -1,46 +1,18 @@
 
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 
-class Avatar extends Component {
-	constructor(props){
-		super(props);
-		this.state = {
-			imgAddr: 'https://cdn.intra.42.fr'
-			size: 'small',
-			user: '',
-		};
-		this.changeSize = this.changeSize.bind(this);
-		this.changeUser = this.changeUser.bind(this);
-	}
+import classNames from 'classnames';
 
-	componentDidMount() {
-	}
+const Avatar = ({ ...props }) => {
 
-	changeUser(e) {
-		this.setState({
-			user: e.target.value
-		});
-	}
+	const { size, login, className } = { ...props };
 
-	changeSize(e) {
-		this.setState({
-			size: `${e.target.value}`
-		});
-	}
-
-	render() {
-		return (
-			<Fragment>
-				<select onChange={this.changeSize}>
-					<option value="small">small</option>
-					<option value="medium">mEdIuM</option>
-					<option value="large">LARGE</option>
-				</select>
-				<input onChange={this.changeUser}/>
-				<img src={`https://cdn.intra.42.fr/users/${this.state.size}_${this.state.user}.jpg`} />
-			</Fragment>
-		)
-	}
+	return (
+		<img
+			src={`https://cdn.intra.42.fr/users/${size}_${login}.jpg`}
+			className={classNames("avatar-image", className)}
+		/>
+	);
 }
 
 export default Avatar

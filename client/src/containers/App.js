@@ -1,28 +1,23 @@
-import React,
-{
-	Component,
-} from 'react';
+import React, { Component } from 'react';
 
 import {
 	Route,
 	Switch,
-	Redirect,
 	BrowserRouter as Router,
 } from 'react-router-dom';
 
-import '../assets/css/default.min.css'
-
 // Higher-Order Components
-import withHeaderFooter from '../components/Header_Footer/HeaderFooter.js';
+import withHeaderFooter from '../components/HeaderFooter/HeaderFooter';
 
 // Components
-import PrivateRoute from '../security/PrivateRoute.js';
-import ProjectTile from '../components/ProjectTile/ProjectTile.js';
+import PrivateRoute from '../components/Authentication/PrivateRoute';
+import { Auth } from '../components/Authentication/Auth';
+import { HelpMe, HelpYou } from '../components/Mentoring/Projects';
 
 // Page Components
-import NotFound from '../components/NotFound/NotFound.js';
+import NotFound from '../components/NotFound/NotFound';
 import LogInPage from '../components/LogInPage/LogInPage';
-import Home from '../components/Home/Home.js';
+import Home from '../components/Home/Home';
 
 
 
@@ -32,23 +27,17 @@ class App extends Component {
 		this.state = {};
 	}
 
-	// filterRoute = (routeName) => {
-	// 	const { routes } = this.state;
-	// 	console.log(routeName);
-	// 	return (routes.includes(routeName) ? routeName : "notfound");
-	// }
-
 	render() {
 		return (
 			<Router>
-				<div>
-					<Switch>
-						<Route exact path="/" component={LogInPage} />
-						<PrivateRoute path="/home" component={withHeaderFooter(Home)} />
-						<PrivateRoute path="/projects" component={withHeaderFooter(ProjectTile)} />
-						<Route component={NotFound} />
-					</Switch>
-				</div>
+				<Switch>
+					<Route exact path="/" component={LogInPage} />
+					<Route exact path="/auth" component={Auth} />
+					<PrivateRoute exact path="/home" component={withHeaderFooter(Home)} />
+					<PrivateRoute exact path="/helpme" component={withHeaderFooter(HelpMe)} />
+					<PrivateRoute exact path="/helpyou" component={withHeaderFooter(HelpYou)} />
+					<Route component={NotFound} />
+				</Switch>
 			</Router>
 		);
 	}
