@@ -151,7 +151,7 @@ const projectWrap = (WrappedComponent, apiCall) => {
 			this.setState({ filter: e.target.value });
 
 			// If user has input a filter value
-			if (filter.length) {
+			if (e.target.value.length) {
 				// Filter out any projects where the name has the user's input value
 				this.setState({ filteredProjects: fullProjects.filter(p => p.project.name.toLowerCase().includes(e.target.value.toLowerCase())) });
 			} else {

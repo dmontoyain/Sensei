@@ -133,6 +133,18 @@ const apiUserLogin = function() {
 	}
 }
 
+const apiUserPendingAppointments = function() {
+	this.endpoint = `${API_URL}/api/users`
+
+	this.newEndpoint = (userId) => {
+		return `${this.endpoint}/${userId}/pendingappointments`;
+	}
+
+	this.get = (userId) => {
+		return axHandler._get(this.newEndpoint(userId), null, headers);
+	}
+}
+
 
 // APPOINTMENTS
 // ----------------------------------------------------------------------------
@@ -193,29 +205,6 @@ const apiAppointmentsAsMentor = function() {
 	}
 }
 
-const apiPendingAppointmentsAsUser = function() {
-	this.endpoint = `${API_URL}/api/appointments/pending/user`;
-
-	this.newEndpoint = (login) => {
-		return `${this.endpoint}/${login}`;
-	}
-
-	this.get = (login) => {
-		return axHandler._get(this.newEndpoint(login), null, headers);
-	}
-}
-
-const apiPendingAppointmentsAsMentor = function() {
-	this.endpoint = `${API_URL}/api/appointments/pending/mentor`;
-
-	this.newEndpoint = (login) => {
-		return `${this.endpoint}/${login}`;
-	}
-
-	this.get = (login) => {
-		return axHandler._get(this.newEndpoint(login), null, headers);
-	}
-}
 
 // MENTORS
 // ----------------------------------------------------------------------------
@@ -304,7 +293,7 @@ const apiUserMentoring = function() {
 	}
 
 	this.get = (id) => {
-		return axHandler.get(this.newEndpoint(id), null, headers);
+		return axHandler._get(this.newEndpoint(id), null, headers);
 	}
 }
 
@@ -316,7 +305,7 @@ const apiUserCapableToMentor = function() {
 	}
 
 	this.get = (id) => {
-		return axHandler.get(this.newEndpoint(id), null, headers);
+		return axHandler._get(this.newEndpoint(id), null, headers);
 	}
 }
 
@@ -356,12 +345,11 @@ module.exports = {
 	apiUserUpdate: new apiUserUpdate(),
 	apiUser: new apiUser(),
 	apiUserLogin: new apiUserLogin(),
+	apiUserPendingAppointments: new apiUserPendingAppointments(),
 	apiAppointments: new apiAppointments(),
 	apiAppointment: new apiAppointment(),
 	apiAppointmentsAsUser: new apiAppointmentsAsUser(),
 	apiAppointmentsAsMentor: new apiAppointmentsAsMentor(),
-	apiPendingAppointmentsAsUser: new apiPendingAppointmentsAsUser(),
-	apiPendingAppointmentsAsMentor: new apiPendingAppointmentsAsMentor(),
 	apiMentors: new apiMentors(),
 	apiMentor: new apiMentor(),
 	apiSubscribeUnSubscribeMentor: new apiSubscribeUnSubscribeMentor(),
