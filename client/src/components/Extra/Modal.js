@@ -15,7 +15,7 @@ const withModal = (childComponents, closeModal) => {
 					<img src={closeIcon} alt="close" onClick={closeModal} />
 				</div>
 				<div className="modal-body">
-					{childComponents}
+					{React.Children.map(childComponents, child => React.cloneElement(child, { closeModal: closeModal}))}
 				</div>
 			</div>
 			<div className="modal-background" onClick={closeModal}/>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import { OauthSender } from 'react-oauth-flow';
+import { OauthSender, OauthReceiver } from 'react-oauth-flow';
 
 import authClient from '../../security/Authentication';
 

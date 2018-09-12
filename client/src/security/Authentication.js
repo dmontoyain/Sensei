@@ -78,7 +78,7 @@ class Authentication {
 
 	isAuthenticated = () => {
 		if (!this.token)
-			return true;
+			return false;
 		return new Date().getTime() < ((this.token.created_at + this.token.expires_in) * 1000);
 	}
 
