@@ -10,6 +10,7 @@ import {
 import { apiUserUpdate, apiUser } from '../../apihandling/api';
 
 import Profile from './Profile';
+import Online from '../Online/Online';
 
 // Security
 
@@ -65,14 +66,13 @@ class Home extends Component {
 		const Am = homeBox(AppointmentsAsMentor);
 
 		return (
-			<Fragment>
-				<div className="banner" />
-				<div className="home-main">
-					<Pr />
-					<Au />
-					<Am />
-				</div>
-			</Fragment>
+			<div className="banner" />
+			<div className="home-main">
+				<Pr />
+				<Online/>
+				<Au />
+				<Am />
+			</div>
 		);
 	}
 }

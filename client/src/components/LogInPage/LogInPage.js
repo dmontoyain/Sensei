@@ -1,21 +1,26 @@
 import React, { Fragment, Component } from 'react';
 import { Redirect, Route } from 'react-router-dom';
+import queryString from 'query-string';
 
 import authClient from '../../security/Authentication';
 
-import { ErrorModal } from '../Extra/Modal';
+// Components
+import { SendToIntra } from '../Authentication/Auth';
 
 // CSS
 import './LogInPage.css';
 
+const LogInPage = () =>  {
+	const intraAuth = 'https://api.intra.42.fr/oauth/authorize?' +
+						queryString.stringify({
+							client_id: SENSEI_UUID,
+							redirect_uri: /*`${API_URL}/api/user/login`, */`${WEBSITE}/auth`,
+							response_type: 'code',
+							state: 'thebestshakesareatdennysbecarefulthoughsomeonemightsmashyourcarwindow',
+						});
 
-class LogInPage extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			redirect: false,
-		}
-		this.redirect = `https://api.intra.42.fr/oauth/authorize?client_id=${SENSEI_UUID}&redirect_uri=${WEBSITE}/home&response_type=code&state=thebestshakesareatdennysbecarefulthoughsomeonemightsmashyourcarwindow`
+	if (authClient.isAuthenticated()) {
+		return <Redirect to="/home" />;
 	}
 
 	render() {
@@ -40,8 +45,8 @@ class LogInPage extends Component {
 					</div>
 				</div>
 			</div>
-		);
-	}
+		</div>
+	);
 }
 
 export default LogInPage;

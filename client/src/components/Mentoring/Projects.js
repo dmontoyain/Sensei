@@ -1,16 +1,14 @@
 import React, { Component, Fragment } from 'react';
 
 // Components
-
-import {
-	apiUserProjectsAvailableMentors,
-	apiAppointments,
-} from '../../apihandling/api';
+import { apiUserProjectsAvailableMentors, apiAppointments } from '../../apihandling/api';
 import { ButtonModal } from '../Extra/Modal';
-import ScheduleModal from './ScheduleModal';
+import { ScheduleModal, ActivationModal } from './MentorModals';
+
+// Security
+import authClient from '../../security/Authentication';
 
 // CSS
-
 import './Mentoring.css';
 
 // Main Page Render for /ineedhelp
@@ -27,24 +25,6 @@ class HelpMeList extends Component {
 		return data.filter(d => d.abletomentor == false);
 	}
 
-	subscribeForAppointment = (e, item) => {
-		e.preventDefault();
-		// Construct body of post request
-		const body = {
-			project: item.project.name,
-			login: authClient.profile.login,
-		};
-
-		// Api call to create the appointment.
-		apiAppointments.post(body)
-			.then(response => {
-
-			})
-			.catch(err => {
-
-			});
-	}
-
 	componentWillReceiveProps(nextProps) {
 		this.setState({ myProjects: this.filterSubscribed(nextProps.filteredProjects)});
 	}
@@ -55,14 +35,14 @@ class HelpMeList extends Component {
 		return (
 			<div>
 				{myProjects.map((item, idx) =>
-					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>
+					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }} >
 			 			<span id="projectName">{item.project.name}</span>
 						<span id="mentorsAvailable">{item.mass}</span>
 						<span id="projectNameDisplay">{item.name}</span>
-						<ButtonModal value="SCHEDULE APPOINTMENT">
+						<ButtonModal value="SCHEDULE APPOINTMENT" className="schedule">
 							<ScheduleModal item={item} />
 						</ButtonModal>
-		 			</div>
+	 			</div>
 				)}
 			</div>
 		);
@@ -75,12 +55,11 @@ class HelpYouList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			myProjects: [],
+			myProjects: this.filterSubscribed(props.filteredProjects),
 		};
 	};
 
 	filterSubscribed = (data) => {
-		console.log(data);
 		return data.filter(d => d.abletomentor == true);
 	}
 
@@ -88,16 +67,40 @@ class HelpYouList extends Component {
 		this.setState({ myProjects: this.filterSubscribed(nextProps.filteredProjects)});
 	}
 
+	toggleActive = (idx) => {
+		let thing = this.state.myProjects;
+		thing[idx].active = !thing[idx].active;
+		this.setState({ myProjects: thing });
+	}
+
 	render() {
 		const { myProjects } = this.state;
-
+		const onStyle = {
+			color: 'white',
+			backgroundColor: 'crimson',
+			padding: '5px',
+			border: 'none',
+			borderRadius: '4px',
+		};
+		const offStyle = {
+			color: 'white',
+			backgroundColor: 'darkgreen',
+			padding: '5px',
+			border: 'none',
+			borderRadius: '4px',
+		}
 		return (
 			<div>
-				{myProjects.map(item =>
-					<div className="cell" key={item.id} id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
+				{myProjects.map((item, idx) =>
+					<div className="project-row" key={item.id} id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
 			 			<span id="projectName">{item.project.name}</span>
 						<span id="mentorsAvailable">{item.mass}</span>
 						<span id="projectNameDisplay">{item.name}</span>
+						<ButtonModal className="switch" className="schedule"
+						style={item.active === false ? offStyle : onStyle}
+						value={item.active === false ? "Begin Sensei Service" : "Finish Sensei Service"}>
+							<ActivationModal item={item} toggleActive={() => this.toggleActive(idx)}/>
+						</ButtonModal>
 		 			</div>
 				)}
 			</div>
@@ -120,7 +123,7 @@ const projectWrap = (WrappedComponent, apiCall) => {
 
 		componentWillMount() {
 			// Makes the api call given through the 
-			apiCall("nwang")//authClient.login)
+			apiCall(authClient.profile.login)
 				.then(data => {
 					this.setState({
 						fullProjects: data.data === {} ? [] : data.data,
@@ -171,11 +174,11 @@ const projectWrap = (WrappedComponent, apiCall) => {
 
 			return (
 				<Fragment>
-				<div className="search_box">
-					<input onChange={this.filterProjects} className="bar" value={filter} />
-					<button onClick={this.clearFilter} className="search"> Clear Filter </button>
-				</div>
-				<WrappedComponent { ...this.state } className="container"/>
+					<div className="search_box">
+						<input onChange={this.filterProjects} className="bar" value={filter} />
+						<button onClick={this.clearFilter} className="search"> Clear Filter </button>
+					</div>
+					<WrappedComponent { ...this.state } className="container"/>
 				</Fragment>
 			);
 		}

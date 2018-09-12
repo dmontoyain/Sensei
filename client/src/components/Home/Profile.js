@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 // Security
 
@@ -30,19 +30,32 @@ class Profile extends Component {
 		super(props);
 		this.state = {
 		};
+		// Grab the correct curses for the user
+		this.cursus = authClient.profile.cursus_users.filter(cur => cur.cursus_id == 1)[0];
+		console.log("PROFILE", authClient.profile);
 	};
 
 	render() {
+		const { first_name, last_name } = authClient.profile;
+		const { grade, level } = this.cursus;
+
 		return (
-			<div className="profile-container">
-				<Avatar login={authClient.profile.login} size="medium" className="profile-avatar" />
-				<div className="profile-info">
-					<InfoBlurb label="Level" text="15" />
-					<InfoBlurb label="CP" text="42" />
-					<InfoBlurb label="Apts" text="3" />
-					<InfoBlurb label="Lessons" text="5" />
+			<Fragment>
+				<div className="profile-text">{`${grade} ${first_name} ${last_name}`}</div>
+				<div className="profile-container">
+					<Avatar
+						login={authClient.profile.login}
+						size="medium"
+						className="profile-avatar"
+					/>
+					<div className="profile-info">
+						<InfoBlurb label="Level" text={level} />
+						<InfoBlurb label="CP" text="42" />
+						<InfoBlurb label="Apts" text="3" />
+						<InfoBlurb label="Lessons" text="5" />
+					</div>
 				</div>
-			</div>
+			</Fragment>
 		);
 	};
 }
