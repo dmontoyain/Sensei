@@ -19,7 +19,7 @@ class Mentor(db.Model):
 	started_at = db.Column(db.DateTime, nullable=False, server_default=sa.func.now())
 
 	#   relationship with 'Appointments' table, Appointment Model Class
-	appointments = db.relationship('Appointment', backref='mentor', lazy=True)
+	appointments = db.relationship('Appointment', backref='mentors', lazy='dynamic')
 
 	def __init__(self, id_project42, id_user42, finalmark):
 		self.id_project42 = id_project42
