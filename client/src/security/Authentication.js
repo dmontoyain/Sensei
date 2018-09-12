@@ -8,16 +8,17 @@ import queryString from 'query-string';
 
 class Authentication {
 	constructor() {
-		this.profile = {
-			id: 12413,
-			login: "nwang",
-		}
-		this.token = {
-			created_at: new Date().getTime(),
-			expires_in: new Date().getTime() + 1000000,
-		}
-		// this.profile = JSON.parse(sessionStorage.getItem("profile"));
-		// this.token = JSON.parse(sessionStorage.getItem("token"));
+		// Fake Login - for testing purposes
+		// this.profile = {
+		// 	id: 12413,
+		// 	login: "nwang",
+		// }
+		// this.token = {
+		// 	created_at: new Date().getTime(),
+		// 	expires_in: new Date().getTime() + 1000000,
+		// }
+		this.profile = JSON.parse(sessionStorage.getItem("profile"));
+		this.token = JSON.parse(sessionStorage.getItem("token"));
 	}
 
 	getProfile = () => {
