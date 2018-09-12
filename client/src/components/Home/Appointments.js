@@ -65,7 +65,8 @@ const aStyle = {
 function formatStringForUser(obj) {
 	const { appointment, user } = obj;
 	const t = formatTime(appointment.start_time);
-	return `You have an appointment on ${t.day}, ${t.mth} ${t.dayN} at ${t.hr}:${t.mn}`;
+	const time = new Date(appointment.start_time).toLocaleString('en-US', { weekday: 'long', month: 'short', hour: 'numeric', minute: 'numeric', hour12: true});
+	return `You have an appointment on ${time}`;
 };
 
 function formatStringForMentor(obj) {
@@ -74,7 +75,7 @@ function formatStringForMentor(obj) {
 	// Get formatted date
 	const t = formatTime(appointment.start_time);
 
-	const time = new Date(appointment.start_time).toLocaleString('en-US', { weekday: 'long', month: 'short', hour: 'numeric', minute: 'numeric', hour12: true});
+	const time = new Date(appointment.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'long', month: 'short', hour: 'numeric', minute: 'numeric', hour12: true});
 	return (
 		<div key={appointment.id} style={style}>
 			<Avatar size="small" login={user.login} style={imageStyle} />
