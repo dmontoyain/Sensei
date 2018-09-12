@@ -66,13 +66,14 @@ class Home extends Component {
 		const Am = homeBox(AppointmentsAsMentor);
 
 		return (
-			<div className="banner" />
-			<div className="home-main">
-				<Pr />
-				<Online/>
-				<Au />
-				<Am />
-			</div>
+			<Fragment>
+				<div className="banner" />
+				<div className="home-main">
+					<Pr />
+					<Au />
+					<Am />
+				</div>
+			</Fragment>
 		);
 	}
 }

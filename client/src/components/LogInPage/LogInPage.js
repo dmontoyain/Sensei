@@ -1,3 +1,4 @@
+
 import React, { Fragment, Component } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import queryString from 'query-string';
@@ -23,30 +24,20 @@ const LogInPage = () =>  {
 		return <Redirect to="/home" />;
 	}
 
-	render() {
-		const { redirect } = this.state;
-
-		if (authClient.isAuthenticated()) {
-			console.log("login page redirect")
-			return <Redirect to="/home" />;
-		}
-
-		return (
-			<div className="login-root">
-				<ErrorModal>FAILUREadfasdfasfafadsf</ErrorModal>
-				<div className="logInFull">
-					<div className="logInSenseiBox">
-						<p className="logInSenseiText">Push Your Skills To a New Level</p>
-					</div>
-					<div className="logInSenseiSignInBox">
-						<a className="sign-submit" href={this.redirect}>
-							<div className="sign-text">Sign In</div>
-						</a>
-					</div>
+	return (
+		<div className="login-root">
+			<div className="logInFull">
+				<div className="logInSenseiBox">
+					<p className="logInSenseiText">Let's Do It!</p>
+				</div>
+				<div className="logInSenseiSignInBox">
+					<SendToIntra />
+					<a className="sign-submit" href={intraAuth}>
+						<div className="sign-text">Sign In</div>
+					</a>
 				</div>
 			</div>
 		</div>
 	);
 }
-
 export default LogInPage;

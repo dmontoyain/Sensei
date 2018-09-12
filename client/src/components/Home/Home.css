@@ -65,10 +65,10 @@
 
 
 .wc-container {
-	background-image: url(https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png);
-	background-position: center;
-	background-size: cover;
-	background-repeat: no-repeat;
+    background-image: url(https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 	min-height: 100vh;
 	height: 100%;
 	font-weight: 300;
@@ -122,29 +122,36 @@
 	}
 }
 @media (min-width: 700px){
-	.profile-container {
+	.profile-container{
 		display: flex;
 	}
 }
 
-.avatar-container {
+@media (max-width: 695px){
+	.profile-container{
+		display: block;
+		justify-content: center;
+	}
+	.profile-avatar {
+		display: block;
+    	margin-left: auto;
+    	margin-right: auto;
+    	width: 50%;
+	}
+	/* .profile-container{
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-evenly;
+	}
+	.profile-info {
+		box-sizing: border-box;
+		flex-basis: 40%;
+	}
+	.profile-avatar {
+		box-sizing: border-box;
+		flex-basis: 60%;
+	} */
 
-}
-
-.profile-avatar {
-	min-width: 300px;
-	max-width: 350px;
-	padding-right: 10px;
-	margin-bottom: 10px;
-	box-sizing: border-box;	
-	flex-basis: 15%;
-}
-
-.profile-text {
-	font-size: 2rem;
-	text-align: center;
-	font-weight: thin;
-	color: black;
 }
 
 
