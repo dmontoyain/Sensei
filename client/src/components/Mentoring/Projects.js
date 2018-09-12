@@ -90,6 +90,12 @@ class HelpYouList extends Component {
 		this.setState({ myProjects: this.filterSubscribed(nextProps.filteredProjects)});
 	}
 
+	toggleActive = (idx) => {
+		let thing = this.state.myProjects;
+		thing[idx].active = !thing[idx].active;
+		this.setState({ myProjects: thing });
+	}
+
 	render() {
 		const { myProjects } = this.state;
 		const onStyle = {
@@ -108,7 +114,7 @@ class HelpYouList extends Component {
 		}
 		return (
 			<div>
-				{myProjects.map(item =>
+				{myProjects.map((item, idx) =>
 					<div className="project-row" key={item.id} id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
 			 			<span id="projectName">{item.project.name}</span>
 						<span id="mentorsAvailable">{item.mass}</span>
@@ -116,7 +122,7 @@ class HelpYouList extends Component {
 						<ButtonModal className="switch" className="schedule"
 						style={item.active === false ? offStyle : onStyle}
 						value={item.active === false ? "Begin Sensei Service" : "Finish Sensei Service"}>
-							<ActivationModal item={item} id={authClient.id} />
+							<ActivationModal item={item} toggleActive={() => this.toggleActive(idx)}/>
 						</ButtonModal>
 		 			</div>
 				)}
