@@ -1,3 +1,4 @@
+
 import React, { Fragment, Component } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import queryString from 'query-string';
@@ -42,5 +43,4 @@ const LogInPage = () =>  {
 		</div>
 	);
 }
-
 export default LogInPage;

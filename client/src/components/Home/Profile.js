@@ -8,13 +8,17 @@ import authClient from '../../security/Authentication';
 
 import Avatar from '../Extra/Avatar';
 
+// CSS
+
+import './Home.css';
+
 // Main Component
 
 const InfoBlurb = ({ ...props }) => {
 	const { label, text } = { ...props };
 
 	return (
-		<div className="info-blurb">
+		<div className="info-blurb shadow">
 			<h4>{label}</h4>
 			<p>{text}</p>
 		</div>
@@ -32,6 +36,7 @@ class Profile extends Component {
 	};
 
 	render() {
+		console.log("PROFILE_INFO", authClient.profile);
 		const { first_name, last_name } = authClient.profile;
 		const { grade, level } = this.cursus;
 

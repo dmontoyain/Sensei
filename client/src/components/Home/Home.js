@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 // Components
 
@@ -36,7 +36,7 @@ const homeBox = (WrappedComponent, className) => {
 
 		render() {
 			return (
-				<div className={classNames("home-box", className)}>
+				<div className={classNames(className, "home-box")}>
 					<WrappedComponent { ...this.props } />
 				</div>
 			)
@@ -61,17 +61,19 @@ class Home extends Component {
 		const { listOfUsers } = this.state;
 		const { className } = this.props; 
 
-		const Pr = homeBox(Profile, "hb-double-width");
+		const Pr = homeBox(Profile, "hb-top");
 		const Au = homeBox(AppointmentsAsUser);
 		const Am = homeBox(AppointmentsAsMentor);
 
 		return (
-			<div className="home-main">
-				<Pr />
-				<Online/>
-				<Au />
-				<Am />
-			</div>
+			<Fragment>
+				{/* <div className="banner" /> */}
+				<div className="home-main">
+					<Pr />
+					<Au />
+					<Am />
+				</div>
+			</Fragment>
 		);
 	}
 }
