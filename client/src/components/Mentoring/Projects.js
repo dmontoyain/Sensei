@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
 // Components
-import { apiUserProjectsAvailableMentors, apiAppointments } from '../../apihandling/api';
+import { apiUserProjectsAvailableMentors, apiAppointments, apiSubscribeUnSubscribeMentor } from '../../apihandling/api';
 import { ButtonModal } from '../Extra/Modal';
 import { ScheduleModal, ActivationModal } from './MentorModals';
 
@@ -40,7 +40,7 @@ class HelpMeList extends Component {
 						<span id="mentorsAvailable">{item.mass}</span>
 						<span id="projectNameDisplay">{item.name}</span>
 						<ButtonModal value="SCHEDULE APPOINTMENT" className="schedule">
-							<ScheduleModal item={item} />
+							<ScheduleModal item={item}/>
 						</ButtonModal>
 	 			</div>
 				)}
@@ -70,6 +70,7 @@ class HelpYouList extends Component {
 	toggleActive = (idx) => {
 		let thing = this.state.myProjects;
 		thing[idx].active = !thing[idx].active;
+		apiSubscribeUnSubscribeMentor.put(thing[idx].id)
 		this.setState({ myProjects: thing });
 	}
 
@@ -150,7 +151,7 @@ const projectWrap = (WrappedComponent, apiCall) => {
 			this.setState({ filter: e.target.value });
 
 			// If user has input a filter value
-			if (filter.length) {
+			if (e.target.value.length) {
 				// Filter out any projects where the name has the user's input value
 				this.setState({ filteredProjects: fullProjects.filter(p => p.project.name.toLowerCase().includes(e.target.value.toLowerCase())) });
 			} else {
