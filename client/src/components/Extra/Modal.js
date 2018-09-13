@@ -1,9 +1,11 @@
 import React, { Component, Fragment } from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 import classNames from 'classnames';
 
 import closeIcon from '../../assets/images/close.png';
+
+// CSS
+import './Extra.css';
 
 // A modal wrapper for any component
 
@@ -47,10 +49,12 @@ class ButtonModal extends Component {
 		const { value, children, ...rest } = this.props;
 		const { showModal } = this.state;
 
+		const modal = (showModal ? withModal(children, this.closeModal) : <Fragment></Fragment>);
+
 		return (
 			<Fragment>
+				{modal}
 				<button { ...rest } onClick={this.openModal}>{value}</button>
-				{showModal ? withModal(children, this.closeModal) : null}
 			</Fragment>
 		);
 	};
@@ -62,41 +66,50 @@ class ErrorModal extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			show: false,
+			className: null,
 		}
-	}
-
-	closeModal = () => {
-		this.setState({ show: false });
+		this.timeout = null;
 	}
 
 	openModal = () => {
-		this.setState({ show: true });
+		this.setState({ className: 'fadeIn' });
 	}
 
-	componentDidMount() {
-		setTimeout(() => this.openModal(), 1000);
-		setTimeout(() => this.closeModal(), 4500);
+	closeModal = () => {
+		const { className } = this.state;
+
+		if (className === 'fadeIn') {
+			this.setState({ className: 'fadeOut' });
+			this.timeout = setTimeout(() => {
+				this.setState({ className: null });
+			}, 700);
+		}
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.timeout);
+	}
+
+	componentDidUpdate(prevProps) {
+		const { show } = this.props;
+
+		if (show !== prevProps.show && show === true) {
+			this.openModal();
+		} else if (show != prevProps.show && show === false) {
+			this.closeModal();
+		}
 	}
 
 	render() {
 		const text = this.props.children;
-		const { show } = this.state;
+		const { className } = this.state;
 
-		if (!show) return null;
+		if (!className) return (<Fragment></Fragment>);
 
 		return (
-			<Fragment>
-				<ReactCSSTransitionGroup
-					transitionName='fade'
-					transitionEnterTimeout={1000}
-					transitionLeaveTimeout={500}
-				>
-					<div key="fake" className="modal-error-window" onClick={this.closeModal}>
-						{text}
-					</div>
-				</ReactCSSTransitionGroup>
-			</Fragment>
+			<div className={classNames("error-modal", className)} onClick={this.closeModal}>
+				{text}
+			</div>
 		);
 	}
 }
