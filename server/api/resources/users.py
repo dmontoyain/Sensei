@@ -115,7 +115,7 @@ class apiUserLogin(Resource):
 		if not queryUser:
 			data, err = registerUser(LoggedUser)
 			
-		print(LoggedUser)
+		#print(LoggedUser)
 		return res.postSuccess(data={'access': accessReq, 'user': LoggedUser, 'error': err})
 		
 #https://signin.intra.42.fr/users/sign_in?redirect_to=https%3A%2F%2Fapi.intra.42.fr%2Foauth%2Fauthorize%3Fclient_id%3Da740cef6c7a0415b1524701c5a9a2fce778879c90b77b0ab67b068858948677a%26redirect_uri%3Dhttp%253A%252F%252Fcantina.42.us.org%252Fusers%252Fauth%252Fmarvin%252Fcallback%26response_type%3Dcode%26state%3D187f5f897d776f69bf25443558eae6acedf4f18a4585f78f
@@ -184,6 +184,10 @@ class apiUser(Resource):
 #	api/users/:userId/pendingappointments	
 class apiUserPendingAppointments(Resource):
 	def get(self, userId):
+		query = (db.session.query(Appointment, Mentor, User).join(Mentor).join(User).filter(User.id_user42==userId, Appointment.status==2)).all()
+		for q in query:
+			print(q.__dict__)
+		print(appointments_schema.dump(query).data)
 		queryUser = User.query.join(Appointment, Appointment.id_user==User.id).filter(User.id_user42==userId, Appointment.status==2).first()
 		if not queryUser:
 			return res.resourceMissing("No appointments")

@@ -201,5 +201,5 @@ class apiMentorPendingAppointments(Resource):
 					'user' : user_schema.dump(queryUser).data,
 					'project' : project_schema.dump(queryProject).data
 					})
-		print(pendingAppointments)
+		#print(pendingAppointments)
 		return res.getSuccess(message="Appointments as mentor for user {}".format(userId), data=pendingAppointments)
