@@ -14,6 +14,7 @@ const ScheduleModal = ({ ...props }) => {
 	const { item, closeModal } = { ...props }
 
 	const subscribeForAppointment = (e, item) => {
+		console.log(e);
 		e.preventDefault();
 		// Construct body of post request
 		const body = {
@@ -27,6 +28,7 @@ const ScheduleModal = ({ ...props }) => {
 				closeModal();
 			})
 			.catch(err => {
+				console.log("hereee");
 				closeModal();
 			});
 	}
