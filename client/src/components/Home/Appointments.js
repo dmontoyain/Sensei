@@ -143,6 +143,8 @@ const appointmentWrap = (WrappedComponent, apiCall, title, noDataIcon, stringFor
 	return HOC;
 }
 
+
+
 const AppointmentsAsUser = appointmentWrap(Appointments, apiUserPendingAppointments, "Learning", noDataOne, formatStringForUser);
 
 const AppointmentsAsMentor = appointmentWrap(Appointments, apiMentorPendingAppointments, "Teaching", noDataTwo, formatStringForMentor);

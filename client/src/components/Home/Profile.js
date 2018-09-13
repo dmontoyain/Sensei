@@ -11,12 +11,13 @@ import Avatar from '../Extra/Avatar';
 // Main Component
 
 const InfoBlurb = ({ ...props }) => {
-	const { label, text } = { ...props };
+	const { label, text, newArg } = { ...props };
 
 	return (
 		<div className="info-blurb">
 			<h4>{label}</h4>
 			<p>{text}</p>
+			<p>{newArg}</p>
 		</div>
 	);
 }
