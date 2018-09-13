@@ -17,6 +17,7 @@ class Authentication {
 		// 	created_at: new Date().getTime(),
 		// 	expires_in: new Date().getTime() + 1000000,
 		// }
+		// ----
 		this.profile = JSON.parse(sessionStorage.getItem("profile"));
 		this.token = JSON.parse(sessionStorage.getItem("token"));
 	}

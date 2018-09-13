@@ -16,8 +16,8 @@
 	margin: 10px;
 	width: 40%;
 	flex-grow: 0;
-	background-color: white;
 	padding: 20px;
+	background-color: white;
 	-webkit-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	-moz-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
@@ -25,9 +25,18 @@
 	animation: fadein 0.9s;
 }
 
+.home-box:nth-child(2)
+{
+	min-height: 415px;
+	box-sizing: border-box;
+
+}
+
 .hb-top {
-	min-width: 90%;
-	background: none;
+	min-width: 100%;
+	margin: 0 auto 30px;
+	box-sizing: border-box;
+	background: #000 url(http://liborzezulka.com/img/bg/box-intro.jpg) 50% 0 repeat-x;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
@@ -52,7 +61,6 @@
 .banner {
 	width: 100%;
 	background-image: none;
-	background-color: rgb(250, 249, 246);
 	height: 300px;
 }
 
@@ -65,7 +73,6 @@
 
 
 .wc-container {
-    background-image: url(https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
@@ -79,7 +86,9 @@
 
 
 .profile-container {
-	margin: 10px auto 0 auto;
+	width: 93%;
+	box-sizing: border-box;
+	margin: 0 auto;
 }
 
 .profile-info {

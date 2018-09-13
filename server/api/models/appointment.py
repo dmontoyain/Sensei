@@ -75,8 +75,10 @@ class Appointment(db.Model):
 	#   Query multiple *PENDING* appointments with the given parameters from a mentor perspective
 	@classmethod
 	def queryManyPendingAsMentor(cls, userId):
-		from api.models import Mentor
-		query = cls.query.join(Mentor, cls.id_mentor == Mentor.id).filter(Mentor.id_user42 == userId, cls.status == 2).all()
+		from api.models import Mentor, User
+		query = cls.query.join(Mentor).join(User, Mentor.id_user42==User.id_user42).filter(Mentor.id_user42 == userId, cls.status == 2).all()
+		#query = cls.query.join(Mentor, cls.id_mentor == Mentor.id).filter(Mentor.id_user42 == userId, cls.status == 2).all()
+		query = cls.query.join(Mentor)
 		if not query:
 			return None, "No pending appointments to mentor for user {}".format(userId)
 		return appointments_schema.dump(query).data, None

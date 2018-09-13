@@ -24,6 +24,9 @@ const LogInPage = () =>  {
 		return <Redirect to="/home" />;
 	}
 
+	// Clear credentials if fail, just in case.
+	authClient.clearCredentials();
+
 	return (
 		<div className="login-root">
 			<div className="logInFull">

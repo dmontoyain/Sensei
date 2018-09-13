@@ -67,7 +67,7 @@ class Home extends Component {
 
 		return (
 			<Fragment>
-				<div className="banner" />
+				{/* <div className="banner" /> */}
 				<div className="home-main">
 					<Pr />
 					<Au />

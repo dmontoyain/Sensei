@@ -1,4 +1,5 @@
 from .resources import *
+from api.authentication import token_required
 
 #   routes configuration
 def init_routes(api):
@@ -7,13 +8,16 @@ def init_routes(api):
     api.add_resource(apiProjects, '/projects')
 
     #   users endpoints
+    #@token_required
     api.add_resource(apiUsers, '/users')
     api.add_resource(apiUsersOnline, '/users/online')
     api.add_resource(apiUser, '/user/<login>')
+    api.add_resource(apiUserLogin, '/user/login')
     api.add_resource(apiUserUpdate, '/user/<login>/update')
     api.add_resource(apiUserProjectsAvailableMentors, '/user/<login>/projects/availablementors')
 
     #   mentors endpoints
+    api.add_resource(apiMentorPendingAppointments, '/mentors/<int:userId>/pendingappointments')
     api.add_resource(apiMentors, '/mentors')
     api.add_resource(apiMentor, '/mentor/<int:mentorId>')
     api.add_resource(apiSubscribeUnSubscribeMentor, '/mentor/<int:mentorId>/subscribeunsubscribe')

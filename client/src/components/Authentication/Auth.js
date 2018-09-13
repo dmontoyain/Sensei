@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
-import { OauthSender } from 'react-oauth-flow';
+import { OauthSender, OauthReceiver } from 'react-oauth-flow';
 
 import authClient from '../../security/Authentication';
 
@@ -57,6 +57,7 @@ class Auth extends Component {
 		super(props);
 		this.state = {
 			authenticated: authClient.isAuthenticated(),
+			initialUser: false,
 		}
 	}
 
@@ -66,31 +67,45 @@ class Auth extends Component {
 			// Sends the ?code= query to the authenticate method
 			authClient.authenticate(searchParameters)
 				.then(response => {
-					console.log("success", authClient.isAuthenticated());
 					this.setState({ authenticated: authClient.isAuthenticated() });
 				})
 				.catch(err => {
-					console.log("failed", authClient.isAuthenticated());
 					this.setState({ authenticated: authClient.isAuthenticated() });
 				});
 		}
 	}
 
 	componentWillMount() {
-		const { location } = this.props;
 		// Check authentication
-		this.handleAuthentication(location.search);
+		this.handleAuthentication(this.props.location.search);
+		this.initialUserTimeout = setTimeout(() => this.setState({ initialUser: true }), 7000);
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.initialUserTimeout);
 	}
 
 	render() {
-		const { authenticated } = this.state;
+		const { authenticated, initialUser } = this.state;
 
-		console.log("HEY", authenticated);
 		if (authenticated) {
 			return (<Redirect to="/home" />);
 		}
 
-		return (<div>Pending...</div>);
+		return (
+			<Fragment>
+				<div style={{ position: 'fixed',
+								width: '100%',
+								height: '100%',
+								backgroundColor: 'white',
+								textAlign: 'center' }}
+				>
+					<img src="https://www.demilked.com/magazine/wp-content/uploads/2016/06/gif-animations-replace-loading-screen-14.gif" alt="loading..." /><br/>
+					Logging in... <br/>
+					{initialUser ? "Your first login might take a quick minute!" : ""}
+				</div>
+			</Fragment>
+		);
 	}
 }
 
