@@ -9,6 +9,7 @@ def init_routes(api):
 
     #   users endpoints
     #@token_required
+    api.add_resource(apiUserPendingAppointments, '/users/<int:userId>/pendingappointments')
     api.add_resource(apiUsers, '/users')
     api.add_resource(apiUsersOnline, '/users/online')
     api.add_resource(apiUser, '/user/<login>')

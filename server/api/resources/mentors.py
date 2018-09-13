@@ -186,17 +186,20 @@ class apiUserCapabletoMentor(Resource):
 
 class apiMentorPendingAppointments(Resource):
 	def get(self, userId):
-		queryMentor = Mentor.query.join(Appointment, Appointment.id_mentor==Mentor.id).filter(Mentor.id_user42==userId, Appointment.status==2).first()
-		queryMentor = mentor_schema.dump(queryMentor).data
-		queryUser = User.query.filter_by(id_user42=userId).first()
-		queryMentor['id_user42'] = user_schema.dump(queryUser).data
-		print(queryMentor)
-		i = 0
-		for a in queryMentor['appointments']:
-			queryAppnt = Appointment.query.filter_by(id=a).first()
-			appointment = appointment_schema.dump(queryAppnt).data
-			queryMentor['appointments'][i] = appointment
-			queryUser = User.query.filter_by(id=queryMentor['appointments'][i]['id_user']).first()
-			queryMentor['appointments'][i]['id_user'] = user_schema.dump(queryUser).data
-			i += 1;
-		return res.getSuccess(data=queryMentor)
+		queryMentor = Mentor.query.join(Appointment, Appointment.id_mentor==Mentor.id).filter(Mentor.id_user42==userId, Appointment.status==2).all()
+		if not queryMentor:
+			return res.resourceMissing("No appointments")
+		pendingAppointments = []
+		allmentors = mentors_schema.dump(queryMentor).data
+		for mentor in allmentors:
+			for a in mentor['appointments']:
+				queryAppnt = Appointment.query.filter_by(id=a).first()
+				queryUser = User.query.filter_by(id=queryAppnt.id_user).first()
+				queryProject = Project.query.filter_by(id_project42=mentor["id_project42"]).first()
+				pendingAppointments.append({
+					'appointment' : appointment_schema.dump(queryAppnt).data,
+					'user' : user_schema.dump(queryUser).data,
+					'project' : project_schema.dump(queryProject).data
+					})
+		#print(pendingAppointments)
+		return res.getSuccess(message="Appointments as mentor for user {}".format(userId), data=pendingAppointments)
