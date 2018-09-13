@@ -30,7 +30,7 @@ class NavBar extends Component {
 
 		return (
 			<div className="navlink-container">
-				<div><h1>SenSei</h1></div>
+				<div className="main-title"><h1 >SenSei</h1></div>
 				{pages.map((page, idx) => (
 					<div key={idx} className="navlink">
 						<NavLink  exact to={page.link} >
@@ -38,7 +38,7 @@ class NavBar extends Component {
 						</NavLink>
 					</div>
 					))}
-				<LogOutButton className="navlink"/>				 
+			<LogOutButton className="logout"/>				 
 			</div>
 		);
 	}
