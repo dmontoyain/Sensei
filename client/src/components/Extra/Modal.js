@@ -8,6 +8,8 @@ import closeIcon from '../../assets/images/close.png';
 // A modal wrapper for any component
 
 const withModal = (childComponents, closeModal) => {
+	const childrenWithProps = React.Children.map(childComponents, child => React.cloneElement(child, { closeModal: closeModal}));
+
 	return (
 		<Fragment>
 			<div className="modal-window">
@@ -15,7 +17,7 @@ const withModal = (childComponents, closeModal) => {
 					<img src={closeIcon} alt="close" onClick={closeModal} />
 				</div>
 				<div className="modal-body">
-					{React.Children.map(childComponents, child => React.cloneElement(child, { closeModal: closeModal}))}
+					{childrenWithProps}
 				</div>
 			</div>
 			<div className="modal-background" onClick={closeModal}/>
@@ -33,13 +35,11 @@ class ButtonModal extends Component {
 		};
 	};
 
-	closeModal = (e) => {
-		e.preventDefault();
+	closeModal = () => {
 		this.setState({ showModal: false });
 	}
 
-	openModal = (e) => {
-		e.preventDefault();
+	openModal = () => {
 		this.setState({ showModal: true });
 	}
 

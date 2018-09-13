@@ -97,9 +97,11 @@ class HelpYouList extends Component {
 			 			<span id="projectName">{item.project.name}</span>
 						<span id="mentorsAvailable">{item.mass}</span>
 						<span id="projectNameDisplay">{item.name}</span>
-						<ButtonModal className="switch" className="schedule"
-						style={item.active === false ? offStyle : onStyle}
-						value={item.active === false ? "Begin Sensei Service" : "Finish Sensei Service"}>
+						<ButtonModal
+							className="switch" className="schedule"
+							style={item.active === false ? offStyle : onStyle}
+							value={item.active === false ? "Begin Sensei Service" : "Finish Sensei Service"}
+						>
 							<ActivationModal item={item} toggleActive={() => this.toggleActive(idx)}/>
 						</ButtonModal>
 		 			</div>
