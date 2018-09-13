@@ -184,7 +184,7 @@ class apiUser(Resource):
 #	api/users/:userId/pendingappointments	
 class apiUserPendingAppointments(Resource):
 	def get(self, userId):
-		query = (db.session.query(Appointment, Mentor, User).join(Mentor).join(User).filter(User.id_user42==userId, Appointment.status==2)).all()
+		query = (db.session.query(Appointment).join(Mentor).join(User).filter(User.id_user42==userId, Appointment.status==2)).all()
 		for q in query:
 			print(q.__dict__)
 		print(appointments_schema.dump(query).data)

@@ -12,8 +12,6 @@ class Mentor(db.Model):
 	totalappointments = db.Column(db.Integer, nullable=False, server_default='0')
 	weeklyappointments = db.Column(db.Integer, nullable=False, server_default='0')
 	dailyappointments = db.Column(db.Integer, nullable=False, server_default='0')
-	slot_start = db.Column(db.DateTime)
-	slot_end = db.Column(db.DateTime)
 	abletomentor = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.false())
 	active = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.false())
 	started_at = db.Column(db.DateTime, nullable=False, server_default=sa.func.now())

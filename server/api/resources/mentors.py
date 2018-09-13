@@ -37,91 +37,45 @@ class apiMentor(Resource):
 
 	#   Updates any mentor data for the specified project
 	def	put(self, mentorId):
-		return None, 202
-
-#   api/mentor/:mentorId/subscribeunsubscribe
-class apiSubscribeUnSubscribeMentor(Resource):
-
-	#   Subscribes or unsibscribes mentor to a specific project.
-	#   Updates 'available' to true in DB to give permission.
-	#   Contraint: mentor's 'abletomentor' in DB needs to be True.
-	def put(self, mentorId):
-		#   get mentor record
+		data = request.get_json()
+		print(data)
+		if not data or 'active' not in data:
+			return res.badRequestError("No data provided")
+		
 		mentor = Mentor.query.filter_by(id=mentorId).first()
-
 		#   check if mentor exists in database
 		if not mentor:
 			return res.badRequestError("No mentor with id {} was found".format(mentorId))
 
-		#   check if mentor CAN mentor a project
-		if mentor.abletomentor is False:
-			errMessage = 'Subscribe Error for mentor record id {}. User {} does not qualify for mentoring project {}'.format(mentor.id, mentor.id_user42, mentor.id_project42)
-			return res.badRequestError(errMessage)
+		if 'active' in data:
+			mentor.active = data.get('active')
 
-		#   Swap active state
-		mentor.active = not mentor.active
 		db.session.commit()
-		return res.putSuccess('Updated mentor {} to \'active\' state of {}'.format(mentorId, mentor.active))
+		return res.putSuccess('Updated mentor to active {}'.format(data.get('active')))
 
-#   api/mentor/:mentorId/subscribe
-class apiSubscribeMentor(Resource):
+# #   api/mentor/:mentorId/subscribeunsubscribe
+# class apiSubscribeUnSubscribeMentor(Resource):
 
-	#   Subscribes or unsibscribes mentor to a specific project.
-	#   Updates 'active' to true in DB to give permission.
-	#   Contraint: mentor's 'abletomentor' in DB needs to be True.
-	def put(self, mentorId):
-		#   get mentor record
-		mentor = Mentor.query.filter_by(id=mentorId).first()
+# 	#   Subscribes or unsibscribes mentor to a specific project.
+# 	#   Updates 'available' to true in DB to give permission.
+# 	#   Contraint: mentor's 'abletomentor' in DB needs to be True.
+# 	def put(self, mentorId):
+# 		#   get mentor record
+# 		mentor = Mentor.query.filter_by(id=mentorId).first()
 
-		#   check if mentor exists in database
-		if mentor is None:
-			return res.badRequestError("No mentor with id {} was found".format(mentorId))
+# 		#   check if mentor exists in database
+# 		if not mentor:
+# 			return res.badRequestError("No mentor with id {} was found".format(mentorId))
 
-		#   check if mentor CAN mentor a project
-		if mentor.abletomentor is False:
-			errMessage = 'Subscribe Error for mentor record id {}. User {} does not qualify for mentoring project {}'.format(mentor.id, mentor.id_user42, mentor.id_project42)
-			return res.badRequestError(errMessage)
+# 		#   check if mentor CAN mentor a project
+# 		if mentor.abletomentor is False:
+# 			errMessage = 'Subscribe Error for mentor record id {}. User {} does not qualify for mentoring project {}'.format(mentor.id, mentor.id_user42, mentor.id_project42)
+# 			return res.badRequestError(errMessage)
 
-		#	check if mentor is already subscribed
-		if mentor.active is True:
-			errMessage = 'Mentor with id {} is already subscribed to 42 project id {}'.format(mentor.id, mentor.project.id_project42)
-			return res.badRequestError(errMessage)
-
-		#   subscribe mentor to project
-		mentor.active = True
-		db.session.commit()
-		mentorData = mentor_schema.dump(mentor).data
-		return res.putSuccess('Mentor {} has successfully subscribed to project {}'.format(mentorId, mentor.project.id_project42), mentorData)
-
-#   api/mentor/:mentorId/unsubscribe
-class apiUnsubscribeMentor(Resource):
-
-	#   Updates 'active' to true in DB to give permission.
-	#   Contraint: mentor's 'abletomentor' in DB needs to be True.
-	def put(self, mentorId):
-		#   get mentor record
-		mentor = Mentor.query.filter_by(id=mentorId).first()
-
-		#   check if mentor exists in database
-		if mentor is None:
-			return res.badRequestError("No mentor with id {} was found".format(mentorId))
-
-		#   check if mentor CAN mentor a project
-		if mentor.abletomentor is False:
-			errMessage = 'Subscribe Error for mentor record id {}. User {} does not qualify for mentoring project {}'.format(mentor.id, mentor.id_user42, mentor.id_project42)
-			return res.badRequestError(errMessage)
-
-		#	check if mentor is already unsubscribed
-		if mentor.active is False:
-			errMessage = 'Mentor with id {} is already unsubscribed to 42 project id {}'.format(mentor.id, mentor.project.id_project42)
-			return res.badRequestError(errMessage)
-
-		#   unsubscribe mentor to project
-		mentor.active = False
-		db.session.commit()
-		mentorData = mentor_schema.dump(mentor).data
-		successMessage = 'Mentor {} has successfully unsubscribed to project {}'.format(mentorId, mentor.project.id_project42)
-		return res.putSuccess(successMessage, mentorData)
+# 		#   Swap active state
+# 		mentor.active = not mentor.active
+# 		db.session.commit()
+# 		return res.putSuccess('Updated mentor {} to \'active\' state of {}'.format(mentorId, mentor.active))
 
 #   api/mentors/project/:projectId
 class apiMentorsProject(Resource):
