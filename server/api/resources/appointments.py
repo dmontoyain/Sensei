@@ -5,7 +5,7 @@ from api.app import db
 from api.models import User, user_schema, users_schema
 from api.models import Mentor, mentor_schema, mentors_schema
 from api.models import Project, project_schema, projects_schema
-from api.models import Appointment, appointment_schema, appointments_schema
+from api.models import  Status, Appointment, appointment_schema, appointments_schema
 from rq42 import Api42
 from response import Response as res
 from .mentorAlgo import mentorAlgorithm
@@ -117,12 +117,15 @@ class apiAppointment(Resource):
 		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)
 
 	def delete(self, appointmentId):
+
 		#   First check if the appointment record exists
-		appointment = Appointment.query.filter_by(id=appointmentId)
+		appointment = Appointment.query.filter_by(id=appointmentId).first()
 		if not appointment:
 			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
-
+		if appointment.status == Status['Cancelled']:
+			return res.badRequestError("Appointment already cancelled.")
+			
 		#	Cancel appointment by setting status = 3
-		appointment.status = 3
+		appointment.status = Status['Cancelled']
 		db.session.commit()
 		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)

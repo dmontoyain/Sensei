@@ -5,7 +5,7 @@ from api.app import db
 from api.models import User, user_schema, users_schema
 from api.models import Mentor, mentor_schema, mentors_schema
 from api.models import Project, project_schema, projects_schema
-from api.models import Appointment, appointment_schema, appointments_schema
+from api.models import  Status, Appointment, appointment_schema, appointments_schema
 from rq42 import Api42
 from response import Response as res
 
@@ -140,7 +140,7 @@ class apiUserCapabletoMentor(Resource):
 
 class apiMentorPendingAppointments(Resource):
 	def get(self, userId):
-		queryMentor = Mentor.query.join(Appointment, Appointment.id_mentor==Mentor.id).filter(Mentor.id_user42==userId, Appointment.status==2).all()
+		queryMentor = Mentor.query.join(Appointment, Appointment.id_mentor==Mentor.id).filter(Mentor.id_user42==userId, Appointment.status==Status['Pending']).all()
 		if not queryMentor:
 			return res.resourceMissing("No appointments")
 		pendingAppointments = []
