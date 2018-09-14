@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
 // Components
-import { apiUserProjectsAvailableMentors, apiAppointments, apiSubscribeUnSubscribeMentor } from '../../apihandling/api';
+import { apiUserProjectsAvailableMentors, apiAppointments, apiMentor } from '../../apihandling/api';
 import { ButtonModal } from '../Extra/Modal';
 import { ScheduleModal, ActivationModal } from './MentorModals';
 
@@ -18,11 +18,12 @@ class HelpMeList extends Component {
 		super(props);
 		this.state = {
 			myProjects: this.filterSubscribed(props.filteredProjects),
+			requested: true,
 		};
 	};
 
 	filterSubscribed = (data) => {
-		return data.filter(d => d.abletomentor == false);
+		return data.filter(d => (d.abletomentor == false));
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -37,8 +38,6 @@ class HelpMeList extends Component {
 				{myProjects.map((item, idx) =>
 					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }} >
 			 			<span id="projectName">{item.project.name}</span>
-						<span id="mentorsAvailable">{item.mass}</span>
-						<span id="projectNameDisplay">{item.name}</span>
 						<ButtonModal value="SCHEDULE APPOINTMENT" className="schedule">
 							<ScheduleModal item={item}/>
 						</ButtonModal>
@@ -68,10 +67,17 @@ class HelpYouList extends Component {
 	}
 
 	toggleActive = (idx) => {
-		let thing = this.state.myProjects;
-		thing[idx].active = !thing[idx].active;
-		apiSubscribeUnSubscribeMentor.put(thing[idx].id)
-		this.setState({ myProjects: thing });
+		let projectList = this.state.myProjects;
+
+		// Api call to toggle Active State
+		apiMentor.put(projectList[idx].id, { active: !projectList[idx].active })
+			.then(response => {
+				projectList[idx].active = !projectList[idx].active;
+				this.setState({ myProjects: projectList });
+			})
+			.catch(err => {
+				// No change - an error occurred
+			});
 	}
 
 	render() {
@@ -93,10 +99,8 @@ class HelpYouList extends Component {
 		return (
 			<div>
 				{myProjects.map((item, idx) =>
-					<div className="project-row" key={item.id} id={item.mass > 100 ? "mentorsAvailableTrue" : "mentorsAvailableFalse"}>
-			 			<span id="projectName">{item.project.name}</span>
-						<span id="mentorsAvailable">{item.mass}</span>
-						<span id="projectNameDisplay">{item.name}</span>
+					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>
+			 			<span>{item.project.name}</span>
 						<ButtonModal
 							className="switch" className="schedule"
 							style={item.active === false ? offStyle : onStyle}

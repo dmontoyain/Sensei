@@ -220,52 +220,16 @@ const apiMentors = function() {
 const apiMentor = function() {
 	this.endpoint = `${API_URL}/api/mentor`;
 
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}`;
+	this.newEndpoint = (mentorId) => {
+		return `${this.endpoint}/${mentorId}`;
 	}
 
-	this.get = (id) => {
-		return axHandler._get(this.newEndpoint(id), null, headers);
+	this.get = (mentorId) => {
+		return axHandler._get(this.newEndpoint(mentorId), null, headers);
 	}
 
-	this.put = (id) => {
-		return axHandler._put(this.newEndpoint(id), null, headers);
-	}
-}
-
-const apiSubscribeUnSubscribeMentor = function() {
-	this.endpoint = `${API_URL}/api/mentor`;
-
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}/subscribeunsubscribe`;
-	}
-
-	this.put = (id) => {
-		return axHandler._put(this.newEndpoint(id), null, headers);
-	}
-}
-
-const apiSubscribeMentor = function() {
-	this.endpoint = `${API_URL}/api/mentor`;
-
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}/subscribe`;
-	}
-
-	this.put = (id) => {
-		return axHandler._put(this.newEndpoint(id), null, headers);
-	}
-}
-
-const apiUnsubscribeMentor = function() {
-	this.endpoint = `${API_URL}/api/mentor`;
-
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}/unsubscribe`;
-	}
-
-	this.put = (id) => {
-		return axHandler._put(this.newEndpoint(id), null, headers);
+	this.put = (mentorId, data) => {
+		return axHandler._put(this.newEndpoint(mentorId), data, headers);
 	}
 }
 
@@ -352,9 +316,6 @@ module.exports = {
 	apiAppointmentsAsMentor: new apiAppointmentsAsMentor(),
 	apiMentors: new apiMentors(),
 	apiMentor: new apiMentor(),
-	apiSubscribeUnSubscribeMentor: new apiSubscribeUnSubscribeMentor(),
-	apiSubscribeMentor: new apiSubscribeMentor(),
-	apiUnsubscribeMentor: new apiUnsubscribeMentor(),
 	apiMentorsProject: new apiMentorsProject(),
 	apiUserMentoring: new apiUserMentoring(),
 	apiUserCapableToMentor: new apiUserCapableToMentor(),

@@ -1,48 +1,95 @@
-import React from 'react';
+import React, { Component } from 'react';
 
+// Components
+import { ErrorModal } from '../Extra/Modal.js';
+
+// Authentication
 import { apiSubscribeUnSubscribeMentor,
 	apiAppointments,
 } from '../../apihandling/api';
 
 import authClient from '../../security/Authentication'
+
 // CSS
 import './Mentoring.css';
 
 
-const ScheduleModal = ({ ...props }) => {
+class ScheduleModal extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			errorModal: false,
+			blockRequest: false,
+		}
+		this.timeout1 = null;
+		this.timeout2 = null;
+		this.isM = true;
+	}
 
-	const { item, closeModal } = { ...props }
+	blockRequestTimeout = () => {
+		// Buttom spam protection
+		this.setState({ blockRequest: true });
+		this.timeout1 = setTimeout(() => this.setState({ blockRequest: false }), 5000);
+	}
 
-	const subscribeForAppointment = (e, item) => {
-		console.log(e);
-		e.preventDefault();
-		// Construct body of post request
-		const body = {
-			project: item.project.name,
-			login: authClient.profile.login,
-		};
+	showErrorTimeout = () => {
+		// Error modal shows for 6 seconds
+		this.setState({ errorModal: true });
+		this.timeout2 = setTimeout(() => this.setState({ errorModal: false }), 2000);
+	}
+
+	subscribeForAppointment = () => {
+		const { item, closeModal } = this.props;
+		const { blockRequest } = this.state;
+
+		if (blockRequest)
+			return ;
+		this.blockRequestTimeout();
 
 		// Api call to create the appointment.
-		apiAppointments.post(body)
+		apiAppointments.post({
+				project: item.project.name,
+				login: authClient.profile.login,
+			})
 			.then(response => {
-				closeModal();
+				if (this.isM) {
+					this.props.closeModal();
+				}
 			})
 			.catch(err => {
-				console.log("hereee");
-				closeModal();
+				if (this.isM){
+					this.showErrorTimeout();
+				}
 			});
 	}
 
-	return (
-		<div className="schedule-modal">
-			<span>You have requested assistance on</span>
-			<span>{item.project.name}</span>
-			<span>The button below will search for any available mentors to come to the rescue</span>
-			<span>WARNING: This requires ONE correction point. Do you wish to proceed?</span>
-			{item.project.onlineMentors}
-			<button onClick={e => subscribeForAppointment(e, item)}>Request Assistance!</button>
-		</div>
-	);
+	componentDidMount() {
+		this.isM = true;
+	}
+
+	componentWillUnmount() {
+		this.isM = false;
+		clearTimeout(this.timeout1);
+		clearTimeout(this.timeout2);
+	}
+
+	render() {
+		const { item } = this.props;
+		const { name, onlineMentors } = item.project;
+		const { errorModal } = this.state;
+
+		return (
+			<div className="schedule-modal">
+				<span>--- {name} ---</span>
+				<span>WARNING: This requires ONE correction point</span>
+				<span>{onlineMentors} Mentors available on this project</span>
+				<button onClick={this.subscribeForAppointment}>Request Assistance!</button>
+				<ErrorModal show={errorModal}>
+					No Mentors Available
+				</ErrorModal>
+			</div>
+		);
+	}
 }
 
 const ActivationModal = ({ ...props }) => {
@@ -51,7 +98,7 @@ const ActivationModal = ({ ...props }) => {
 		<div className="schedule-modal" style={{textAlign: 'center'}}>
 			<span>{item.active ? "Stop serving as a Sensei for" : "Serve as a Sensei for"}</span>
 			<span>{item.project.name}?</span>
-			<button onClick={e => toggleActive(item)}>OK</button>
+			<button onClick={() => toggleActive(item)}>OK</button>
 		</div>
 	)
 }
