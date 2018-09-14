@@ -75,7 +75,11 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 			const { myAppointments } = this.state;
 
 			// Set appointments to the map of divs of each appointment
-			const appointments = (myAppointments.length ? myAppointments.map(obj => this.formatAppointment(obj)) : <NoData text="No Appointments" icon={noDataIcon} />)
+			const appointments = (
+				myAppointments.length ?
+				myAppointments.map(obj => this.formatAppointment(obj)) :
+				<NoData text="No Appointments" icon={noDataIcon} />
+			);
 
 			return (
 				<Fragment>
