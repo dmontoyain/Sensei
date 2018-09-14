@@ -140,7 +140,7 @@ class apiUserCapabletoMentor(Resource):
 
 class apiMentorPendingAppointments(Resource):
 	def get(self, userId):
-		queryMentor = Mentor.query.join(Appointment, Appointment.id_mentor==Mentor.id).filter(Mentor.id_user42==userId, Appointment.status==Status['Pending']).all()
+		queryMentor = Mentor.query.join(Appointment, Appointment.id_mentor==Mentor.id).filter(Appointment.status==Status['Pending']).filter(Mentor.id_user42==userId).all()
 		if not queryMentor:
 			return res.resourceMissing("No appointments")
 		pendingAppointments = []

@@ -116,15 +116,18 @@ class apiAppointment(Resource):
 		db.session.commit()
 		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)
 
+	#	Cancels an appointment if the status is 'Pending'
 	def delete(self, appointmentId):
 
 		#   First check if the appointment record exists
 		appointment = Appointment.query.filter_by(id=appointmentId).first()
 		if not appointment:
 			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
+		if appointment.status == Status['Finished']:
+			return res.badRequestError("Appoint has already been marked as finished.")
 		if appointment.status == Status['Cancelled']:
 			return res.badRequestError("Appointment already cancelled.")
-			
+
 		#	Cancel appointment by setting status = 3
 		appointment.status = Status['Cancelled']
 		db.session.commit()
