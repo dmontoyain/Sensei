@@ -15,15 +15,15 @@ _maxAppointmentsPerDay = 2
 #   /api/appointments
 class apiAppointments(Resource):
 
-	#   gets all active appointments
+	#   Gets all appointments
 	def get(self):
-		query = Appointment.query.all()
-		if not query:
+		queryAppointments = Appointment.query.filter_by(status=Status['Pending']).all()
+		if not queryAppointments:
 			return res.getSuccess("No appointments found.")
-		appointments = appointments_schema.dump(query).data
+		appointments = appointments_schema.dump(queryAppointments).data
 		if not appointments:
 			return res.internalServiceError("Failed to create appointment schema.")
-		return res.getSuccess("Found appointments", appointments)
+		return res.getSuccess(data=appointments)
 	
 	#   Creates an appointment for a user in a specified project or topic
 	#   Requires structuring of the request body:
@@ -55,7 +55,7 @@ class apiAppointments(Resource):
 		if error:
 			return res.resourceMissing(error)
 		
-		#   check appointments made by user for project
+		#   Limits appointments made by user for a specific project
 		projectAppointmentsCount = Appointment.queryCountProjectAppointmentsbyUser(project["id_project42"], user["id"])
 		if projectAppointmentsCount > _maxAppointmentsPerDay:
 			return res.badRequestError("User reached limit appointments for project {}".format(data.get("project")))
@@ -99,30 +99,38 @@ class apiAppointment(Resource):
 			return res.badRequestError(err)
 		return res.getSuccess(appointment)
 
-	#   updates the specified appointment feedback
-	#	request body should contain the user feedback for this appointment
-	#	{"feedback": "Great mentor, knew his stuff"}
+	#   Updates the appointment data
+	#	Request body can contain user feedback or status for this appointment
+	#	{"feedback": "Great mentor, knew his stuff", "status", "1" }
+	#	This endpoint should not be used to cancel the appointment
 	def put(self, appointmentId):
 		data = request.get_json()
-		#   First check if the appointment record exists
+		if not data:
+			return res.badRequestError("No data provided")
+
+		#   Checks appointment record exists
 		appointment = Appointment.query.filter_by(id=appointmentId)
 		if not appointment:
 			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
-		feedback = data.get('feedback')
-		if len(feedback) == 0:
-			return res.badRequestError("User must feedback mentor")
-		#	Cancel appointment by setting status = 3
-		appointment.feedback = feedback
-		db.session.commit()
-		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)
+		
+		if 'feedback' in data:
+			if len((data.get('feedback')).strip()) > 4:
+				appointment.feedback = data.get('feedback')
+		if 'status' in data and data.get('status') != Status['Cancelled']:
+			appointment.status = data.get('status')
 
-	#	Cancels an appointment if the status is 'Pending'
+		db.session.commit()
+		return res.putSuccess("Appointment {} updated.".format(appointmentId), appointment_schema.dump(appointment).data)
+
+	#	Cancels appointment only if the status is 'Pending'
 	def delete(self, appointmentId):
 
-		#   First check if the appointment record exists
+		#   Checks appointment record exists
 		appointment = Appointment.query.filter_by(id=appointmentId).first()
 		if not appointment:
 			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
+		
+		#	Verifies appointment status is 'Pending'
 		if appointment.status == Status['Finished']:
 			return res.badRequestError("Appoint has already been marked as finished.")
 		if appointment.status == Status['Cancelled']:
@@ -130,5 +138,6 @@ class apiAppointment(Resource):
 
 		#	Cancel appointment by setting status = 3
 		appointment.status = Status['Cancelled']
+
 		db.session.commit()
 		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)
