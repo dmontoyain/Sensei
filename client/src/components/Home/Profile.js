@@ -12,19 +12,6 @@ import Avatar from '../Extra/Avatar';
 
 import './Home.css';
 
-// Main Component
-
-const InfoBlurb = ({ ...props }) => {
-	const { label, text } = { ...props };
-
-	return (
-		<div className="info-blurb shadow">
-			<h4>{label}</h4>
-			<p>{text}</p>
-		</div>
-	);
-}
-
 class Profile extends Component {
 	constructor(props) {
 		super(props);
@@ -36,8 +23,7 @@ class Profile extends Component {
 	};
 
 	render() {
-		console.log("PROFILE_INFO", authClient.profile);
-		const { first_name, last_name } = authClient.profile;
+		const { first_name, last_name, login } = authClient.profile;
 		const { grade, level } = this.cursus;
 
 		return (
@@ -45,15 +31,18 @@ class Profile extends Component {
 				<div className="profile-text">{`${grade} ${first_name} ${last_name}`}</div>
 				<div className="profile-container">
 					<Avatar
-						login={authClient.profile.login}
+						login={login}
 						size="medium"
 						className="profile-avatar"
 					/>
 					<div className="profile-info">
-						<InfoBlurb label="Level" text={level} />
-						<InfoBlurb label="CP" text="42" />
-						<InfoBlurb label="Apts" text="3" />
-						<InfoBlurb label="Lessons" text="5" />
+						<div className="info-blurb shadow">
+							<h1>Level</h1>
+							<p>{level}</p>
+						</div>
+						<div className="info-blurb shadow">
+							laksdfjklasdjfkladjs
+						</div>
 					</div>
 				</div>
 			</Fragment>
