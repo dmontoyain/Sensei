@@ -11,8 +11,8 @@
 	font-size: 16px;
 	width: 65%;
 	padding: 1%;
-	margin-top: 4%;
-	margin-bottom: 4%;
+	margin-top: 1%;
+	margin-bottom: 1%;
 }
 
 .search-clear-button {
@@ -30,7 +30,11 @@
 	margin-left: 2.5%;
 	margin-right: 2.5%;
 	margin-bottom: 7px;
+<<<<<<< HEAD
 	padding: 20px;
+=======
+	padding: 1.5%;
+>>>>>>> master
 	width: 95%;
 	background-color: white;
 	font: roboto;
