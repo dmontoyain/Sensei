@@ -1,6 +1,12 @@
 from api.app import db, ma
 from datetime import datetime, timedelta
 import sqlalchemy as sa
+from enum import Enum
+
+class Status(Enum):
+	Finished = 1
+	Pending = 2
+	Cancelled = 3
 
 class Appointment(db.Model):
 	__tablename__ = 'appointments'
