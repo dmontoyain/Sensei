@@ -1,0 +1,17 @@
+.img{
+	background-image:url(https://www.shitpostbot.com/img/sourceimages/everything-is-fire-58fcd09404e90.png);
+	background-position:center;
+	background-position-y: top;
+	background-color:black;
+	background-repeat:repeat;
+	height:100%;
+	text-align:center;
+	color:white;
+	text-shadow:0 0 5px black, 0 0 10px black;
+	padding-bottom:300%;
+}
+
+.msg {
+	padding-top:2%;
+	padding-bottom:2%;
+}
