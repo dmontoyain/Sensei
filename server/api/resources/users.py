@@ -131,11 +131,11 @@ class apiUser(Resource):
 #	api/users/:userId/pendingappointments	
 class apiUserPendingAppointments(Resource):
 	def get(self, userId):
-		query = (db.session.query(Appointment).join(Mentor).join(User).filter(User.id_user42==userId, Appointment.status==Status.Pending)).all()
+		query = (db.session.query(Appointment).join(Mentor).join(User).filter(User.id_user42==userId, Appointment.status==Status['Pending'])).all()
 		for q in query:
 			print(q.__dict__)
 		print(appointments_schema.dump(query).data)
-		queryUser = User.query.join(Appointment, Appointment.id_user==User.id).filter(User.id_user42==userId, Status.Pending).first()
+		queryUser = User.query.join(Appointment, Appointment.id_user==User.id).filter(User.id_user42==userId, Appointment.status==Status['Pending']).first()
 		if not queryUser:
 			return res.resourceMissing("No appointments")
 		pendingappointments = []
