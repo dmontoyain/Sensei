@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 
 // Components
 import { apiUserProjectsAvailableMentors, apiAppointments, apiMentor } from '../../apihandling/api';
-import { ButtonModal } from '../Extra/Modal';
+import { ButtonModal, ErrorModal } from '../Extra/Modal';
 import { ScheduleModal, ActivationModal } from './MentorModals';
 
 // Security
@@ -32,16 +32,16 @@ class HelpMeList extends Component {
 
 	render() {
 		const { myProjects } = this.state;
-
+		console.log(myProjects);
 		return (
 			<div>
 				{myProjects.map((item, idx) =>
 					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }} >
-			 			<span id="projectName">{item.project.name}</span>
-						<ButtonModal value="SCHEDULE APPOINTMENT" className="schedule">
+			 			<div className="project-row-name">{item.project.name}</div>
+						<ButtonModal value="Schedule Appointment" className="project-row-schedule-button">
 							<ScheduleModal item={item}/>
 						</ButtonModal>
-	 			</div>
+	 				</div>
 				)}
 			</div>
 		);
@@ -100,9 +100,9 @@ class HelpYouList extends Component {
 			<div>
 				{myProjects.map((item, idx) =>
 					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>
-			 			<span>{item.project.name}</span>
+			 			<div className="project-row-name">{item.project.name}</div>
 						<ButtonModal
-							className="switch" className="schedule"
+							className="switch" className="project-row-schedule-button"
 							style={item.active === false ? offStyle : onStyle}
 							value={item.active === false ? "Begin Sensei Service" : "Finish Sensei Service"}
 						>
@@ -117,7 +117,7 @@ class HelpYouList extends Component {
 
 
 // HOC that wraps the Mentoring class
-const projectWrap = (WrappedComponent, apiCall) => {
+const projectWrap = (WrappedComponent) => {
 	class HOC extends Component {
 		constructor(props) {
 			super(props);
@@ -125,12 +125,14 @@ const projectWrap = (WrappedComponent, apiCall) => {
 				fullProjects: [],
 				filteredProjects: [],
 				filter: "",
+				serverError: false,
 			}
+			this.errorTimeout = null;
 		}
 
 		componentWillMount() {
 			// Makes the api call given through the 
-			apiCall(authClient.profile.login)
+			apiUserProjectsAvailableMentors.get(authClient.profile.login)
 				.then(data => {
 					this.setState({
 						fullProjects: data.data === {} ? [] : data.data,
@@ -138,17 +140,19 @@ const projectWrap = (WrappedComponent, apiCall) => {
 					});
 				})
 				.catch(err => {
-					this.setState({
-						fullProjects: [
-							{ fake: "fake", deleteme: "Delete me later", start_time: "2018-08-10T18:19:49.955709+00:00", name: 'heyooo'},
-							{ fake: "DOUBLEfake", deleteme: "This is just a test", start_time: "2018-08-09T14:08:36.695116+00:00", name: 'yoz'},
-						],
-						filteredProjects: [
-							{ fake: "fake", deleteme: "Delete me later", start_time: "2018-08-10T18:19:49.955709+00:00", name: 'heyooo' },
-							{ fake: "DOUBLEfake", deleteme: "This is just a test", start_time: "2018-08-09T14:08:36.695116+00:00", name: 'yoz'},
-						],
-					})
+					this.showErrorTimeout();
 				});
+		}
+
+		componentWillUnmount() {
+			if (this.errorTimeout) {
+				clearTimeout(this.errorTimeout);
+			}
+		}
+
+		showErrorTimeout = () => {
+			this.setState({ serverError: true });
+			this.errorTimeout = setTimeout(() => this.setState({ serverError: false }), 3000);
 		}
 
 		filterProjects = (e) => {
@@ -167,8 +171,7 @@ const projectWrap = (WrappedComponent, apiCall) => {
 		}
 
 		// Clears the Filter Input
-		clearFilter = (e) => {
-			e.preventDefault();
+		clearFilter = () => {
 			const { fullProjects } = this.state;
 			this.setState({
 				filter: "",
@@ -177,15 +180,16 @@ const projectWrap = (WrappedComponent, apiCall) => {
 		}
 
 		render() {
-			const { filter, filteredProjects } = this.state;
+			const { filter, filteredProjects, serverError } = this.state;
 
 			return (
 				<Fragment>
-					<div className="search_box">
-						<input onChange={this.filterProjects} className="bar" value={filter} />
-						<button onClick={this.clearFilter} className="search"> Clear Filter </button>
+					<div className="search-container">
+						<input onChange={this.filterProjects} className="search-bar" value={filter} />
+						<button onClick={this.clearFilter} className="search-clear-button">Clear Filter</button>
 					</div>
 					<WrappedComponent { ...this.state } className="container"/>
+					<ErrorModal show={serverError}>Server appears to be Offline</ErrorModal>
 				</Fragment>
 			);
 		}
@@ -194,9 +198,9 @@ const projectWrap = (WrappedComponent, apiCall) => {
 	return HOC;
 }
 
-const HelpMe = projectWrap(HelpMeList, apiUserProjectsAvailableMentors.get);
+const HelpMe = projectWrap(HelpMeList);
 
-const HelpYou = projectWrap(HelpYouList, apiUserProjectsAvailableMentors.get);
+const HelpYou = projectWrap(HelpYouList);
 
 export {
 	HelpMe,
