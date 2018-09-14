@@ -2,15 +2,13 @@
 
 .search-container {
 	display: flex;
-	flex-direction: row;
 	align-items: center;
-	justify-content:center;
+	justify-content: center;
 }
 
 .search-bar {
 	padding: 3px;
 	font-size: 16px;
-	position: relative;
 	width: 65%;
 	padding: 1%;
 	margin-top: 1%;
@@ -32,7 +30,11 @@
 	margin-left: 2.5%;
 	margin-right: 2.5%;
 	margin-bottom: 7px;
+<<<<<<< HEAD
+	padding: 20px;
+=======
 	padding: 1.5%;
+>>>>>>> master
 	width: 95%;
 	background-color: white;
 	font: roboto;
@@ -43,7 +45,6 @@
 }
 
 .project-row-name {
-	font-size: 1rem;
 	flex: auto;
 }
 

@@ -27,7 +27,7 @@ class Profile extends Component {
 		const { grade, level } = this.cursus;
 
 		return (
-			<Fragment>
+			<div className="hb-top">
 				<div className="profile-text">{`${grade} ${first_name} ${last_name}`}</div>
 				<div className="profile-container">
 					<Avatar
@@ -45,7 +45,7 @@ class Profile extends Component {
 						</div>
 					</div>
 				</div>
-			</Fragment>
+			</div>
 		);
 	};
 }

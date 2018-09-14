@@ -34,7 +34,7 @@ class HelpMeList extends Component {
 		const { myProjects } = this.state;
 		console.log(myProjects);
 		return (
-			<div>
+			<Fragment>
 				{myProjects.map((item, idx) =>
 					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }} >
 			 			<div className="project-row-name">{item.project.name}</div>
@@ -43,7 +43,7 @@ class HelpMeList extends Component {
 						</ButtonModal>
 	 				</div>
 				)}
-			</div>
+			</Fragment>
 		);
 	};
 }
@@ -97,7 +97,7 @@ class HelpYouList extends Component {
 			borderRadius: '4px',
 		}
 		return (
-			<div>
+			<Fragment>
 				{myProjects.map((item, idx) =>
 					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>
 			 			<div className="project-row-name">{item.project.name}</div>
@@ -110,7 +110,7 @@ class HelpYouList extends Component {
 						</ButtonModal>
 		 			</div>
 				)}
-			</div>
+			</Fragment>
 		);
 	};
 }
@@ -189,7 +189,7 @@ const projectWrap = (WrappedComponent) => {
 						<button onClick={this.clearFilter} className="search-clear-button">Clear Filter</button>
 					</div>
 					<WrappedComponent { ...this.state } className="container"/>
-					<ErrorModal show={serverError}>Server appears to be Offline</ErrorModal>
+					<ErrorModal show={serverError}>Server appears to be offline</ErrorModal>
 				</Fragment>
 			);
 		}
