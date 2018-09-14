@@ -232,10 +232,12 @@ class Api42:
 	
 	@staticmethod
 	def userProjects(userId):
-		from api.models import Mentor
+		print("got hereee")
+		print("got hereee")
 		userprojects = Api42.makeRequest('/v2/users/' + str(userId) + '/projects_users?filter[cursus]=1')
 		if userprojects is None:
 			return None
+		print("finished the 42 call")
 		return [{'id_user42': p['user']['id'], 'id_project42': p['project']['id'], 'finalmark': p['final_mark'] if p['final_mark'] is not None else 0} for p in userprojects]
 		# return [Mentor(p['project']['id'], p['user']['id'], p['final_mark']) for p in userprojects]
 

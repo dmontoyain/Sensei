@@ -126,37 +126,3 @@ class apiAppointment(Resource):
 		appointment.status = 3
 		db.session.commit()
 		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)
-
-#   /api/appointments/user/:login
-class apiAppointmentsAsUser(Resource):
-
-	#   gets all appointments from specified user as User
-	def get(self, login):
-
-		#   Validates user credentials received
-		user, error = User.queryByLogin(login)
-		if error:
-			return res.resourceMissing(message=error)
-		
-		#   Retrieves appointments for found user
-		appointments, error = Appointment.queryManyAsUser(user["id"])
-		if error:
-			return res.getSuccess(error)
-		
-		return res.getSuccess("Appointments for user {}".format(user), appointments)
-
-#   /api/appointments/mentor/:login
-class apiAppointmentsAsMentor(Resource):
-
-	#   gets all appointments from specified user as mentor
-	def get(self, login):
-
-		#   Validates user credentials received
-		user, error = User.queryByLogin(login)
-		if error:
-			return res.resourceMissing(message=error)
-		#   Retrieves appointments for found user
-		appointments, error = Appointment.queryManyAsMentor(user["id_user42"])
-		if error:
-			return res.getSuccess(error)
-		return res.getSuccess('All Appointments for user {} as mentor, ever'.format(user['login']), appointments)
