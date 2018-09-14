@@ -27,25 +27,24 @@ class Profile extends Component {
 		const { grade, level } = this.cursus;
 
 		return (
-			<Fragment>
-				<div className="profile-text">{`${grade} ${first_name} ${last_name}`}</div>
-				<div className="profile-container">
+			<div className="home-top">
+				{/* <div className="profile-text">{`${grade} ${first_name} ${last_name}`}</div> */}
+				<div className="profile-avatar">
 					<Avatar
-						login={login}
-						size="medium"
-						className="profile-avatar"
+					login={login}
+					size="medium"
 					/>
-					<div className="profile-info">
-						<div className="info-blurb shadow">
-							<h1>Level</h1>
-							<p>{level}</p>
-						</div>
-						<div className="info-blurb shadow">
-							laksdfjklasdjfkladjs
-						</div>
+				</div>
+				<div className="profile-info">
+					<div className="info-blurb shadow">
+						<h1>Level</h1>
+						<p>{level}</p>
+					</div>
+					<div className="info-blurb shadow">
+						laksdfjklasdjfkladjs
 					</div>
 				</div>
-			</Fragment>
+			</div>
 		);
 	};
 }

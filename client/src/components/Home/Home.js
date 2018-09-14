@@ -61,15 +61,13 @@ class Home extends Component {
 		const { listOfUsers } = this.state;
 		const { className } = this.props; 
 
-		const Pr = homeBox(Profile, "hb-top");
 		const Au = homeBox(AppointmentsAsUser);
 		const Am = homeBox(AppointmentsAsMentor);
 
 		return (
 			<Fragment>
-				{/* <div className="banner" /> */}
-				<div className="home-main">
-					<Pr />
+				<Profile />
+				<div className="home-container">
 					<Au />
 					<Am />
 				</div>
