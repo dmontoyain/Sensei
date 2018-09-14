@@ -1,5 +1,4 @@
 /* CSS class definitions for the Home Page */
-
 .bg-purple {
 	background-color: #9867d6;
 }
@@ -15,10 +14,10 @@
 
 .home-box {
 	margin: 10px;
-	min-width: 45%;
-	flex-grow: 1;
+	width: 40%;
+	flex-grow: 0;
+	padding: 20px;
 	background-color: white;
-	padding: 30px;
 	-webkit-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	-moz-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
@@ -26,8 +25,27 @@
 	animation: fadein 0.9s;
 }
 
-.hb-double-width {
-	min-width: 90%;
+.home-box:nth-child(2)
+{
+	min-height: 415px;
+	box-sizing: border-box;
+
+}
+
+.hb-top {
+	min-width: 100%;
+	margin: 0 auto 30px;
+	box-sizing: border-box;
+	background: #000 url(http://liborzezulka.com/img/bg/box-intro.jpg) 50% 0 repeat-x;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+
+.shadow {
+	-webkit-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
+	-moz-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
+	box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 }
 
 @keyframes fadein {
@@ -40,6 +58,12 @@
 	to	 { opacity: 1; }
 }
 
+.banner {
+	width: 100%;
+	background-image: none;
+	height: 300px;
+}
+
 /* --- */
 
 .home-box-title {
@@ -49,10 +73,10 @@
 
 
 .wc-container {
-	background-image: url(https://lh4.googleusercontent.com/-XplyTa1Za-I/VMSgIyAYkHI/AAAAAAAADxM/oL-rD6VP4ts/w1184-h666/Android-Lollipop-wallpapers-Google-Now-Wallpaper-2.png);
-	background-position: center;
-	background-size: cover;
-	background-repeat: no-repeat;
+	margin-top: 70px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 	min-height: 100vh;
 	height: 100%;
 	font-weight: 300;
@@ -63,11 +87,21 @@
 
 
 .profile-container {
-	margin: 10px auto 0 auto;
+	width: 93%;
+	box-sizing: border-box;
+	margin: 0 auto;
 }
 
 .profile-info {
 	flex-basis: 80%;
+}
+
+.profile-avatar {
+	min-width: 310px;
+	margin-right: 15px;
+	margin-bottom: 10px;
+	box-sizing: border-box;	
+	flex-basis: 15%;
 }
 .info-blurb:nth-child(1) {background-color: #9867d6;}
 .info-blurb:nth-child(2) {background-color: #c0dbe2;}
@@ -93,35 +127,43 @@
 		justify-content: space-around;
 	}
 	.profile-container {
-		display: inline-flex;
+		display: flex;
 		justify-content: space-between;
 	}
 }
 @media (min-width: 700px){
-	.profile-container {
+	.profile-container{
 		display: flex;
 	}
 }
 
-.avatar-container {
+@media (max-width: 695px){
+	.profile-container{
+		display: block;
+		justify-content: center;
+	}
+	.profile-avatar {
+		display: block;
+    	margin-left: auto;
+    	margin-right: auto;
+    	width: 50%;
+	}
+	/* .profile-container{
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: space-evenly;
+	}
+	.profile-info {
+		box-sizing: border-box;
+		flex-basis: 40%;
+	}
+	.profile-avatar {
+		box-sizing: border-box;
+		flex-basis: 60%;
+	} */
 
 }
 
-.profile-avatar {
-	min-width: 300px;
-	max-width: 350px;
-	padding-right: 10px;
-	margin-bottom: 10px;
-	box-sizing: border-box;	
-	flex-basis: 15%;
-}
-
-.profile-text {
-	font-size: 2rem;
-	text-align: center;
-	font-weight: thin;
-	color: black;
-}
 
 
 /* @media all and (min-width: 50px)   {  .login-root  { font-size:0.1em;  } }

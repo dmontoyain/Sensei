@@ -29,15 +29,16 @@ class NavBar extends Component {
 		const { pages } = this.state;
 
 		return (
-			<div className="navbar-main">
-				<div className="navlink-container">
-			 		{pages.map((page, idx) => (
-			 			<NavLink key={idx} exact to={page.link} className="navlink">
-				 			<img alt={page.name} src={page.icon} className="navbar-icon"/>
-		 				</NavLink>
-			 		))}
-			 	</div>
- 				<LogOutButton />
+			<div className="navlink-container">
+				<div className="main-title"><h1 >SenSei</h1></div>
+				{pages.map((page, idx) => (
+					<div key={idx} className="navlink">
+						<NavLink  exact to={page.link} >
+							<img alt={page.name} src={page.icon} className="navbar-icon"/>
+						</NavLink>
+					</div>
+					))}
+			<LogOutButton className="logout"/>				 
 			</div>
 		);
 	}

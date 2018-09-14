@@ -13,9 +13,10 @@ class Authentication {
 		// 	id: 12413,
 		// 	login: "nwang",
 		// }
+		// let newDate = new Date().getTime;
 		// this.token = {
-		// 	created_at: new Date().getTime(),
-		// 	expires_in: new Date().getTime() + 1000000,
+		// 	created_at: newDate,
+		// 	expires_in: newDate + 10000000,
 		// }
 		this.profile = JSON.parse(sessionStorage.getItem("profile"));
 		this.token = JSON.parse(sessionStorage.getItem("token"));
