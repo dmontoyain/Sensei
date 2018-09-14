@@ -6,10 +6,9 @@ import Avatar from '../Extra/Avatar';
 
 // API Handler
 import {
-	apiPendingAppointmentsAsMentor,
-	apiPendingAppointmentsAsUser,
 	apiMentorPendingAppointments,
 	apiUserPendingAppointments,
+	apiAppointment,
 } from '../../apihandling/api';
 
 // Security
@@ -41,8 +40,19 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 				});
 		}
 
+		cancelAppointment = (aptId, idx) => {
+			apiAppointment.delete(aptId)
+				.then(response => {
+					this.setState({ myAppointments: this.state.myAppointments.filter((_, i) => i != idx)
+					})
+				})
+				.catch(err => {
+					console.log(aptId, idx);
+				})
+		}
 
-		formatAppointment = (obj) => {
+
+		formatAppointment = (obj, idx) => {
 			// Declare variables
 			const { appointment, project, user, userMentoring } = obj;
 
@@ -67,6 +77,7 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 							{time}
 						</h3>
 					</div>
+					<button onClick={() => this.cancelAppointment(appointment.id, idx)} >DELETE</button>
 				</div>
 			);
 		}
@@ -77,7 +88,7 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 			// Set appointments to the map of divs of each appointment
 			const appointments = (
 				myAppointments.length ?
-				myAppointments.map(obj => this.formatAppointment(obj)) :
+				myAppointments.map((obj, idx) => this.formatAppointment(obj, idx)) :
 				<NoData text="No Appointments" icon={noDataIcon} />
 			);
 

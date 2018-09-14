@@ -164,20 +164,20 @@ const apiAppointments = function() {
 const apiAppointment = function() {
 	this.endpoint = `${API_URL}/api/appointment`;
 
-	this.newEndpoint = (id) => {
-		return `${this.endpoint}/${id}`;
+	this.newEndpoint = (aptId) => {
+		return `${this.endpoint}/${aptId}`;
 	}
 
-	this.get = (id) => {
-		return axHandler._get(this.newEndpoint(id), null, headers);
+	this.get = (aptId) => {
+		return axHandler._get(this.newEndpoint(aptId), null, headers);
 	}
 
-	this.put = (id, data) => {
-		return axHandler._put(this.newEndpoint(id), data, headers);
+	this.put = (aptId, data) => {
+		return axHandler._put(this.newEndpoint(aptId), data, headers);
 	}
 
-	this.delete = (id) => {
-		return axHandler._delete(this.newEndpoint(id), null, headers);
+	this.delete = (aptId) => {
+		return axHandler._delete(this.newEndpoint(aptId), null, headers);
 	}
 }
 
