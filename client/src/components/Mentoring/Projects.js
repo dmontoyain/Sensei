@@ -99,8 +99,8 @@ class HelpYouList extends Component {
 		return (
 			<div>
 				{myProjects.map((item, idx) =>
-					<div className="project-row" key={item.id}>
-			 			<span id="projectName">{item.project.name}</span>
+					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>
+			 			<span>{item.project.name}</span>
 						<ButtonModal
 							className="switch" className="schedule"
 							style={item.active === false ? offStyle : onStyle}

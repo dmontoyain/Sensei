@@ -15,12 +15,11 @@ import './Home.css';
 // Main Component
 
 const InfoBlurb = ({ ...props }) => {
-	const { label, text } = { ...props };
+	const { children } = { ...props };
 
 	return (
 		<div className="info-blurb shadow">
-			<h4>{label}</h4>
-			<p>{text}</p>
+			{children}
 		</div>
 	);
 }
@@ -50,7 +49,16 @@ class Profile extends Component {
 						className="profile-avatar"
 					/>
 					<div className="profile-info">
-						<InfoBlurb label="Level" text={level} />
+						<InfoBlurb label="Level" text={level}>
+							jdsa
+							sfafds
+							asdf
+							asdfdsaa
+							dsf
+							jaf
+							dsaf
+							fdsafklsadkfj
+						</InfoBlurb>
 						<InfoBlurb label="CP" text="42" />
 						<InfoBlurb label="Apts" text="3" />
 						<InfoBlurb label="Lessons" text="5" />

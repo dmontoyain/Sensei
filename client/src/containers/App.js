@@ -36,7 +36,7 @@ class App extends Component {
 					<PrivateRoute exact path="/home" component={withHeaderFooter(Home)} />
 					<PrivateRoute exact path="/helpme" component={withHeaderFooter(HelpMe)} />
 					<PrivateRoute exact path="/helpyou" component={withHeaderFooter(HelpYou)} />
-					<Route component={NotFound} />
+					<Route component={NotFound /* Default Switch Statement returns the NotFound page */ } />
 				</Switch>
 			</Router>
 		);

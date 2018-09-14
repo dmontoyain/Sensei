@@ -13,13 +13,14 @@ class Online extends React.Component {
 		this.state = {
 			students: [],
 		};
+		this.timeout = null;
 		this.interval = null;
 	}
 
 	tick = () => {
 		apiUsersOnline.get()
 			.then(data => {
-				this.setState({ students: data.data});
+				this.setState({ students: data.data != {} ? data.data : [] });
 			})
 			.catch(err => {
 				// FAKE REMOVE LATER
@@ -32,27 +33,29 @@ class Online extends React.Component {
 
 	componentDidMount() {
 		this.tick();
-		setTimeout(() => {
+		this.timeout = setTimeout(() => {
 			this.interval = setInterval(() => this.tick(), 60000);
 		}, (Math.ceil(Date.now() / 60000) * 60000) - Date.now())
 	}
 
 	componentWillUnmount() {
-		if (!this.interval)
-			return ;
-		clearInterval(this.interval);
+		if (this.timeout)
+			clearTimeout(this.timeout);
+		if (this.interval)
+			clearInterval(this.interval);
 	}
 
 	render () {
 		const { students } = this.state;
-		let time = new Date((Math.floor(Date.now() / 60000) * 60000)).toLocaleString()
+		const time = new Date((Math.floor(Date.now() / 60000) * 60000)).toLocaleString();
+
 		if (students.length === 1) {
-				return (
-					<div className="box">
-						<p>As of {time}</p>
-						<p>There is {students.length} person logged in</p>
-					</div>
-				);
+			return (
+				<div className="box">
+					<p>As of {time}</p>
+					<p>There is {students.length} person logged in</p>
+				</div>
+			);
 		}
 			else {
 				return (

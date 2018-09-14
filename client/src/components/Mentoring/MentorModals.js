@@ -25,7 +25,7 @@ class ScheduleModal extends Component {
 		this.timeout2 = null;
 		this.isM = true;
 	}
-	
+
 	blockRequestTimeout = () => {
 		// Buttom spam protection
 		this.setState({ blockRequest: true });
