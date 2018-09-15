@@ -5,7 +5,7 @@ from api.app import db
 from api.models import User, user_schema, users_schema
 from api.models import Mentor, mentor_schema, mentors_schema
 from api.models import Project, project_schema, projects_schema
-from api.models import Appointment, appointment_schema, appointments_schema
+from api.models import  Status, Appointment, appointment_schema, appointments_schema
 from rq42 import Api42
 from response import Response as res
 from .mentorAlgo import mentorAlgorithm
@@ -15,15 +15,15 @@ _maxAppointmentsPerDay = 2
 #   /api/appointments
 class apiAppointments(Resource):
 
-	#   gets all active appointments
+	#   Gets all appointments
 	def get(self):
-		query = Appointment.query.all()
-		if not query:
+		queryAppointments = Appointment.query.filter_by(status=Status['Pending']).all()
+		if not queryAppointments:
 			return res.getSuccess("No appointments found.")
-		appointments = appointments_schema.dump(query).data
+		appointments = appointments_schema.dump(queryAppointments).data
 		if not appointments:
 			return res.internalServiceError("Failed to create appointment schema.")
-		return res.getSuccess("Found appointments", appointments)
+		return res.getSuccess(data=appointments)
 	
 	#   Creates an appointment for a user in a specified project or topic
 	#   Requires structuring of the request body:
@@ -55,7 +55,7 @@ class apiAppointments(Resource):
 		if error:
 			return res.resourceMissing(error)
 		
-		#   check appointments made by user for project
+		#   Limits appointments made by user for a specific project
 		projectAppointmentsCount = Appointment.queryCountProjectAppointmentsbyUser(project["id_project42"], user["id"])
 		if projectAppointmentsCount > _maxAppointmentsPerDay:
 			return res.badRequestError("User reached limit appointments for project {}".format(data.get("project")))
@@ -99,101 +99,45 @@ class apiAppointment(Resource):
 			return res.badRequestError(err)
 		return res.getSuccess(appointment)
 
-	#   updates the specified appointment feedback
-	#	request body should contain the user feedback for this appointment
-	#	{"feedback": "Great mentor, knew his stuff"}
+	#   Updates the appointment data
+	#	Request body can contain user feedback or status for this appointment
+	#	{"feedback": "Great mentor, knew his stuff", "status", "1" }
+	#	This endpoint should not be used to cancel the appointment
 	def put(self, appointmentId):
 		data = request.get_json()
-		#   First check if the appointment record exists
+		if not data:
+			return res.badRequestError("No data provided")
+
+		#   Checks appointment record exists
 		appointment = Appointment.query.filter_by(id=appointmentId)
 		if not appointment:
 			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
-		feedback = data.get('feedback')
-		if len(feedback) == 0:
-			return res.badRequestError("User must feedback mentor")
-		#	Cancel appointment by setting status = 3
-		appointment.feedback = feedback
-		db.session.commit()
-		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)
+		
+		if 'feedback' in data:
+			if len((data.get('feedback')).strip()) > 4:
+				appointment.feedback = data.get('feedback')
+		if 'status' in data and data.get('status') != Status['Cancelled']:
+			appointment.status = data.get('status')
 
+		db.session.commit()
+		return res.putSuccess("Appointment {} updated.".format(appointmentId), appointment_schema.dump(appointment).data)
+
+	#	Cancels appointment only if the status is 'Pending'
 	def delete(self, appointmentId):
-		#   First check if the appointment record exists
-		appointment = Appointment.query.filter_by(id=appointmentId)
+
+		#   Checks appointment record exists
+		appointment = Appointment.query.filter_by(id=appointmentId).first()
 		if not appointment:
 			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
+		
+		#	Verifies appointment status is 'Pending'
+		if appointment.status == Status['Finished']:
+			return res.badRequestError("Appoint has already been marked as finished.")
+		if appointment.status == Status['Cancelled']:
+			return res.badRequestError("Appointment already cancelled.")
 
 		#	Cancel appointment by setting status = 3
-		appointment.status = 3
+		appointment.status = Status['Cancelled']
+
 		db.session.commit()
 		return res.putSuccess("Appointment {} cancelled.".format(appointmentId), appointment_schema.dump(appointment).data)
-
-#   /api/appointments/user/:login
-class apiAppointmentsAsUser(Resource):
-
-	#   gets all appointments from specified user as User
-	def get(self, login):
-
-		#   Validates user credentials received
-		user, error = User.queryByLogin(login)
-		if error:
-			return res.resourceMissing(message=error)
-		
-		#   Retrieves appointments for found user
-		appointments, error = Appointment.queryManyAsUser(user["id"])
-		if error:
-			return res.getSuccess(error)
-		
-		return res.getSuccess("Appointments for user {}".format(user), appointments)
-
-#   /api/appointments/mentor/:login
-class apiAppointmentsAsMentor(Resource):
-
-	#   gets all appointments from specified user as mentor
-	def get(self, login):
-
-		#   Validates user credentials received
-		user, error = User.queryByLogin(login)
-		if error:
-			return res.resourceMissing(message=error)
-		#   Retrieves appointments for found user
-		appointments, error = Appointment.queryManyAsMentor(user["id_user42"])
-		if error:
-			return res.getSuccess(error)
-		return res.getSuccess('All Appointments for user {} as mentor, ever'.format(user['login']), appointments)
-
-
-#   ------------------------------------------
-#   Pending appointments endpoints
-#   searches by **username** not userId as requested by Kmckee
-
-#   /api/appointments/pending/mentor/:login
-class apiPendingAppointmentsAsMentor(Resource):
-
-	#   Gets all pending appointments from the user specified as Mentor
-	def get(self, login):
-		user, error = User.queryByLogin(login)
-		if error:
-			return res.resourceMissing(error)
-		appointments, error = Appointment.queryManyPendingAsMentor(user["id_user42"])
-		if error:
-			return res.getSuccess(error)
-		retMessage = "appointments for mentor {}".format(login)
-		keyword = 'No ' if error else 'Pending '
-		retMessage = keyword + retMessage
-		return res.getSuccess(retMessage, appointments)
-
-#   /api/appointments/pending/user/:login
-class apiPendingAppointmentsAsUser(Resource):
-
-	#   gets all pending appointments from the user specified as User (Mentee)
-	def get(self, login):
-		user, error = User.queryByLogin(login)
-		if error:
-			return res.resourceMissing(message=error)
-		appointments, error = Appointment.queryManyPendingAsUser(user["id"])
-		if error:
-			return res.getSuccess(error)
-		retMessage = "appointments for user {}".format(login)
-		keyword = 'No ' if error else 'Pending '
-		retMessage = keyword + retMessage
-		return res.getSuccess(retMessage, appointments)

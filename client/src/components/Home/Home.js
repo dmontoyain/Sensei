@@ -49,31 +49,20 @@ const homeBox = (WrappedComponent, className) => {
 
 // The main render of the home page
 
-class Home extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			hello: "hello",
-		}
-	}
+const Home = ({ ...props }) => {
 
-	render() {
-		const { listOfUsers } = this.state;
-		const { className } = this.props; 
+	const Au = homeBox(AppointmentsAsUser);
+	const Am = homeBox(AppointmentsAsMentor);
 
-		const Au = homeBox(AppointmentsAsUser);
-		const Am = homeBox(AppointmentsAsMentor);
-
-		return (
-			<Fragment>
-				<Profile />
-				<div className="home-container">
-					<Au />
-					<Am />
-				</div>
-			</Fragment>
-		);
-	}
+	return (
+		<Fragment>
+			<Profile />
+			<div className="home-container">
+				<Au />
+				<Am />
+			</div>
+		</Fragment>
+	);
 }
 
 export default Home;
