@@ -56,8 +56,8 @@ const Home = ({ ...props }) => {
 
 	return (
 		<Fragment>
-			<div className="home-main">
-				<Profile />
+			<Profile />
+			<div className="home-container">
 				<Au />
 				<Am />
 			</div>

@@ -23,26 +23,31 @@ class Profile extends Component {
 	};
 
 	render() {
-		const { first_name, last_name, login } = authClient.profile;
+		const { correction_point, first_name, last_name, login } = authClient.profile;
 		const { grade, level } = this.cursus;
 
 		return (
-			<div className="hb-top">
-				<div className="profile-text">{`${grade} ${first_name} ${last_name}`}</div>
-				<div className="profile-container">
+			<div className="home-top">
+				{/* <div className="profile-text">{`${grade} ${first_name} ${last_name}`}</div> */}
+				<div className="profile-avatar">
 					<Avatar
-						login={login}
-						size="medium"
-						className="profile-avatar"
+					login={login}
+					size="medium"
 					/>
-					<div className="profile-info">
-						<div className="info-blurb shadow">
-							<h1>Level</h1>
-							<p>{level}</p>
-						</div>
-						<div className="info-blurb shadow">
-							laksdfjklasdjfkladjs
-						</div>
+				</div>
+				<div className="profile-info">
+					<div className="info-blurb shadow">
+						<ul>
+							<li className="profile-name">
+								<h2>{`${first_name} ${last_name}`}</h2>
+							</li>
+							<li><h3>Grade:</h3><h4>{`${grade}`}</h4></li>
+							<li><h3>Level</h3><h4>{level}</h4></li>
+							<li><h3>Correction Point</h3><h4>{`${correction_point}`}</h4></li>
+						</ul>
+					</div>
+					<div className="info-blurb shadow">
+						laksdfjklasdjfkladjs
 					</div>
 				</div>
 			</div>

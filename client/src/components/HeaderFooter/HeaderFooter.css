@@ -153,3 +153,8 @@
 	text-indent: 15px;
 	background: red;
 }
+
+.logout-button img {
+    height: 24px;
+    padding-right: 3px;
+}
