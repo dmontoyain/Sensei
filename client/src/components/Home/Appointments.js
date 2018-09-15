@@ -3,6 +3,8 @@ import React, { Component, Fragment } from 'react';
 // Components
 import NoData from '../Extra/NoData';
 import Avatar from '../Extra/Avatar';
+import Feedback from './Feedback';
+import { ButtonModal, ErrorModal } from '../Extra/Modal';
 
 // API Handler
 import {
@@ -41,6 +43,7 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 		}
 
 		cancelAppointment = (aptId, idx) => {
+			// Uses filter to delete the appointment from state that was successfully 'cancelled' on the database end.
 			apiAppointment.delete(aptId)
 				.then(response => {
 					this.setState({ myAppointments: this.state.myAppointments.filter((_, i) => i != idx)
@@ -55,6 +58,7 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 		formatAppointment = (obj, idx) => {
 			// Declare variables
 			const { appointment, project, user, userMentoring } = obj;
+			console.log("P", obj);
 
 			// Seperate out the login information
 			const { login } = user ? user : userMentoring; // This is the only difference between the data returned by the apiUser... endpoint and the apiMentor... endpoint.
@@ -62,9 +66,9 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 			// Get formatted date
 			const time = new Date(appointment.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'long', month: 'short', hour: 'numeric', minute: 'numeric', hour12: true});
 
-			// The main appointment row
-			return (
-				<div key={appointment.id} className="appointment-row-container">
+			// Save the main elements
+			const main = (
+				<div className="appointment-info">
 					<Avatar size="small" login={login} className="appointment-image" />
 					<div>
 						<a
@@ -73,11 +77,24 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 						>
 							{login}
 						</a>
-						<h3>
-							{time}
-						</h3>
+						<h3 style={{ color: 'firebrick' }}>{project.name}</h3>
+						<h3>{time}</h3>
 					</div>
-					<button onClick={() => this.cancelAppointment(appointment.id, idx)} >DELETE</button>
+				</div>
+			);
+
+			// The main appointment row
+			return (
+				<div key={appointment.id} className="appointment-container">
+					{main}
+					{userMentoring &&
+					<ButtonModal value="Feedback" className="appointment-feedback-button">
+						<Feedback
+							main={main}
+							cancel={() => this.cancelAppointment(appointment.id, idx)}
+						/>
+					</ButtonModal>
+					}
 				</div>
 			);
 		}
