@@ -139,10 +139,7 @@
 
 /* --- Appointments.js --- */
 
-.appointment-row-container {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
+.appointment-container {
 	margin-bottom: 20px;
 	padding-bottom: 20px;
 	border-bottom: 1px solid lightgrey;
@@ -150,8 +147,42 @@
 	font-family: 'Montserrat';
 }
 
+.appointment-info {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+}
+
 .appointment-image {
 	border-radius: 0px;
-	max-width: 120px;
+	width: 120px;
+	height: 70px;
 	padding-right: 20px;
+}
+
+.appointment-feedback-button {
+
+}
+
+
+/* --- Feedback.js --- */
+
+.feedback-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.fb-absent {
+	display: flex;
+	flex-wrap: auto;
+	flex: auto;
+	align-items: center;
+	height: 50px;
+}
+
+.fb-absent-box {
+	font-size: 2em;
+	cursor: pointer;
+	width: 50px;
 }

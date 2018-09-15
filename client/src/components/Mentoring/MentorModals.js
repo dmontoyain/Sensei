@@ -77,13 +77,20 @@ class ScheduleModal extends Component {
 		const { item } = this.props;
 		const { name, onlineMentors } = item.project;
 		const { errorModal } = this.state;
-
+		const zeroStyle = {
+			color: 'crimson',
+			fontWeight: 'bold',
+		};
+		const isStyle = {
+			color: 'darkgreen',
+			fontWeight: 'bold',
+		};
 		return (
 			<div className="schedule-modal">
-				<span>--- {name} ---</span>
-				<span>WARNING: This requires ONE correction point</span>
-				<span>{onlineMentors} Mentors available on this project</span>
-				<button onClick={this.subscribeForAppointment}>Request Assistance!</button>
+				<h2 style={{paddingBottom: "4%"}}>--- {name} ---</h2>
+				<span className="s-modal-text">WARNING: This requires ONE correction point</span>
+				<span>Mentors available for {name} : <span style={onlineMentors > 0 ? isStyle : zeroStyle}>{onlineMentors}</span></span>
+				<button className="s-modal-button" onClick={this.subscribeForAppointment}>Request Assistance!</button>
 				<ErrorModal show={errorModal}>
 					No Mentors Available
 				</ErrorModal>
@@ -92,18 +99,4 @@ class ScheduleModal extends Component {
 	}
 }
 
-const ActivationModal = ({ ...props }) => {
-	const { item, toggleActive } = { ...props }
-	return (
-		<div className="schedule-modal" style={{textAlign: 'center'}}>
-			<span>{item.active ? "Stop serving as a Sensei for" : "Serve as a Sensei for"}</span>
-			<span>{item.project.name}?</span>
-			<button onClick={() => toggleActive(item)}>OK</button>
-		</div>
-	)
-}
-
-export {
-	ScheduleModal,
-	ActivationModal,
-}
+export {ScheduleModal};
