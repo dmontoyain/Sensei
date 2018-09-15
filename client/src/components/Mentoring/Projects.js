@@ -33,12 +33,19 @@ class HelpMeList extends Component {
 	render() {
 		const { myProjects } = this.state;
 		console.log(myProjects);
+		const scheduleStyle = {
+			color: 'white',
+			backgroundColor: 'purple',
+			padding: '5px',
+			border: 'none',
+			borderRadius: '4px',
+		};
 		return (
 			<Fragment>
 				{myProjects.map((item, idx) =>
 					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }} >
 			 			<div className="project-row-name">{item.project.name}</div>
-						<ButtonModal value="Schedule Appointment" className="project-row-schedule-button">
+						<ButtonModal style={scheduleStyle} value="Schedule Appointment" className="switch">
 							<ScheduleModal item={item}/>
 						</ButtonModal>
 	 				</div>
@@ -68,7 +75,6 @@ class HelpYouList extends Component {
 
 	toggleActive = (idx) => {
 		let projectList = this.state.myProjects;
-
 		// Api call to toggle Active State
 		apiMentor.put(projectList[idx].id, { active: !projectList[idx].active })
 			.then(response => {
@@ -95,19 +101,18 @@ class HelpYouList extends Component {
 			padding: '5px',
 			border: 'none',
 			borderRadius: '4px',
-		}
+		};
 		return (
 			<Fragment>
 				{myProjects.map((item, idx) =>
 					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>
 			 			<div className="project-row-name">{item.project.name}</div>
-						<ButtonModal
-							className="switch" className="project-row-schedule-button"
+							<button className="switch"
 							style={item.active === false ? offStyle : onStyle}
-							value={item.active === false ? "Begin Sensei Service" : "Finish Sensei Service"}
-						>
-							<ActivationModal item={item} toggleActive={() => this.toggleActive(idx)}/>
-						</ButtonModal>
+							onClick={() => this.toggleActive(idx)}
+							>
+							{item.active === false ? "Begin Sensei Service" : "Finish Sensei Service"}
+							</button>
 		 			</div>
 				)}
 			</Fragment>
