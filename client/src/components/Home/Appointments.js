@@ -42,15 +42,31 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 				});
 		}
 
+		filterOutApt = (idx) => {
+			this.setState({ myAppointments: this.state.myAppointments.filter((_, i) => i != idx) });
+		}
+
 		cancelAppointment = (aptId, idx) => {
 			// Uses filter to delete the appointment from state that was successfully 'cancelled' on the database end.
 			apiAppointment.delete(aptId)
 				.then(response => {
-					this.setState({ myAppointments: this.state.myAppointments.filter((_, i) => i != idx)
-					})
+					this.filterOutApt(idx);
 				})
 				.catch(err => {
-					console.log(aptId, idx);
+				})
+		}
+
+		submitFeedback = (aptId, idx, rating, feedback) => {
+			const data = {
+				rating: rating,
+				feedback: feedback, // STATUS????????????????????????????????????????
+			}
+			apiAppointment.put(aptId, data)
+				.then(res => {
+					this.filterOutApt(idx);
+				})
+				.catch(err => {
+					// Something happened
 				})
 		}
 
@@ -58,7 +74,6 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 		formatAppointment = (obj, idx) => {
 			// Declare variables
 			const { appointment, project, user, userMentoring } = obj;
-			console.log("P", obj);
 
 			// Seperate out the login information
 			const { login } = user ? user : userMentoring; // This is the only difference between the data returned by the apiUser... endpoint and the apiMentor... endpoint.
@@ -83,18 +98,27 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 				</div>
 			);
 
-			// The main appointment row
-			return (
-				<div key={appointment.id} className="appointment-container">
-					{main}
-					{userMentoring &&
+
+			// Save the Feedback button if needed
+			const feedback = (
+				userMentoring ? (
 					<ButtonModal value="Feedback" className="appointment-feedback-button">
 						<Feedback
 							main={main}
 							cancel={() => this.cancelAppointment(appointment.id, idx)}
+							submit={(rating, feedback) => this.submitFeedback(appointment.id, idx, rating, feedback)}
 						/>
 					</ButtonModal>
-					}
+				) : (
+					<Fragment/>
+				)
+			);
+
+			// The main appointment row
+			return (
+				<div key={appointment.id} className="appointment-container">
+					{main}
+					{feedback}
 				</div>
 			);
 		}
