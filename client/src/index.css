@@ -1,7 +1,7 @@
-@import "basscss";
+/*@import "basscss";
 @import "basscss-colors";
 @import "basscss-background-colors";
-
+*/
 /* Custom Font Imports */
 
 @import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
@@ -62,3 +62,7 @@ html, body {
 	transition: opacity 500ms ease-in;
 }
 
+textarea:focus, button:focus {
+    outline: 0px !important;
+    -webkit-appearance: none;
+}

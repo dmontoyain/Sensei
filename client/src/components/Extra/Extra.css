@@ -47,7 +47,7 @@
 .modal-window {
 	position: fixed;
 	left: 50%;
-	top: 20%;
+	top: 40%;
 	transform: translate(-50%, -50%);
 	background-color: #fafafa;
 	margin: 0 auto;
@@ -75,7 +75,7 @@
 	bottom: 5%;
 	right: 5%;
 	transform: translate(-50%, -50%);
-	background-color: #F32F07; /*'firebrick'*/
+	background-color: #F32F07;
 	margin: 0 auto;
 	padding: 20px;
     z-index: 2;
@@ -105,3 +105,22 @@
 	from { opacity: 1; }
 	to { opacity: 0; }
 }
+
+/* --- Rating.js --- */
+
+.rating-container {
+	display: inline-flex;
+	text-align: center;
+	padding: 10px;
+}
+
+.rating-star-icon {
+	cursor: pointer;
+	user-select: none;
+	font-size: 2rem;
+	transition-duration: 0.3s;
+}
+.rating-star-icon:hover {
+	transform: scale(1.1);
+}
+

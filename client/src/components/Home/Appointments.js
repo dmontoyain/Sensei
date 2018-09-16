@@ -42,26 +42,42 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 				});
 		}
 
+		filterOutApt = (idx) => {
+			this.setState({ myAppointments: this.state.myAppointments.filter((_, i) => i != idx) });
+		}
+
 		cancelAppointment = (aptId, idx) => {
 			// Uses filter to delete the appointment from state that was successfully 'cancelled' on the database end.
 			apiAppointment.delete(aptId)
 				.then(response => {
-					this.setState({ myAppointments: this.state.myAppointments.filter((_, i) => i != idx)
-					})
+					this.filterOutApt(idx);
 				})
 				.catch(err => {
-					console.log(aptId, idx);
+				})
+		}
+
+		submitFeedback = (aptId, idx, rating, feedback) => {
+			const data = {
+				rating: rating,
+				feedback: feedback,
+				status: 1,
+			}
+			apiAppointment.put(aptId, data)
+				.then(res => {
+					this.filterOutApt(idx);
+				})
+				.catch(err => {
+					// Something happened
 				})
 		}
 
 
 		formatAppointment = (obj, idx) => {
 			// Declare variables
-			const { appointment, project, user, userMentoring } = obj;
-			console.log("P", obj);
+			const { appointment, project, user, mentor } = obj;
 
 			// Seperate out the login information
-			const { login } = user ? user : userMentoring; // This is the only difference between the data returned by the apiUser... endpoint and the apiMentor... endpoint.
+			const { login } = user ? user : mentor; // This is the only difference between the data returned by the apiUser... endpoint and the apiMentor... endpoint.
 
 			// Get formatted date
 			const time = new Date(appointment.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'long', month: 'short', hour: 'numeric', minute: 'numeric', hour12: true});
@@ -83,18 +99,27 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 				</div>
 			);
 
-			// The main appointment row
-			return (
-				<div key={appointment.id} className="appointment-container">
-					{main}
-					{userMentoring &&
+
+			// Save the Feedback button if needed
+			const feedback = (
+				mentor ? (
 					<ButtonModal value="Feedback" className="appointment-feedback-button">
 						<Feedback
 							main={main}
 							cancel={() => this.cancelAppointment(appointment.id, idx)}
+							submit={(rating, feedback) => this.submitFeedback(appointment.id, idx, rating, feedback)}
 						/>
 					</ButtonModal>
-					}
+				) : (
+					<Fragment/>
+				)
+			);
+
+			// The main appointment row
+			return (
+				<div key={appointment.id} className="appointment-container">
+					{main}
+					{feedback}
 				</div>
 			);
 		}
