@@ -8,7 +8,7 @@ const AxiosHandler = function() {
 	// Initialize a cache map
 	let _cacheMap = new Map(),
 		_lastCacheCheck = new Date().getTime(),
-		_cacheClearInterval = 5000; // Clear cache every five seconds?
+		_cacheClearInterval = 5000; // Cacheing is able to be cleared after 5 seconds
 
 	// clears items in the cache if the interval has passed
 	const _clearCache = () => {
@@ -16,7 +16,7 @@ const AxiosHandler = function() {
 		if ((_lastCacheCheck + _cacheClearInterval) < now) {
 			// Clear caches that haven't been used in the last 10 minutes
 			_cacheMap.forEach((value, key) => {
-				// key is an object that looks like this: { endpoint: 'http://...', lastCall: '157643...' }
+				// value is an object that looks like this: { response: {...}, lastCall: 157643... }
 				if ((value.lastCall + _cacheClearInterval) < now) {
 					// clear cached item.
 					_cacheMap.delete(key);
