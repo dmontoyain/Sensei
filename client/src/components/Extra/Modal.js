@@ -7,6 +7,8 @@ import closeIcon from '../../assets/images/close.png';
 // CSS
 import './Extra.css';
 
+import PropTypes from 'prop-types';
+
 // A modal wrapper for any component
 
 const withModal = (childComponents, closeModal) => {
@@ -112,6 +114,10 @@ class ErrorModal extends Component {
 			</div>
 		);
 	}
+}
+
+ErrorModal.propTypes = {
+	show: PropTypes.bool,
 }
 
 export {
