@@ -203,6 +203,8 @@ const projectWrap = (WrappedComponent) => {
 	return HOC;
 }
 
+// These two lists appear under /helpme and /helpyou
+
 const HelpMe = projectWrap(HelpMeList);
 
 const HelpYou = projectWrap(HelpYouList);

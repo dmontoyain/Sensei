@@ -10,6 +10,7 @@ const AxiosHandler = function() {
 		_lastCacheCheck = new Date().getTime(),
 		_cacheClearInterval = 5000; // Clear cache every five seconds?
 
+	// clears items in the cache if the interval has passed
 	const _clearCache = () => {
 		const now = new Date().getTime();
 		if ((_lastCacheCheck + _cacheClearInterval) < now) {
@@ -82,21 +83,30 @@ const AxiosHandler = function() {
 	}
 
 	this.post = function(endpoint, data, headers) {
+		// Cache handling
 		_clearCache();
+		_cacheMap.delete(endpoint);
+
 		return axios.post(endpoint, data, headers)
 			.then(this._onSuccess)
 			.catch(this._onError);
 	}
 
 	this.put = function(endpoint, data, headers) {
+		// Cache handling
 		_clearCache();
+		_cacheMap.delete(endpoint);
+
 		return axios.put(endpoint, data, headers)
 			.then(this._onSuccess)
 			.catch(this._onError);
 	}
 
 	this.delete = function(endpoint, data, headers) {
+		// Cache handling
 		_clearCache();
+		_cacheMap.delete(endpoint);
+
 		return axios.delete(endpoint, data, headers)
 			.then(this._onSuccess)
 			.catch(this._onError);
