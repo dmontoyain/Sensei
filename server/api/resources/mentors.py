@@ -53,30 +53,6 @@ class apiMentor(Resource):
 		db.session.commit()
 		return res.putSuccess('Updated mentor to active {}'.format(data.get('active')))
 
-# #   api/mentor/:mentorId/subscribeunsubscribe
-# class apiSubscribeUnSubscribeMentor(Resource):
-
-# 	#   Subscribes or unsibscribes mentor to a specific project.
-# 	#   Updates 'available' to true in DB to give permission.
-# 	#   Contraint: mentor's 'abletomentor' in DB needs to be True.
-# 	def put(self, mentorId):
-# 		#   get mentor record
-# 		mentor = Mentor.query.filter_by(id=mentorId).first()
-
-# 		#   check if mentor exists in database
-# 		if not mentor:
-# 			return res.badRequestError("No mentor with id {} was found".format(mentorId))
-
-# 		#   check if mentor CAN mentor a project
-# 		if mentor.abletomentor is False:
-# 			errMessage = 'Subscribe Error for mentor record id {}. User {} does not qualify for mentoring project {}'.format(mentor.id, mentor.id_user42, mentor.id_project42)
-# 			return res.badRequestError(errMessage)
-
-# 		#   Swap active state
-# 		mentor.active = not mentor.active
-# 		db.session.commit()
-# 		return res.putSuccess('Updated mentor {} to \'active\' state of {}'.format(mentorId, mentor.active))
-
 #   api/mentors/project/:projectId
 class apiMentorsProject(Resource):
 
@@ -147,7 +123,9 @@ class apiMentorPendingAppointments(Resource):
 		allmentors = mentors_schema.dump(queryMentor).data
 		for mentor in allmentors:
 			for a in mentor['appointments']:
-				queryAppnt = Appointment.query.filter_by(id=a).first()
+				queryAppnt = Appointment.query.filter_by(id=a, status=Status['Pending']).first()
+				if not queryAppnt:
+					continue
 				queryUser = User.query.filter_by(id=queryAppnt.id_user).first()
 				queryProject = Project.query.filter_by(id_project42=mentor["id_project42"]).first()
 				pendingAppointments.append({
