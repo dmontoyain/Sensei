@@ -47,6 +47,9 @@
 	box-sizing: border-box;
 }
 
+.home-box:nth-child(1){
+	margin-right: 5%;
+}
 .shadow {
 	-webkit-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
 	-moz-box-shadow: 0 6px 23px 0px rgba(0,0,0, .16);
@@ -89,8 +92,9 @@
 	background-color: rgba(250, 249, 246, 0.85);
 	flex-basis: 45%;
 	margin-left: 10px;
-    padding: 12px 15px;
-	min-height: 234px;
+	padding: 12px 15px;
+	margin-bottom: 20px;
+	/* min-height: 234px; */
 	border-radius: 6px;
 	line-height: 40px;
 }
@@ -121,7 +125,7 @@
 @media (min-width: 900px){
 	.home-top {
 		flex-basis: 100%;
-		flex-wrap: wrap;
+		/* flex-wrap: wrap; */
 		padding: 30px 5%;
 		justify-content: space-around;
 	}
@@ -141,20 +145,23 @@
 
 @media (max-width: 695px){
 	.profile-avatar {
-		display: block;
+		display: flex;
     	margin-left: auto;
     	margin-right: auto;
-    	width: 50%;
+    	/* width: 50%; */
+	}
+
+	.home-top {
+		flex-flow: column wrap;
 	}
 }
 
 
-
-/* @media all and (min-width: 50px)   {  .login-root  { font-size:0.1em;  } }
-@media all and (min-width: 100px)  {  .login-root  { font-size:0.2em;  } }
-@media all and (min-width: 200px)  {  .login-root  { font-size:0.4em;  } }
-@media all and (min-width: 300px)  {  .login-root  { font-size:0.6em;  } }
-@media all and (min-width: 400px)  {  .login-root  { font-size:0.8em;  } } */
+@media all and (min-width: 50px)   {  .user-info-text-left, .user-info-text-right, .home-box  { font-size:0.13em;  } }
+@media all and (min-width: 100px)  {  .user-info-text-left, .user-info-text-right, .home-box  { font-size:0.23em;  } }
+@media all and (min-width: 200px)  {  .user-info-text-left, .user-info-text-right, .home-box  { font-size:0.43em;  } }
+@media all and (min-width: 300px)  {  .user-info-text-left, .user-info-text-right, .home-box  { font-size:0.63em;  } }
+@media all and (min-width: 400px)  {  .user-info-text-left, .user-info-text-right, .home-box  { font-size:0.83em;  } }
 
 /* --- Appointments.js --- */
 
