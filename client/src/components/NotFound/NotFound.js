@@ -1,7 +1,13 @@
 import React from 'react';
 
+import './fourohfour.css'
+
 const NotFound = () => (
-	<h1 className="border-grey">404 Error: Page not Found</h1>
+	<div className="img">
+		<h1 className="msg">404</h1>
+		<p>You have fallen into the abyss between pages</p>
+		<p>Quick!  Find your way home!</p>
+	</div>
 );
 
 export default NotFound;

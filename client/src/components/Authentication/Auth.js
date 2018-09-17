@@ -1,56 +1,63 @@
 import React, { Component, Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
-import { OauthSender, OauthReceiver } from 'react-oauth-flow';
+// import { OauthSender, OauthReceiver } from 'react-oauth-flow';
 
+// Components
+import { ErrorModal } from '../Extra/Modal';
+
+// Security
 import authClient from '../../security/Authentication';
 
-class SendToIntra extends Component {
-	render() {
-		return (
-			<OauthSender
-				authorizeUrl="https://api.intra.42.fr/oauth/authorize"
-				clientId={SENSEI_UUID}
-				redirectUri={`${WEBSITE}/auth`}
-				state={{ from: '/settings', string: 'thebestshakesareatdennysbecarefulthoughsomeonemightsmashyourcarwindow' }}
-				render={({ url }) => <a href={url}>Connect to Intra</a>}
-			/>
-		);
-	}
-}
 
-class ReceiveFromIntra extends Component {
-	handleSuccess = async (accessToken, { response, state }) => {
-		console.log('Successfully authorized');
-		// await setProfileFromDropbox(accessToken);
-		// await redirect(state.from);
-	};
 
-	handleError = error => {
-		console.error('An error occured');
-		console.error(error.message);
-	};
+// class SendToIntra extends Component {
+// 	render() {
+// 		return (
+// 			<OauthSender
+// 				authorizeUrl="https://api.intra.42.fr/oauth/authorize"
+// 				clientId={SENSEI_UUID}
+// 				redirectUri={`${WEBSITE}/auth`}
+// 				state={{ from: '/settings', string: 'thebestshakesareatdennysbecarefulthoughsomeonemightsmashyourcarwindow' }}
+// 				render={({ url }) => <a href={url}>Connect to Intra</a>}
+// 			/>
+// 		);
+// 	}
+// }
+
+// class ReceiveFromIntra extends Component {
+// 	handleSuccess = async (accessToken, { response, state }) => {
+// 		console.log('Successfully authorized');
+// 		// await setProfileFromDropbox(accessToken);
+// 		// await redirect(state.from);
+// 	};
+
+// 	handleError = error => {
+// 		console.error('An error occured');
+// 		console.error(error.message);
+// 	};
  
-	render() {
-		return (
-			<OauthReceiver
-				tokenUrl="https://api.intra.42.fr/oauth/token"
-				clientId={SENSEI_UUID}
-				clientSecret={SENSEI_SECRET}
-				redirectUri={`${WEBSITE}/auth`}
-				onAuthSuccess={this.handleSuccess}
-				onAuthError={this.handleError}
-				render={({ processing, state, error }) => (
-					<div>
-						{processing && <p>Authorizing now...</p>}
-						{error && <p className="error">An error occured: {error.message}</p>}
-					</div>
-				)}
-			/>
-		);
-	}
-}
+// 	render() {
+// 		return (
+// 			<OauthReceiver
+// 				tokenUrl="https://api.intra.42.fr/oauth/token"
+// 				clientId={SENSEI_UUID}
+// 				clientSecret={SENSEI_SECRET}
+// 				redirectUri={`${WEBSITE}/auth`}
+// 				onAuthSuccess={this.handleSuccess}
+// 				onAuthError={this.handleError}
+// 				render={({ processing, state, error }) => (
+// 					<div>
+// 						{processing && <p>Authorizing now...</p>}
+// 						{error && <p className="error">An error occured: {error.message}</p>}
+// 					</div>
+// 				)}
+// 			/>
+// 		);
+// 	}
+// }
 
-// Redirect uri when coming from Intra's OAuth
+
+// Handles the redirect from Intra's Authorization Service
 
 class Auth extends Component {
 	constructor(props) {
@@ -58,7 +65,23 @@ class Auth extends Component {
 		this.state = {
 			authenticated: authClient.isAuthenticated(),
 			initialUser: false,
+			authError: false,
 		}
+		this.initialUserTimeout = null;
+		this.authErrorTimeout = null;
+	}
+
+	componentWillMount() {
+		// Check authentication if the user is not authenticated
+		if (!this.state.authenticated) {
+			this.handleAuthentication(this.props.location.search);
+			this.initialUserTimeout = setTimeout(() => this.setState({ initialUser: true }), 8000);
+		}
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.initialUserTimeout);
+		clearTimeout(this.authErrorTimeout);
 	}
 
 	handleAuthentication = (searchParameters) => {
@@ -71,22 +94,14 @@ class Auth extends Component {
 				})
 				.catch(err => {
 					this.setState({ authenticated: authClient.isAuthenticated() });
+					// Display Auth Error for 3 seconds on Fail
+					this.authErrorTimeout = setTimeout(() => this.setState({ authError: true }), 6000);
 				});
 		}
 	}
 
-	componentWillMount() {
-		// Check authentication
-		this.handleAuthentication(this.props.location.search);
-		this.initialUserTimeout = setTimeout(() => this.setState({ initialUser: true }), 7000);
-	}
-
-	componentWillUnmount() {
-		clearTimeout(this.initialUserTimeout);
-	}
-
 	render() {
-		const { authenticated, initialUser } = this.state;
+		const { authenticated, initialUser, authError } = this.state;
 
 		if (authenticated) {
 			return (<Redirect to="/home" />);
@@ -98,12 +113,14 @@ class Auth extends Component {
 								width: '100%',
 								height: '100%',
 								backgroundColor: 'white',
-								textAlign: 'center' }}
+								textAlign: 'center',
+								cursor: 'wait' }}
 				>
 					<img src="https://www.demilked.com/magazine/wp-content/uploads/2016/06/gif-animations-replace-loading-screen-14.gif" alt="loading..." /><br/>
 					Logging in... <br/>
-					{initialUser ? "Your first login might take a quick minute!" : ""}
+					{initialUser ? "If this is your first time logging in, the database may need some time to update." : ""}
 				</div>
+				<ErrorModal show={authError}>Server appears to be having issues...</ErrorModal>
 			</Fragment>
 		);
 	}
@@ -111,6 +128,6 @@ class Auth extends Component {
 
 export {
 	Auth,
-	SendToIntra,
-	ReceiveFromIntra,
+	// SendToIntra,
+	// ReceiveFromIntra,
 }
