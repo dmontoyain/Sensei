@@ -1,4 +1,5 @@
 import json
+import datetime
 from flask import request
 from flask_restful import Resource
 from api.app import db
@@ -43,10 +44,10 @@ class apiAppointments(Resource):
 			return res.badRequestError("Missing data to process request. No user login provided")
 		
 		#   Checks if project name exists in database
-		query = Project.query.filter_by(name=data.get("project")).first()
-		if not query:
+		queryProject = Project.query.filter_by(name=data.get("project")).first()
+		if not queryProject:
 			return res.resourceMissing("No project {} found.".format(data.get("project")))
-		project, error = project_schema.dump(query)
+		project, error = project_schema.dump(queryProject)
 		if error:
 			return res.internalServiceError(error)
 		
@@ -54,6 +55,10 @@ class apiAppointments(Resource):
 		user, error = User.queryByLogin(data.get("login"))
 		if error:
 			return res.resourceMissing(error)
+
+		queryUserAppointment = Appointment.query.filter_by(id_user=user['id'], status=Status['Pending']).first()
+		if queryUserAppointment:
+			return res.badRequestError("You have already an appointment pending")
 		
 		#   Limits appointments made by user for a specific project
 		projectAppointmentsCount = Appointment.queryCountProjectAppointmentsbyUser(project["id_project42"], user["id"])
@@ -61,34 +66,35 @@ class apiAppointments(Resource):
 			return res.badRequestError("User reached limit appointments for project {}".format(data.get("project")))
 		
 		#   Retrieves available mentors for the specified project
-		queryMentor = Mentor.query.filter(Mentor.id_project42==project["id_project42"], Mentor.active==True, Mentor.id_user42!=user['id_user42'])
+		queryMentor = Mentor.query.join(Appointment).filter(Appointment.status!=Status['Pending']).filter(Mentor.id_project42==project["id_project42"], Mentor.active==True, Mentor.id_user42!=user['id_user42']).all()
 		if not queryMentor:
-			res.resourceMissing('No mentors exist for project id {}'.format(data.get('project')))
-		mentors = mentors_schema.dump(queryMentor).data
+			res.resourceMissing('No mentors found for project {}'.format(data.get('project')))
+		
+		#mentors = mentors_schema.dump(queryMentor).data
 		onlineUsers = Api42.onlineUsers()
 
 		#	Checks online students is not empty
 		if len(onlineUsers) == 0:
 			return res.resourceMissing("No mentors found on campus.")
 
-		availablementors = [mentor for mentor in mentors for x in onlineUsers if mentor['id_user42'] == x['id']]
+		availablementors = [mentor for mentor in queryMentor for x in onlineUsers if mentor.id_user42 == x['id']]
 		
 		#   Checks if there is avaliable online mentors for the project/topic
 		if not availablementors:
 			return res.resourceMissing("No mentors online found for {}.".format(data.get("project"))) 
 
 		#   Calls 'mentor algorithm' to select a mentor from availablementors.
-		chosenmentor = mentorAlgorithm(availablementors)
+		chosenMentor = mentorAlgorithm(availablementors)
 
 		#   Creates and returns appointment if valid
-		if not chosenmentor:
+		if not chosenMentor:
 			return res.internalServiceError("Error: mentor selection.")
 
-		newappointment, error = Appointment.createAppointment(chosenmentor["id"], user["id"])
+		newappointment, error = Appointment.createAppointment(chosenMentor.id, user['id'])
 		if error:
 			return res.internalServiceError(error)
 
-		return res.postSuccess("Appointment created successfully.", newappointment)
+		return res.postSuccess("Appointment created successfully", newappointment)
 
 #   /api/appointment/:appointmentId
 class apiAppointment(Resource):
@@ -122,16 +128,28 @@ class apiAppointment(Resource):
 			if data.get('status') != Status['Cancelled']:
 				appointment.status = data.get('status')
 		
+		mentor = getattr(appointment, 'mentor')
+		
 		if 'rating' in data:
 			if type(data.get('rating')) is not int or data.get('rating') < 1 or data.get('rating') > 5:
 				return res.badRequestError("Rating '{}' not supported. Please see Sensei documentation for Rating used".format(data.get('rating')))
 			appointment.rating = data.get('rating')
-		
-		mentorStat = getattr(getattr(appointment, 'mentor'), 'mentorstat')
-		mentorStat.totalappointments += 1
-		mentorStat.rating = mentorStat.rating + ((data.get('rating') - mentorStat.rating)/mentorStat.totalappointments)
+			
+			#	Updating mentor
+			mentor.last_appointment = datetime.datetime.now()
+
+			#	Updating mentor stats
+			mentorStat = getattr(mentor, 'mentorstat')
+			mentorStat.totalappointments += 1
+			mentorStat.rating = mentorStat.rating + ((data.get('rating') - mentorStat.rating)/mentorStat.totalappointments)
+
+			#	Updating global user stats
+			userRecord = getattr(mentor, 'user')
+			userRecord.totalappointments += 1
+			userRecord.rating = userRecord.rating + ((data.get('rating') - userRecord.rating)/userRecord.totalappointments)
 
 		db.session.commit()
+
 		return res.putSuccess("Appointment {} updated.".format(appointmentId), appointment_schema.dump(appointment).data)
 
 	#	Cancels appointment only if the status is 'Pending'
@@ -151,6 +169,7 @@ class apiAppointment(Resource):
 
 		mentorStat = getattr(getattr(appointment, 'mentor'), 'mentorstat')
 		mentorStat.cancelledappointments += 1
+
 		#	Cancel appointment by setting status = 3
 		appointment.status = Status['Cancelled']
 
