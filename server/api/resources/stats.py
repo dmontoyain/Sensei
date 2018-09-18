@@ -9,8 +9,24 @@ from api.models import Status, Appointment, appointment_schema, appointments_sch
 from api.models import MentorStat, mentorstatschema, mentorstatsshema
 from response import Response as res
 
-#class apiUserStats(Resource):
-
+class apiUserStats(Resource):
+    def get(self, id_user42):
+        queryUser = User.query.join(Mentor).filter_by(id_user42=id_user42).first()
+        if not queryUser:
+            return res.resourceMissing('User {} not found.'.format(id_user42))
+        
+        userStats = {}
+        userStats['globalStats'] = user_schema.dump(queryUser).data
+        
+        mentorStats = []
+        mentors = getattr(queryUser, 'mentor')
+        for m in mentors:
+            mentorObj = {}
+            mentorObj['mentorstat'] = mentorstatschema.dump(getattr(m, 'mentorstat')).data
+            mentorObj['project'] = project_schema.dump(getattr(m, 'project')).data
+            mentorStats.append(mentorObj)
+        userStats['mentorStats'] = mentorStats
+        return res.getSuccess("Stats for user {}".format(queryUser.login), userStats)
 
 class apiProjectStandings(Resource):
     def get(self, projectId):
