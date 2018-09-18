@@ -1,13 +1,14 @@
 import random as rdm
+import datetime
 from api.models import Mentor
 
 def mentorAlgorithm(m):
 	names = []
 	weights = []
+	n = datetime.datetime.now()
 	for mentor in m:
-		x = float(int(mentor['finalmark']) / 100) * float((1 / (1 + mentor['weeklyappointments'])))
-		y = mentor['id_user42']
+		stat = getattr(mentor, 'mentorstat')
+		x = float(int(mentor.finalmark) / 100) * float((n - mentor.last_appointment) / n) * float(stat.rating / 5)
 		weights.append(x)
-		names.append(y)
-	name = rdm.choices(names, weights, k=1)
-	return [ret for ret in m if name[0] == ret['id_user42']][0]
+		names.append(mentor)
+	return rdm.choices(names, weights, k=1)

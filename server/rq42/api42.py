@@ -11,7 +11,7 @@ import terminalcolors as tc
 
 class Api42:
 	#	Filter Lists
-	_excludedProjectNames = [ 'harassment_policy', 'First Internship', 'Savoir Relier', 'ft_debut', 'Piscine Interview', 'Piscine CPP' ]
+	_excludedProjectNames = [ 'harassment_policy', 'First Internship', 'Savoir Relier', 'ft_debut', 'Piscine Interview', 'Piscine CPP', 'Piscine PHP', 'HackerRank University CodeSprint 4', 'Check Your Dorms', 'Hercules', 'Rushes' ]
 
 	#	Lambda helper funcs
 	_currentMilliTime	= lambda: int(round(time.time() * 1000))
