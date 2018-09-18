@@ -11,6 +11,7 @@ class Mentor(db.Model):
 	id_user42 = db.Column(db.Integer, db.ForeignKey('users.id_user42'), nullable=False)
 	finalmark = db.Column(db.Integer, nullable=False, server_default='0')
 	abletomentor = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.false())
+	last_appointment = db.Column(db.DateTime(timezone=True))
 	active = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.false())
 	started_at = db.Column(db.DateTime(timezone=True), nullable=False, server_default=sa.func.now())
 

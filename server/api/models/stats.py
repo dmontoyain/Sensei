@@ -10,8 +10,6 @@ class MentorStat(db.Model):
     id_mentor = db.Column(db.Integer, db.ForeignKey('mentors.id'), nullable=False)
     rating = db.Column(db.Numeric(10, 2, asdecimal=False), nullable=False, server_default='0.00')
     totalappointments = db.Column(db.Integer, nullable=False, server_default='0')
-    weeklyappointments = db.Column(db.Integer, nullable=False, server_default='0')
-    dailyappointments = db.Column(db.Integer, nullable=False, server_default='0')
     cancelledappointments = db.Column(db.Integer, nullable=False, server_default='0')
 
     #   relationship with 'mentors' table, Mentor Model Class
