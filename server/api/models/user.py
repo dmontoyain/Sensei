@@ -9,6 +9,8 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	id_user42 = db.Column(db.Integer, unique=True, nullable=False)
 	login = db.Column(db.String(45), nullable=False)
+	rating = db.Column(db.Numeric(10, 2, asdecimal=False), nullable=False, server_default='0.00')
+	totalappointments = db.Column(db.Integer, nullable=False, server_default='0')
 	last_seen = db.Column(db.DateTime(timezone=True), nullable=False, server_default=sa.func.now())
 	active = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.true())
 	

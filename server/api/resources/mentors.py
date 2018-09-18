@@ -73,10 +73,6 @@ class apiMentorsProject(Resource):
 		result = [mentor for mentor in mentors for x in onlineUsers if mentor['id_user42'] == x['id']]
 		return res.getSuccess('mentors available for project {}'.format(projectId), result)
 
-	#   Creates a new mentor for the specified project
-	def post(self, projectId):
-		return Mentor, 201
-
 
 #   api/mentors/user/:login/active
 class apiUserMentoring(Resource):

@@ -1,4 +1,5 @@
 import json
+import datetime
 from flask import request
 from flask_restful import Resource
 from api.app import db, app
@@ -116,6 +117,9 @@ class apiUserLogin(Resource):
 			data, err = registerUser(LoggedUser)
 			if err:
 				return res.internalServiceError(err)
+		else:
+			queryUser.last_seen = datetime.datetime.now()
+			db.session.commit()
 			
 		#print(LoggedUser)
 		return res.postSuccess(data={'access': accessReq, 'user': LoggedUser, 'error': err})
