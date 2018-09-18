@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy import Column, String, Text, Integer, DateTime, Boolean, ForeignKey
+from sqlalchemy import Column, String, Text, Integer, DateTime, Boolean, Numeric, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 
 base = declarative_base()
@@ -13,6 +13,7 @@ class Appointment(base):
 	id_user = Column(Integer, ForeignKey('users.id'), nullable=False)
 	start_time = Column(DateTime)
 	feedback = Column(Text)
+	rating = Column(Numeric(10, 2), nullable=False, server_default='0.00')
 	status = Column(Integer, nullable=False, server_default='2')
 
 #   `mentors` table
@@ -23,12 +24,9 @@ class Mentor(base):
 	id_project42 = Column(Integer, ForeignKey('projects.id_project42'), nullable=False)
 	id_user42 = Column(Integer, ForeignKey('users.id_user42'), nullable=False)
 	finalmark = Column(Integer, nullable=False, server_default='0')
-	totalappointments = Column(Integer, nullable=False, server_default='0')
-	weeklyappointments = Column(Integer, nullable=False, server_default='0')
-	dailyappointments = Column(Integer, nullable=False, server_default='0')
 	abletomentor = Column(Boolean, nullable=False, server_default=sa.sql.expression.false())
 	active = Column(Boolean, nullable=False, server_default=sa.sql.expression.false())
-	started_at = Column(DateTime, nullable=False, server_default=sa.func.now())
+	started_at = Column(DateTime(timezone=True), nullable=False, server_default=sa.func.now())
 
 #   `projects` table
 class Project(base):

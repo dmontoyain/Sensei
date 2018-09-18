@@ -8,16 +8,14 @@ class MentorStat(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     id_mentor = db.Column(db.Integer, db.ForeignKey('mentors.id'), nullable=False)
-    standing_byrating = db.Column(db.Integer, nullable=False, server_default='0')
-    standing_byappointments = db.Column(db.Integer, nullable=False, server_default='0')
-    standing_bycancelled = db.Column(db.Integer, nullable=False, server_default='0')
-    rating = db.Column(db.Numeric(10, 2), nullable=False, server_default='0.00')
+    rating = db.Column(db.Numeric(10, 2, asdecimal=False), nullable=False, server_default='0.00')
     totalappointments = db.Column(db.Integer, nullable=False, server_default='0')
     weeklyappointments = db.Column(db.Integer, nullable=False, server_default='0')
     dailyappointments = db.Column(db.Integer, nullable=False, server_default='0')
+    cancelledappointments = db.Column(db.Integer, nullable=False, server_default='0')
 
     #   relationship with 'mentors' table, Mentor Model Class
-    mentor = db.relationship("Mentor", backref= backref("mentorstat", lazy='joined'), lazy=True)
+    mentor = db.relationship('Mentor', backref= backref('mentorstat', lazy='joined'), lazy=True)
 
     def __init__(self, id_mentor):
         self.id_mentor = id_mentor
