@@ -114,6 +114,8 @@ class apiUserLogin(Resource):
 		#	Registers user if record doesn't exist in Sensei database
 		if not queryUser:
 			data, err = registerUser(LoggedUser)
+			if err:
+				return res.internalServiceError(err)
 			
 		#print(LoggedUser)
 		return res.postSuccess(data={'access': accessReq, 'user': LoggedUser, 'error': err})

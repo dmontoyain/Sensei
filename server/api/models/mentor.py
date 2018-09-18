@@ -1,6 +1,7 @@
 from api.app import db, ma
 from datetime import datetime
 import sqlalchemy as sa
+from sqlalchemy.orm import backref
 
 class Mentor(db.Model):
 	__tablename__ = 'mentors'
@@ -9,15 +10,12 @@ class Mentor(db.Model):
 	id_project42 = db.Column(db.Integer, db.ForeignKey('projects.id_project42'), nullable=False)
 	id_user42 = db.Column(db.Integer, db.ForeignKey('users.id_user42'), nullable=False)
 	finalmark = db.Column(db.Integer, nullable=False, server_default='0')
-	totalappointments = db.Column(db.Integer, nullable=False, server_default='0')
-	weeklyappointments = db.Column(db.Integer, nullable=False, server_default='0')
-	dailyappointments = db.Column(db.Integer, nullable=False, server_default='0')
 	abletomentor = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.false())
 	active = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.false())
-	started_at = db.Column(db.DateTime, nullable=False, server_default=sa.func.now())
+	started_at = db.Column(db.DateTime(timezone=True), nullable=False, server_default=sa.func.now())
 
 	#   relationship with 'Appointments' table, Appointment Model Class
-	appointments = db.relationship('Appointment', backref='mentors', lazy=True)
+	appointments = db.relationship('Appointment', backref=backref('mentor', lazy='joined'), lazy=True)
 
 	def __init__(self, id_project42, id_user42, finalmark):
 		self.id_project42 = id_project42

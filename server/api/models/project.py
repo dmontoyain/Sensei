@@ -1,6 +1,7 @@
 from api.app import db, ma
 from datetime import datetime
 import sqlalchemy as sa
+from sqlalchemy.orm import backref
 
 class Project(db.Model):
 	__tablename__ = 'projects'
@@ -13,7 +14,7 @@ class Project(db.Model):
 	active = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.true())
 
 	#   relationship with 'Mentors' table, Mentor Model Class
-	mentors = db.relationship('Mentor', backref='project', lazy=True)
+	mentors = db.relationship('Mentor', backref=backref('project', lazy='joined'), lazy=True)
 
 	def __init__(self, id_project42, name, slug, tier, active=True):
 		self.id_project42 = id_project42

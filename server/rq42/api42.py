@@ -10,11 +10,14 @@ from . import api42config
 import terminalcolors as tc
 
 class Api42:
+	#	Filter Lists
+	_excludedProjectNames = [ 'harassment_policy', 'First Internship', 'Savoir Relier', 'ft_debut', 'Piscine Interview', 'Piscine CPP' ]
 
 	#	Lambda helper funcs
 	_currentMilliTime	= lambda: int(round(time.time() * 1000))
 	_dataList			= lambda data: [data] if type(data) is dict else data
 	_chainToList		= lambda chainData: [d for d in chainData]
+	_projectFilter		= lambda projectList: [p for p in projectList if p['name'] not in Api42._excludedProjectNames]
 
 	#	Online User handling
 	_onlineUsers		= []
@@ -192,7 +195,6 @@ class Api42:
 		print(tc.IGREEN + "Token Updated!" + tc.ENDCOLOR)
 		return True
 
-
 	#	A few predefined requests with parsed responses
 	#	-------------------------------------------------------------------------------------------
 
@@ -213,32 +215,41 @@ class Api42:
 
 	@staticmethod
 	def passingProjectsForUser(userID):
-		return Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=80,125&filter[cursus]=1')
+		data = Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=80,125&filter[cursus]=1')
+		if not data:
+			return None
+		return Api42._projectFilter(data)
 
 	@staticmethod
 	def projectsForUserInFinalMarkRange(userID, minScore, maxScore):
 		data = Api42.makeRequest('/v2/users/' + str(userID) + '/projects_users?range[final_mark]=' + str(minScore) + ',' + str(maxScore))
-		return [d['project']['name'] for d in data]
+		if not data:
+			return None
+		data = [d['project'] for d in data]
+		# HOPEFULLY THIS DIDN'T BREAK ANYTHING
+		return Api42._projectFilter(data)
 
 	@staticmethod
 	def allProjects():
 		projects = Api42.makeRequest('/v2/cursus/1/projects')
 		if projects is None:
 			return None
-		return [{'id_project42': p['id'], \
+		projectList = [{'id_project42': p['id'], \
 				'name': p['name'], \
 				'slug': p['slug'], \
 				'tier': p['tier']} for p in projects]
+		# Filter out the list of Projects
+		return Api42._projectFilter(projectList)
 	
 	@staticmethod
 	def userProjects(userId):
-		print("got hereee")
-		print("got hereee")
 		userprojects = Api42.makeRequest('/v2/users/' + str(userId) + '/projects_users?filter[cursus]=1')
 		if userprojects is None:
 			return None
 		print("finished the 42 call")
-		return [{'id_user42': p['user']['id'], 'id_project42': p['project']['id'], 'finalmark': p['final_mark'] if p['final_mark'] is not None else 0} for p in userprojects]
+		data = [{'id_user42': p['user']['id'], 'id_project42': p['project']['id'], 'finalmark': p['final_mark'] if p['final_mark'] is not None else 0} for p in userprojects]
+		return data
+
 		# return [Mentor(p['project']['id'], p['user']['id'], p['final_mark']) for p in userprojects]
 
 	#	For grabbing the list of open projects a user has.  For the purposes of assignment and all that good stuff

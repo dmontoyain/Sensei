@@ -26,7 +26,7 @@ class apiProjects(Resource):
 
 		#	get existing projects from 42 API
 		data = Api42.allProjects()
-		if data is None:
+		if not data:
 			return res.internalServiceError("unable to query the 42 API")
 
 		#	only add new projects that are not in the projects table
@@ -34,20 +34,21 @@ class apiProjects(Resource):
 		existingProjects = []
 		for d in data:
 			#	check if project exists
-			projectCheck = Project.query.filter_by(id_project42=d['id_project42'])
-
-			#	validate and create new project record
-			newProject, error = project_schema.load(d) #Project(d['id_project42'], d['name'], d['slug'], d['tier'])
-			if error:
-				db.session.rollback()
-				return res.internalServiceError('bad data')
+			projectCheck = Project.query.filter_by(id_project42=d['id_project42']).first()
 
 			#	only add the new projects that don't exist in the database
 			if not projectCheck:
+				newProject, err = project_schema.load(d)
+				if err:
+					db.session.rollback()
+					return res.internalServiceError('bad data')
 				db.session.add(newProject)
 				newProjects.append(project_schema.dump(newProject).data)
 			else:
-				existingProjects.append(project_schema.dump(newProject).data)
+				projectCheck.name = d['name']
+				projectCheck.slug = d['slug']
+				projectCheck.tier = d['tier']
+				existingProjects.append(project_schema.dump(projectCheck).data)
 
 		print("COMMITTING NEW PROJECTS")
 		db.session.commit()
