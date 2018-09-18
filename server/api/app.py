@@ -24,5 +24,5 @@ from .routes import init_routes
 init_routes(api)
 
 #	When you need to create a local postgres database for testing
-#with app.app_context():
-    #db.create_all()
+with app.app_context():
+    db.create_all()

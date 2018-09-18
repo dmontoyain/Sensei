@@ -88,14 +88,14 @@ class HelpYouList extends Component {
 
 	render() {
 		const { myProjects } = this.state;
-		const onStyle = {
+		const offStyle = {
 			color: 'white',
 			backgroundColor: 'crimson',
 			padding: '5px',
 			border: 'none',
 			borderRadius: '4px',
 		};
-		const offStyle = {
+		const onStyle = {
 			color: 'white',
 			backgroundColor: 'darkgreen',
 			padding: '5px',
@@ -111,7 +111,7 @@ class HelpYouList extends Component {
 							style={item.active === false ? offStyle : onStyle}
 							onClick={() => this.toggleActive(idx)}
 							>
-							{item.active === false ? "Begin Sensei Service" : "Finish Sensei Service"}
+							{item.active === false ? "Disabled for Mentoring" : "Enabled for Mentoring"}
 							</button>
 		 			</div>
 				)}

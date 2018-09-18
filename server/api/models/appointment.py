@@ -16,6 +16,7 @@ class Appointment(db.Model):
 	id_user = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 	start_time = db.Column(db.DateTime)
 	feedback = db.Column(db.Text)
+	rating = db.Column(db.Numeric(10, 2), nullable=False, server_default='0.00')
 	status = db.Column(db.Integer, nullable=False, server_default='2')
 
 	def __init__(self, id_mentor, id_user, feedback=""):

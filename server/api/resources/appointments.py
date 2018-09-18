@@ -15,7 +15,7 @@ _maxAppointmentsPerDay = 2
 #   /api/appointments
 class apiAppointments(Resource):
 
-	#   Gets all appointments
+	#   Gets all pending appointments
 	def get(self):
 		queryAppointments = Appointment.query.filter_by(status=Status['Pending']).all()
 		if not queryAppointments:
@@ -109,15 +109,18 @@ class apiAppointment(Resource):
 			return res.badRequestError("No data provided")
 
 		#   Checks appointment record exists
-		appointment = Appointment.query.filter_by(id=appointmentId)
+		appointment = Appointment.query.filter_by(id=appointmentId).first()
 		if not appointment:
 			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
 		
 		if 'feedback' in data:
-			if len((data.get('feedback')).strip()) > 4:
-				appointment.feedback = data.get('feedback')
-		if 'status' in data and data.get('status') != Status['Cancelled']:
-			appointment.status = data.get('status')
+			if len((data.get('feedback')).strip()) <= 4:
+				return res.badRequestError('Feedback needs to be longer.')
+			appointment.feedback = data.get('feedback')
+		
+		if 'status' in data:
+			if data.get('status') != Status['Cancelled']:
+				appointment.status = data.get('status')
 
 		db.session.commit()
 		return res.putSuccess("Appointment {} updated.".format(appointmentId), appointment_schema.dump(appointment).data)

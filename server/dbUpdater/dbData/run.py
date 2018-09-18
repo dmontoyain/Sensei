@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from dbUpdater.EnvSettings import configure
 from rq42 import Api42
 
+#   Environment vaariables required
 api42_url = os.environ.get("API42_URL", default=None)
 projectMinScore = os.environ.get("MIN_PROJECT_SCORE")
 automaticDeactivationTime = datetime.timedelta(days=900)
@@ -15,6 +16,7 @@ if not api42_url:
 if not projectMinScore:
     raise ValueError('Missing minimum project score configuration')
 
+#   Updates user projects scores stored in database
 def updateUsers(env):
     db = configure(env)
 
