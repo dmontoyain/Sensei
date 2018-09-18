@@ -20,7 +20,7 @@ def init_routes(api):
     api.add_resource(apiMentorPendingAppointments, '/mentors/<int:userId>/pendingappointments')
     api.add_resource(apiMentors, '/mentors')
     api.add_resource(apiMentor, '/mentor/<int:mentorId>')
-    #api.add_resource(apiSubscribeUnSubscribeMentor, '/mentor/<int:mentorId>/subscribeunsubscribe')
+    
     api.add_resource(apiMentorsProject, '/mentors/project/<int:projectId>')
     api.add_resource(apiUserMentoring, '/mentors/user/<login>/active')
     api.add_resource(apiUserCapabletoMentor, '/mentors/user/<login>/capable')
@@ -28,3 +28,5 @@ def init_routes(api):
     #   appointments endpoints
     api.add_resource(apiAppointments, '/appointments')
     api.add_resource(apiAppointment, '/appointment/<int:appointmentId>')
+
+    api.add_resource(apiProjectStandings, '/stats/<int:projectId>/project')

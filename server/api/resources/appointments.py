@@ -101,7 +101,7 @@ class apiAppointment(Resource):
 
 	#   Updates the appointment data
 	#	Request body can contain user feedback or status for this appointment
-	#	{"feedback": "Great mentor, knew his stuff", "status", "1" }
+	#	{"feedback": "Great mentor, knew his stuff", "status", "1", "rating": (1 - 5) }
 	#	This endpoint should not be used to cancel the appointment
 	def put(self, appointmentId):
 		data = request.get_json()
@@ -111,7 +111,7 @@ class apiAppointment(Resource):
 		#   Checks appointment record exists
 		appointment = Appointment.query.filter_by(id=appointmentId).first()
 		if not appointment:
-			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
+			return res.resourceMissing("Appointment {} not found".format(appointmentId))
 		
 		if 'feedback' in data:
 			if len((data.get('feedback')).strip()) <= 4:
@@ -121,6 +121,15 @@ class apiAppointment(Resource):
 		if 'status' in data:
 			if data.get('status') != Status['Cancelled']:
 				appointment.status = data.get('status')
+		
+		if 'rating' in data:
+			if type(data.get('rating')) is not int or data.get('rating') < 1 or data.get('rating') > 5:
+				return res.badRequestError("Rating '{}' not supported. Please see Sensei documentation for Rating used".format(data.get('rating')))
+			appointment.rating = data.get('rating')
+		
+		mentorStat = getattr(getattr(appointment, 'mentor'), 'mentorstat')
+		mentorStat.totalappointments += 1
+		mentorStat.rating = mentorStat.rating + ((data.get('rating') - mentorStat.rating)/mentorStat.totalappointments)
 
 		db.session.commit()
 		return res.putSuccess("Appointment {} updated.".format(appointmentId), appointment_schema.dump(appointment).data)
@@ -130,8 +139,9 @@ class apiAppointment(Resource):
 
 		#   Checks appointment record exists
 		appointment = Appointment.query.filter_by(id=appointmentId).first()
+		#	Add sommething ca
 		if not appointment:
-			return res.resourceMissing("Appointment {} not found.".format(appointmentId))
+			return res.resourceMissing("Appointment {} not found".format(appointmentId))
 		
 		#	Verifies appointment status is 'Pending'
 		if appointment.status == Status['Finished']:
@@ -139,6 +149,8 @@ class apiAppointment(Resource):
 		if appointment.status == Status['Cancelled']:
 			return res.badRequestError("Appointment already cancelled.")
 
+		mentorStat = getattr(getattr(appointment, 'mentor'), 'mentorstat')
+		mentorStat.cancelledappointments += 1
 		#	Cancel appointment by setting status = 3
 		appointment.status = Status['Cancelled']
 

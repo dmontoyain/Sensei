@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from api.app import db, ma
 from datetime import datetime
 from sqlalchemy.orm import backref
@@ -8,6 +9,8 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	id_user42 = db.Column(db.Integer, unique=True, nullable=False)
 	login = db.Column(db.String(45), nullable=False)
+	last_seen = db.Column(db.DateTime(timezone=True), nullable=False, server_default=sa.func.now())
+	active = db.Column(db.Boolean, nullable=False, server_default=sa.sql.expression.true())
 	
 	#   relationship with 'Mentors' table, Mentor Model Class
 	mentor = db.relationship('Mentor', backref=backref('user', lazy='joined'), lazy=True)
