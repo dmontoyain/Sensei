@@ -19,7 +19,6 @@ class apiMentors(Resource):
 		data = mentors_schema.dump(query).data
 		return res.getSuccess('all mentors', data)
 
-
 #   api/mentor/:mentorId
 class apiMentor(Resource):
 
