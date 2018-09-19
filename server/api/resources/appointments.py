@@ -3,6 +3,7 @@ import datetime
 from flask import request
 from flask_restful import Resource
 from api.app import db
+from sqlalchemy import or_
 from api.models import User, user_schema, users_schema
 from api.models import Mentor, mentor_schema, mentors_schema
 from api.models import Project, project_schema, projects_schema
@@ -50,12 +51,13 @@ class apiAppointments(Resource):
 		project, error = project_schema.dump(queryProject)
 		if error:
 			return res.internalServiceError(error)
-		
+		print(project)
 		#   Checks if user with provided login exists in database
 		user, error = User.queryByLogin(data.get("login"))
 		if error:
 			return res.resourceMissing(error)
 
+		print(user)
 		queryUserAppointment = Appointment.query.filter_by(id_user=user['id'], status=Status['Pending']).first()
 		if queryUserAppointment:
 			return res.badRequestError("You have already an appointment pending")
@@ -66,10 +68,24 @@ class apiAppointments(Resource):
 			return res.badRequestError("User reached limit appointments for project {}".format(data.get("project")))
 		
 		#   Retrieves available mentors for the specified project
-		queryMentor = Mentor.query.join(Appointment).filter(Appointment.status!=Status['Pending']).filter(Mentor.id_project42==project["id_project42"], Mentor.active==True, Mentor.id_user42!=user['id_user42']).all()
-		if not queryMentor:
-			res.resourceMissing('No mentors found for project {}'.format(data.get('project')))
+		queryMentor = Mentor.query \
+			.filter(~Mentor.appointments.any(), Mentor.id_project42==project['id_project42'], Mentor.active==True, Mentor.id_user42!=user['id_user42']) \
+			.all()
 		
+		queryMentor2 = Mentor.query \
+			.join(Appointment) \
+			.filter(Mentor.id_project42==project['id_project42'], Mentor.active==True, Mentor.id_user42!=user['id_user42']) \
+			.filter(Appointment.status==2) \
+			.all()
+		
+		for q in queryMentor2:
+			queryMentor.append(q)
+		
+		if not queryMentor:
+			print("hereee")
+			return res.resourceMissing('No mentors found for project {}'.format(data.get('project')))
+
+		#mentors = [mentor for mentor in queryMentor if mentor.app]
 		#mentors = mentors_schema.dump(queryMentor).data
 		onlineUsers = Api42.onlineUsers()
 
@@ -86,6 +102,7 @@ class apiAppointments(Resource):
 		#   Calls 'mentor algorithm' to select a mentor from availablementors.
 		chosenMentor = mentorAlgorithm(availablementors)
 
+		print(chosenMentor)
 		#   Creates and returns appointment if valid
 		if not chosenMentor:
 			return res.internalServiceError("Error: mentor selection.")
@@ -93,6 +110,7 @@ class apiAppointments(Resource):
 		newappointment, error = Appointment.createAppointment(chosenMentor.id, user['id'])
 		if error:
 			return res.internalServiceError(error)
+		print(newappointment)
 
 		return res.postSuccess("Appointment created successfully", newappointment)
 
@@ -129,12 +147,12 @@ class apiAppointment(Resource):
 				appointment.status = data.get('status')
 		
 		mentor = getattr(appointment, 'mentor')
-		
+
 		if 'rating' in data:
 			if type(data.get('rating')) is not int or data.get('rating') < 1 or data.get('rating') > 5:
 				return res.badRequestError("Rating '{}' not supported. Please see Sensei documentation for Rating used".format(data.get('rating')))
 			appointment.rating = data.get('rating')
-			
+
 			#	Updating mentor
 			mentor.last_appointment = datetime.datetime.now()
 

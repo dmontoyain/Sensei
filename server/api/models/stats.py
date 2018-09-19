@@ -13,7 +13,7 @@ class MentorStat(db.Model):
     cancelledappointments = db.Column(db.Integer, nullable=False, server_default='0')
 
     #   relationship with 'mentors' table, Mentor Model Class
-    mentor = db.relationship('Mentor', backref= backref('mentorstat', lazy='joined'), lazy=True)
+    mentor = db.relationship('Mentor', backref= backref('mentorstat', lazy='joined', uselist=False), lazy=True)
 
     def __init__(self, id_mentor):
         self.id_mentor = id_mentor

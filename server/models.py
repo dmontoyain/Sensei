@@ -46,5 +46,5 @@ class User(base):
 	id = Column(Integer, primary_key=True)
 	id_user42 = Column(Integer, unique=True, nullable=False)
 	login = Column(String(45), nullable=False)
-	#last_seen = Column(DateTime, nullable=False, server_default=sa.func.now())
-	#active = Column(Boolean, nullable=False, server_default=sa.sql.expression.true())
+	last_seen = Column(DateTime(timezone=True), nullable=False, server_default=sa.func.now())
+	active = Column(Boolean, nullable=False, server_default=sa.sql.expression.true())
