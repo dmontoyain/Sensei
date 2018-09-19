@@ -38,39 +38,34 @@ class apiMentor(Resource):
 	#   Updates any mentor data for the specified project
 	def	put(self, mentorId):
 		data = request.get_json()
-		print(data)
-		if not data or 'active' not in data:
-			return res.badRequestError("No data provided")
+		if not data:
+			return res.badRequestError("No data provided. Please read API documentation")
 		
-		mentor = Mentor.query.filter_by(id=mentorId).first()
-		#   check if mentor exists in database
-		if not mentor:
+		queryMentor = Mentor.query \
+			.filter_by(id=mentorId) \
+			.first()
+		if not queryMentor:
 			return res.badRequestError("No mentor with id {} was found".format(mentorId))
 
 		if 'active' in data:
-			mentor.active = data.get('active')
+			queryMentor.active = data.get('active')
 
 		db.session.commit()
-		return res.putSuccess('Updated mentor to active {}'.format(data.get('active')))
+		return res.putSuccess('Mentor {} updated'.format(mentorId))
 
 #   api/mentors/project/:projectId
 class apiMentorsProject(Resource):
 
-	#   Gets all mentors for the specified project
+	#   Gets all active mentors for the specified project
 	def get(self, projectId):
 		#   get mentors that exist for that project
-		query = Mentor.query.filter_by(id_project42=projectId, active=True).all()
+		query = Mentor.query \
+			.filter_by(id_project42=projectId, active=True) \
+			.all()
 		if not query:
 			return res.badRequestError('No Projects with id {} exist'.format(projectId))
 
-		#   get mentors
 		mentors = mentors_schema.dump(query).data
-
-		#	grab the current online students at 42
-		onlineUsers = Api42.onlineUsers()
-
-		#	find intersection between online students and active mentors
-		result = [mentor for mentor in mentors for x in onlineUsers if mentor['id_user42'] == x['id']]
 		return res.getSuccess('mentors available for project {}'.format(projectId), result)
 
 
@@ -110,24 +105,23 @@ class apiUserCapabletoMentor(Resource):
 		mentors = mentors_schema.dump(query).data
 		return res.getSuccess(data=mentors)
 
+#	/api//mentors/<int:userId>/pendingappointments
 class apiMentorPendingAppointments(Resource):
 	def get(self, userId):
-		queryMentor = Mentor.query.join(Appointment, Appointment.id_mentor==Mentor.id).filter(Appointment.status==Status['Pending']).filter(Mentor.id_user42==userId).all()
-		if not queryMentor:
-			return res.resourceMissing("No appointments")
+		#	Appointments Table query for the specified user as mentor
+		queryAppointments = Appointment.query \
+			.join(Mentor) \
+			.filter(Appointment.status==Status['Pending']) \
+			.filter(Mentor.id_user42==userId) \
+			.all()
+		if not queryAppointments:
+			return res.resourceMissing("No appointments found")
 		pendingAppointments = []
-		allmentors = mentors_schema.dump(queryMentor).data
-		for mentor in allmentors:
-			for a in mentor['appointments']:
-				queryAppnt = Appointment.query.filter_by(id=a, status=Status['Pending']).first()
-				if not queryAppnt:
-					continue
-				queryUser = User.query.filter_by(id=queryAppnt.id_user).first()
-				queryProject = Project.query.filter_by(id_project42=mentor["id_project42"]).first()
-				pendingAppointments.append({
-					'appointment' : appointment_schema.dump(queryAppnt).data,
-					'user' : user_schema.dump(queryUser).data,
-					'project' : project_schema.dump(queryProject).data
-					})
-		#print(pendingAppointments)
-		return res.getSuccess(message="Appointments as mentor for user {}".format(userId), data=pendingAppointments)
+		for a in queryAppointments:
+			obj = {
+				'appointment': appointment_schema.dump(a).data,
+				'user': user_schema.dump(getattr(a, 'user')).data,
+				'project': project_schema.dump(getattr(getattr(a, 'mentor'), 'project')).data
+			}
+			pendingAppointments.append(obj)
+		return res.getSuccess("Appointments for mentor", pendingAppointments)

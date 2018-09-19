@@ -137,25 +137,20 @@ class apiUser(Resource):
 #	api/users/:userId/pendingappointments	
 class apiUserPendingAppointments(Resource):
 	def get(self, userId):
-		# query = (db.session.query(Appointment).join(Mentor).join(User).filter(User.id_user42==userId, Appointment.status==Status['Pending'])).all()
-		# for q in query:
-		# 	print(q.__dict__)
-		# print(appointments_schema.dump(query).data)
-		queryUser = User.query.join(Appointment, Appointment.id_user==User.id).filter(Appointment.status==2).filter(User.id_user42==userId).first()
-		if not queryUser:
-			return res.resourceMissing("No appointments")
-		pendingappointments = []
-		user = user_schema.dump(queryUser).data
-		for a in user['appointments']:
-			queryAppnt = Appointment.query.filter_by(id=a, status=Status['Pending']).first()
-			if not queryAppnt:
-				continue
-			queryMentor = Mentor.query.filter_by(id=queryAppnt.id_mentor).first()
-			queryUserMentoring = User.query.filter_by(id_user42=queryMentor.id_user42).first()
-			queryProject = Project.query.filter_by(id_project42=queryMentor.id_project42).first()
-			pendingappointments.append({
-				'appointment' : appointment_schema.dump(queryAppnt).data,
-				'mentor' : user_schema.dump(queryUserMentoring).data,
-				'project' : project_schema.dump(queryProject).data
-			})
-		return res.getSuccess(message="Appointmensts as user for user {}".format(user['login']), data=pendingappointments)
+		#	Appointments Table query for the specified user
+		queryAppointments = Appointment.query \
+			.join(User) \
+			.filter(Appointment.status==Status['Pending']) \
+			.filter(User.id_user42==userId) \
+			.all()
+		if not queryAppointments:
+			return res.resourceMissing("No appointments found")
+		pendingAppointments = []
+		for a in queryAppointments:
+			obj = {
+				'appointment': appointment_schema.dump(a).data,
+				'mentor': user_schema.dump(getattr(getattr(a, 'mentor'), 'user')).data,
+				'project': project_schema.dump(getattr(getattr(a, 'mentor'), 'project')).data
+			}
+			pendingAppointments.append(obj)
+		return res.getSuccess("Appointmensts for user", pendingAppointments)

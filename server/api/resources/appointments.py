@@ -85,9 +85,6 @@ class apiAppointments(Resource):
 			print("hereee")
 			return res.resourceMissing('No mentors found for project {}'.format(data.get('project')))
 
-		print(mentors_schema.dump(queryMentor).data)
-		print('---------------------------')
-
 		#mentors = [mentor for mentor in queryMentor if mentor.app]
 		#mentors = mentors_schema.dump(queryMentor).data
 		onlineUsers = Api42.onlineUsers()
@@ -105,6 +102,7 @@ class apiAppointments(Resource):
 		#   Calls 'mentor algorithm' to select a mentor from availablementors.
 		chosenMentor = mentorAlgorithm(availablementors)
 
+		print(chosenMentor)
 		#   Creates and returns appointment if valid
 		if not chosenMentor:
 			return res.internalServiceError("Error: mentor selection.")
@@ -112,6 +110,7 @@ class apiAppointments(Resource):
 		newappointment, error = Appointment.createAppointment(chosenMentor.id, user['id'])
 		if error:
 			return res.internalServiceError(error)
+		print(newappointment)
 
 		return res.postSuccess("Appointment created successfully", newappointment)
 
@@ -148,12 +147,12 @@ class apiAppointment(Resource):
 				appointment.status = data.get('status')
 		
 		mentor = getattr(appointment, 'mentor')
-		
+
 		if 'rating' in data:
 			if type(data.get('rating')) is not int or data.get('rating') < 1 or data.get('rating') > 5:
 				return res.badRequestError("Rating '{}' not supported. Please see Sensei documentation for Rating used".format(data.get('rating')))
 			appointment.rating = data.get('rating')
-			
+
 			#	Updating mentor
 			mentor.last_appointment = datetime.datetime.now()
 

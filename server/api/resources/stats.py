@@ -11,7 +11,7 @@ from response import Response as res
 
 class apiUserStats(Resource):
     def get(self, id_user42):
-        queryUser = User.query.join(Mentor).filter_by(id_user42=id_user42).first()
+        queryUser = User.query.filter_by(id_user42=id_user42).first()
         if not queryUser:
             return res.resourceMissing('User {} not found.'.format(id_user42))
         
