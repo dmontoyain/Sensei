@@ -45,14 +45,45 @@
 	flex: auto;
 }
 
-/* --- */
+/* --- MentorModals.js --- */
 
-.switch {
+.purple-switch {
 	cursor: pointer;
 	font-size:16px;
 	position:relative;
 	left:5px;
 	min-width:60px;
+	color: white;
+	background-color: purple;
+	padding: 5px;
+	border: none;
+	border-radius: 4px;
+}
+
+.red-switch {
+	cursor: pointer;
+	font-size:16px;
+	position:relative;
+	left:5px;
+	min-width:60px;
+	color: white;
+	background-color: crimson;
+	padding: 5px;
+	border: none;
+	border-radius: 4px;
+}
+
+.green-switch {
+	cursor: pointer;
+	font-size:16px;
+	position:relative;
+	left:5px;
+	min-width:60px;
+	color: white;
+	background-color: darkgreen;
+	padding: 5px;
+	border: none;
+	border-radius: 4px;
 }
 
 .schedule-modal {
@@ -80,9 +111,9 @@
 	font-size:16px;
 }
 
-/* --- Settings.js --- */
-
 .schedule-settings-button {
+	position: relative;
+	margin-left: 30px;
 	background-color: transparent;
 	border: none;
 	animation-fill-mode: forwards;

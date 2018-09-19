@@ -1,7 +1,8 @@
 import React, { Fragment, Component, PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
 // Components
-import { ErrorModal, ButtonModal } from '../Extra/Modal.js';
+import { ErrorModal } from '../Extra/Modal.js';
 
 // Authentication
 import { apiSubscribeUnSubscribeMentor,
@@ -9,9 +10,6 @@ import { apiSubscribeUnSubscribeMentor,
 } from '../../apihandling/api';
 
 import authClient from '../../security/Authentication'
-
-// Icon
-import settingsIcon from '../../assets/images/settings.png';
 
 // CSS
 import './Mentoring.css';
@@ -102,24 +100,5 @@ class ScheduleModal extends Component {
 	}
 }
 
-class ScheduleSettings extends PureComponent {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		const image = <img src={settingsIcon} alt='settings'/>
-
-		return (
-			<ButtonModal className="schedule-settings-button" value={image}>
-				heyyy
-			</ButtonModal>
-		);
-	}
-}
-
-export {
-	ScheduleModal,
-	ScheduleSettings,
-};
+export default ScheduleModal;
 

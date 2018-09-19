@@ -12,7 +12,8 @@ import withHeaderFooter from '../components/HeaderFooter/HeaderFooter';
 // Components
 import PrivateRoute from '../components/Authentication/PrivateRoute';
 import { Auth } from '../components/Authentication/Auth';
-import { HelpMe, HelpYou } from '../components/Mentoring/Projects';
+import HelpMe from '../components/Mentoring/HelpMe';
+import HelpYou from '../components/Mentoring/HelpYou';
 
 // Page Components
 import NotFound from '../components/NotFound/NotFound';

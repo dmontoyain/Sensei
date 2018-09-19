@@ -11,7 +11,7 @@ import './Extra.css';
 // A modal wrapper for any component
 
 const withModal = (childComponents, closeModal) => {
-	const childrenWithProps = React.Children.map(childComponents, child => typeof(child) != 'string' ? React.cloneElement(child, { closeModal: closeModal}) : child);
+	const childrenWithProps = React.Children.map(childComponents, child => typeof(child) != 'string' ? React.cloneElement(child, { closemodal: closeModal}) : child);
 
 	return (
 		<Fragment>
@@ -49,13 +49,10 @@ class ButtonModal extends Component {
 	render() {
 		const { value, children, ...rest } = this.props;
 		const { showModal } = this.state;
-		console.log(rest);
-
-		const modal = (showModal ? withModal(children, this.closeModal) : <Fragment></Fragment>);
 
 		return (
 			<Fragment>
-				{modal}
+				{showModal ? withModal(children, this.closeModal) : null}
 				<button { ...rest } onClick={this.openModal}>{value}</button>
 			</Fragment>
 		);

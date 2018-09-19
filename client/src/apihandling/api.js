@@ -365,6 +365,21 @@ const apiProjects = function() {
 	}
 }
 
+
+// STATS
+
+const apiUserStats = function() {
+	this.endpoint = `${API_URL}/api/stats`
+
+	this.newEndpoint = (id_user42) => {
+		return `${this.endpoint}/${id_user42}/user`
+	}
+
+	this.get = (id_user42) => {
+		return axHandler.get(this.newEndpoint(id_user42), null, headers);
+	}
+}
+
 // EXPORTS ------------------------------------------------------------------------------
 
 module.exports = {
@@ -385,5 +400,6 @@ module.exports = {
 	apiUserMentoring: new apiUserMentoring(),
 	apiUserCapableToMentor: new apiUserCapableToMentor(),
 	apiMentorPendingAppointments: new apiMentorPendingAppointments(),
-	apiProjects: new apiProjects()
+	apiProjects: new apiProjects(),
+	apiUserStats: new apiUserStats(),
 }
