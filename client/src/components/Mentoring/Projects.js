@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react';
 // Components
 import { apiUserProjectsAvailableMentors, apiAppointments, apiMentor } from '../../apihandling/api';
 import { ButtonModal, ErrorModal } from '../Extra/Modal';
-import { ScheduleModal, ActivationModal } from './MentorModals';
+import { ScheduleModal, ScheduleSettings, ActivationModal } from './MentorModals';
 
 // Security
 import authClient from '../../security/Authentication';
@@ -32,7 +32,6 @@ class HelpMeList extends Component {
 
 	render() {
 		const { myProjects } = this.state;
-		console.log(myProjects);
 		const scheduleStyle = {
 			color: 'white',
 			backgroundColor: 'purple',
@@ -104,14 +103,16 @@ class HelpYouList extends Component {
 		};
 		return (
 			<Fragment>
+				<ScheduleSettings/>
 				{myProjects.map((item, idx) =>
 					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>
 			 			<div className="project-row-name">{item.project.name}</div>
-							<button className="switch"
-							style={item.active === false ? offStyle : onStyle}
-							onClick={() => this.toggleActive(idx)}
+							<button
+								className="switch"
+								style={item.active === false ? offStyle : onStyle}
+								onClick={() => this.toggleActive(idx)}
 							>
-							{item.active === false ? "Disabled for Mentoring" : "Enabled for Mentoring"}
+								{item.active === false ? "Disabled for Mentoring" : "Enabled for Mentoring"}
 							</button>
 		 			</div>
 				)}
