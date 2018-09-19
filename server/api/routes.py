@@ -29,4 +29,6 @@ def init_routes(api):
     api.add_resource(apiAppointments, '/appointments')
     api.add_resource(apiAppointment, '/appointment/<int:appointmentId>')
 
+    #   stats endpoint
+    api.add_resource(apiUserStats, '/stats/<int:id_user42>/user')
     api.add_resource(apiProjectStandings, '/stats/<int:projectId>/project')
