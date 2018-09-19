@@ -45,36 +45,91 @@
 	flex: auto;
 }
 
-/* --- */
+/* --- MentorModals.js --- */
 
-.switch {
+.purple-switch {
 	cursor: pointer;
 	font-size:16px;
 	position:relative;
 	left:5px;
 	min-width:60px;
+	color: white;
+	background-color: purple;
+	padding: 5px;
+	border: none;
+	border-radius: 4px;
+}
+
+.red-switch {
+	cursor: pointer;
+	font-size:16px;
+	position:relative;
+	left:5px;
+	min-width:60px;
+	color: white;
+	background-color: crimson;
+	padding: 5px;
+	border: none;
+	border-radius: 4px;
+}
+
+.green-switch {
+	cursor: pointer;
+	font-size:16px;
+	position:relative;
+	left:5px;
+	min-width:60px;
+	color: white;
+	background-color: darkgreen;
+	padding: 5px;
+	border: none;
+	border-radius: 4px;
 }
 
 .schedule-modal {
 	display: flex;
 	flex-direction: column;
 	text-align: center;
-	justify-content:center;
+	justify-content: center;
 }
 
 .s-modal-button {
-	margin-top:4%;
-	width:100px;
-	font-size:16px;
-	margin-left:auto;
-	margin-right:auto;
+	cursor: pointer;
+	margin-top: 4%;
+	width: 100px;
+	font-size: 16px;
+	margin-left: auto;
+	margin-right: auto;
 	border: none;
 	border-radius: 4px;
-	color:white;
-	background-color:darkblue;
+	color: white;
+	background-color: darkblue;
 	padding: 4px;
 }
 
 .s-modal-text {
 	font-size:16px;
 }
+
+.schedule-settings-button {
+	position: relative;
+	margin-left: 30px;
+	background-color: transparent;
+	border: none;
+	animation-fill-mode: forwards;
+	animation-iteration-count: 1;
+	animation-duration: 1s;
+}
+
+.schedule-settings-button:hover {
+	animation: spinzy 1s linear infinite;
+}
+
+@keyframes spinzy {
+	100% {
+		-webkit-transform: rotate(360deg);
+		transform: rotate(360deg);
+	}
+}
+
+

@@ -33,13 +33,6 @@ class Profile extends Component {
 
 	render() {
 		const { correction_point, first_name, last_name, login } = authClient.profile;
-		console.log(authClient.profile);
-		console.log(authClient.profile);
-		console.log(authClient.profile);
-		console.log(authClient.profile);
-		console.log(authClient.profile);
-		console.log(authClient.profile);
-		console.log(authClient.profile);
 		const { grade, level } = this.cursus;
 
 		return (

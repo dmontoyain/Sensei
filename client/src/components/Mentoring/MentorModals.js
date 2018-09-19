@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Fragment, Component, PureComponent } from 'react';
+import PropTypes from 'prop-types';
 
 // Components
 import { ErrorModal } from '../Extra/Modal.js';
@@ -99,4 +100,5 @@ class ScheduleModal extends Component {
 	}
 }
 
-export {ScheduleModal};
+export default ScheduleModal;
+
