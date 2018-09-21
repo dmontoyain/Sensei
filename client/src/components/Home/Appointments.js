@@ -81,9 +81,7 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 
 			// Get formatted date
 			const time = new Date(appointment.start_time).toLocaleString('en-US', { timeZone: 'GMT', weekday: 'long', month: 'short', hour: 'numeric', minute: 'numeric', hour12: true});
-			const butt = new Date(appointment.start_time)
-			console.log(Date.UTC(butt))
-			// Save the main elements
+
 			const main = (
 				<div className="appointment-info">
 					<Avatar size="small" login={login} className="appointment-image" />
