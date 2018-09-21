@@ -5,6 +5,7 @@ import LogOutButton from './LogOutButton';
 
 // Icons 
 
+import senseiTitle from '../../assets/images/senseititle.png';
 import homeIcon from '../../assets/images/home.png';
 import learnIcon from '../../assets/images/grasshopper.png';
 import teachIcon from '../../assets/images/sensei.png';
@@ -30,7 +31,9 @@ class NavBar extends Component {
 
 		return (
 			<div className="navlink-container">
-				<div className="main-title"><h1 >SenSei</h1></div>
+				<div className='main-title'>
+					<img className="title-image" src={senseiTitle} alt='Master your inner strength' />
+				</div>
 				{pages.map((page, idx) => (
 					<div key={idx} className="navlink">
 						<NavLink  exact to={page.link} >
@@ -38,7 +41,7 @@ class NavBar extends Component {
 						</NavLink>
 					</div>
 					))}
-			<LogOutButton className="logout"/>				 
+				<LogOutButton className="logout"/>				 
 			</div>
 		);
 	}

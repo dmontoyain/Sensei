@@ -6,20 +6,30 @@ import { apiUserLogin } from '../apihandling/api';
 // Query string will handle authorization codes
 import queryString from 'query-string';
 
+const ENABLE_FAKE_AUTH = true; // Turn this on if you just need fake authentication
+
 class Authentication {
 	constructor() {
-		// Fake Login - for testing purposes
-		// this.profile = {
-		// 	id: 12413,
-		// 	login: "nwang",
-		// }
-		// let newDate = new Date().getTime;
-		// this.token = {
-		// 	created_at: newDate,
-		// 	expires_in: newDate + 10000000,
-		// }
-		this.profile = JSON.parse(sessionStorage.getItem("profile"));
-		this.token = JSON.parse(sessionStorage.getItem("token"));
+		// FAKE AUTHENTICATION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		if (ENABLE_FAKE_AUTH) {
+			this.profile = {
+				id: 12413,
+				login: "nwang",
+				first_name: 'nicky',
+				last_name: 'boi',
+				correction_point: 15000,
+				cursus_users:[{cursus_id: 1, grade: 'HELL YEAH', level: '420BlazeIt'}],
+			}
+			let newDate = new Date().getTime;
+			this.token = {
+				created_at: newDate,
+				expires_in: newDate + 10000000,
+			}
+		} // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+		else {
+			this.profile = JSON.parse(sessionStorage.getItem("profile"));
+			this.token = JSON.parse(sessionStorage.getItem("token"));
+		}
 	}
 
 	getProfile = () => {
@@ -78,6 +88,9 @@ class Authentication {
 	}
 
 	isAuthenticated = () => {
+		// FAKE AUTHENTICATION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		if (ENABLE_FAKE_AUTH) return true;
+		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		if (!this.token)
 			return false;
 		return new Date().getTime() < ((this.token.created_at + this.token.expires_in) * 1000) + 1000000000;
