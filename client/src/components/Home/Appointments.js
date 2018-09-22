@@ -80,9 +80,8 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 			const { login } = user ? user : mentor; // This is the only difference between the data returned by the apiUser... endpoint and the apiMentor... endpoint.
 
 			// Get formatted date
-			const time = new Date(appointment.start_time).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', weekday: 'long', month: 'short', hour: 'numeric', minute: 'numeric', hour12: true});
+			const time = new Date(appointment.start_time).toLocaleString('en-US', { timeZone: 'GMT', weekday: 'long', month: 'short', hour: 'numeric', minute: 'numeric', hour12: true});
 
-			// Save the main elements
 			const main = (
 				<div className="appointment-info">
 					<Avatar size="small" login={login} className="appointment-image" />
@@ -101,6 +100,7 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 
 
 			// Save the Feedback button if needed
+			// Perhaps a timeout function?
 			const feedback = (
 				mentor ? (
 					<ButtonModal value="Feedback" className="appointment-feedback-button">
