@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 
 // Components
-import projectWrap from './Projects';
+import projectWrap from './projectWrap';
 import { apiMentor } from '../../apihandling/api';
 import { ButtonModal } from '../Extra/Modal';
 
@@ -147,21 +147,22 @@ class HelpYouList extends Component {
 
 	render() {
 		const { filteredProjects, filter } = this.state;
-		const image = <img src={settingsIcon} alt='settings'/>
 
 		return (
 			<Fragment>
 				<div className="search-container">
 					<input onChange={this.filterProjects} className="search-bar" value={filter} />
 					<button onClick={this.clearFilter} className="search-clear-button">Clear Filter</button>
-					<ButtonModal value={image}>
-						<button onClick={() => this.toggleActiveStateAll(true)}>
-							Enable All Listed
+					<div className="settings-container">
+						<button className="settings-button">
+							Options
+							<img className="settings-icon" src={settingsIcon} alt='settings'/>
 						</button>
-						<button onClick={() => this.toggleActiveStateAll(false)}>
-							Disable All Listed
-						</button>
-					</ButtonModal>
+						<div className="settings-content">
+							<div className="settings-item" onClick={() => this.toggleActiveStateAll(true)}>Enable All</div>
+							<div className="settings-item" onClick={() => this.toggleActiveStateAll(false)}>Disable All</div>
+						</div>
+					</div>
 				</div>
 				{filteredProjects.map((item, idx) =>
 					<div key={item.id} className="project-row" style={{ animation: `fadein ${idx * 0.1}s` }}>

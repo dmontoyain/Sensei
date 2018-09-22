@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 
 // Components
-import projectWrap from './Projects';
+import projectWrap from './projectWrap';
 import { apiUserProjectsAvailableMentors, apiAppointments, apiMentor } from '../../apihandling/api';
 import { ButtonModal } from '../Extra/Modal';
 import ScheduleModal from './MentorModals';
