@@ -32,15 +32,42 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 			}
 		}
 
+		setHidden = (obj) => {
+			const newObject = JSON.parse(JSON.stringify(obj));
+			const newAppts = JSON.parse(JSON.stringify(this.state.myAppointments));
+			const cmp = Date.parse(newObject.appointment.start_time)
+			newObject.appointment.hidden = 0;
+			let retAppts = newAppts.map((old) => {
+				if (Date.parse(old.appointment.start_time) === cmp) {
+					return newObject;
+				};
+				return old;
+			})
+			this.setState({ myAppointments: retAppts });
+		}
+
 		componentWillMount() {
 			apiCall(authClient.profile.id)
 				.then(data => {
-					this.setState({ myAppointments: data.data === {} ? [] : data.data });
+					const dataArray = data.data === {} ? [] : data.data;
+					dataArray.forEach((object) => {
+						const apt = Date.parse(object.appointment.start_time)
+						const now = Date.now() - (new Date().getTimezoneOffset() * 60000);
+						if (apt > now){
+							object.appointment.hidden = 1;
+							setTimeout(() => this.setHidden(object), apt - now);
+						}
+						else {
+							console.log(object.appointment);
+							object.appointment.hidden = 0;
+						}
+					});
+					this.setState({ myAppointments: dataArray });
 				})
 				.catch(err => {
 					// No appointments for user
 				});
-		}
+			}
 
 		filterOutApt = (idx) => {
 			this.setState({ myAppointments: this.state.myAppointments.filter((_, i) => i != idx) });
@@ -119,7 +146,7 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 			return (
 				<div key={appointment.id} className="appointment-container">
 					{main}
-					{feedback}
+					{ !appointment.hidden ? feedback : null }
 				</div>
 			);
 		}
