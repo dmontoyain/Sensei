@@ -52,7 +52,6 @@ class apiUsersOnline(Resource):
 #	/api/user/:login/projects/availablementors
 class apiUserProjectsAvailableMentors(Resource):
 	def get(self, login):
-
 		#	Validate User exists
 		user, error = User.queryByLogin(login)
 		if error:
@@ -137,7 +136,7 @@ class apiUser(Resource):
 #	api/users/:userId/pendingappointments	
 class apiUserPendingAppointments(Resource):
 	def get(self, userId):
-		#	Appointments Table query for the specified user
+		#	Appointments Table query for the specified user as mentee
 		queryAppointments = Appointment.query \
 			.join(User) \
 			.filter(Appointment.status==Status['Pending']) \

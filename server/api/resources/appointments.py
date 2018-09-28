@@ -43,7 +43,7 @@ class apiAppointments(Resource):
 			return res.badRequestError("Missing data to process request. No topic or project provided to search for mentors")
 		if not data.get("login"):
 			return res.badRequestError("Missing data to process request. No user login provided")
-		
+
 		#   Checks if project name exists in database
 		queryProject = Project.query.filter_by(name=data.get("project")).first()
 		if not queryProject:
@@ -51,66 +51,69 @@ class apiAppointments(Resource):
 		project, error = project_schema.dump(queryProject)
 		if error:
 			return res.internalServiceError(error)
-		print(project)
+
 		#   Checks if user with provided login exists in database
 		user, error = User.queryByLogin(data.get("login"))
 		if error:
 			return res.resourceMissing(error)
 
-		print(user)
+		#	Check if the user already has an appointment pending
 		queryUserAppointment = Appointment.query.filter_by(id_user=user['id'], status=Status['Pending']).first()
 		if queryUserAppointment:
 			return res.badRequestError("You have already an appointment pending")
-		
+
 		#   Limits appointments made by user for a specific project
 		projectAppointmentsCount = Appointment.queryCountProjectAppointmentsbyUser(project["id_project42"], user["id"])
 		if projectAppointmentsCount > _maxAppointmentsPerDay:
 			return res.badRequestError("User reached limit appointments for project {}".format(data.get("project")))
-		
-		#   Retrieves available mentors for the specified project
-		queryMentor = Mentor.query \
-			.filter(~Mentor.appointments.any(), Mentor.id_project42==project['id_project42'], Mentor.active==True, Mentor.id_user42!=user['id_user42']) \
-			.all()
-		
-		queryMentor2 = Mentor.query \
-			.join(Appointment) \
-			.filter(Mentor.id_project42==project['id_project42'], Mentor.active==True, Mentor.id_user42!=user['id_user42']) \
-			.filter(Appointment.status==2) \
-			.all()
-		
-		for q in queryMentor2:
-			queryMentor.append(q)
-		
-		if not queryMentor:
-			print("hereee")
+
+		# jmeier id 23677, mentor id 48 project rec 847
+
+		#	Filters out any mentors who have an appointment pending
+		goodMentors = []
+		queryMentor = Mentor.query.filter(Mentor.id_project42==project['id_project42'], Mentor.active==True, Mentor.id_user42!=user['id_user42']).all()
+		for q in queryMentor:
+			appointments = getattr(q, 'appointments')
+			hasPendingAppointment = False
+			for a in appointments:
+				if a.status == Status['pending']:
+					hasPendingAppointment = True
+					break
+			if hasPendingAppointment == False:
+				goodMentors.append(q)
+		if not goodMentors:
 			return res.resourceMissing('No mentors found for project {}'.format(data.get('project')))
 
-		#mentors = [mentor for mentor in queryMentor if mentor.app]
-		#mentors = mentors_schema.dump(queryMentor).data
 		onlineUsers = Api42.onlineUsers()
 
 		#	Checks online students is not empty
 		if len(onlineUsers) == 0:
 			return res.resourceMissing("No mentors found on campus.")
 
-		availablementors = [mentor for mentor in queryMentor for x in onlineUsers if mentor.id_user42 == x['id']]
-		
+		#	Filtering out the available mentors with the online students
+		availablementors = [mentor for mentor in goodMentors for o in onlineUsers if mentor.id_user42 == o['id']]
+
 		#   Checks if there is avaliable online mentors for the project/topic
 		if not availablementors:
-			return res.resourceMissing("No mentors online found for {}.".format(data.get("project"))) 
+			return res.resourceMissing("No mentors online found for {}.".format(data.get("project")))
 
 		#   Calls 'mentor algorithm' to select a mentor from availablementors.
 		chosenMentor = mentorAlgorithm(availablementors)
 
-		print(chosenMentor)
 		#   Creates and returns appointment if valid
 		if not chosenMentor:
 			return res.internalServiceError("Error: mentor selection.")
 
+		mentorLogin = [i['login'] for i in onlineUsers if i['id'] == chosenMentor.id_user42][0]
+
+		#	Gets the mentor's 'login'
+		if not mentorLogin:
+			return res.internalServiceError('Something strange happened')
+
+		#	FINALLY, create the appointment
 		newappointment, error = Appointment.createAppointment(chosenMentor.id, user['id'])
 		if error:
 			return res.internalServiceError(error)
-		print(newappointment)
 
 		return res.postSuccess("Appointment created successfully", newappointment)
 

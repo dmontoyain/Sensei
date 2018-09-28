@@ -8,6 +8,7 @@ from api.models import Project, project_schema, projects_schema
 from api.models import Appointment, appointment_schema, appointments_schema
 from rq42 import Api42
 from response import Response as res
+import datetime
 
 #   api/projects
 class apiProjects(Resource):
@@ -15,6 +16,7 @@ class apiProjects(Resource):
 		data, error = Project.queryAll()
 		if error:
 			return res.internalServiceError(error)
+		print(datetime.dst())
 		return res.getSuccess('found projects', data)
 
 	#	updates the projects that exist in the projects table
