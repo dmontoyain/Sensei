@@ -6,7 +6,7 @@ import { apiUserLogin } from '../apihandling/api';
 // Query string will handle authorization codes
 import queryString from 'query-string';
 
-const ENABLE_FAKE_AUTH = true; // Turn this on if you just need fake authentication
+const ENABLE_FAKE_AUTH = false; // Turn this on if you just need fake authentication
 
 class Authentication {
 	constructor() {
