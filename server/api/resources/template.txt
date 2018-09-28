@@ -1,0 +1,5 @@
+${MENTOR_LOGIN}-sensei,
+
+You will be mentoring ${STUDENT_LOGIN} on ${PROJECT} in fifteen minutes.
+
+ありがとうございます
