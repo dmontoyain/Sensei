@@ -40,7 +40,7 @@ class ScheduleModal extends Component {
 	}
 
 	subscribeForAppointment = () => {
-		const { item, closeModal } = this.props;
+		const { item, closemodal } = this.props;
 		const { blockRequest } = this.state;
 
 		if (blockRequest)
@@ -54,7 +54,7 @@ class ScheduleModal extends Component {
 			})
 			.then(response => {
 				if (this.isM) {
-					this.props.closeModal();
+					closemodal();
 				}
 			})
 			.catch(err => {
@@ -93,7 +93,7 @@ class ScheduleModal extends Component {
 				<span>Mentors available for {name} : <span style={onlineMentors > 0 ? isStyle : zeroStyle}>{onlineMentors}</span></span>
 				<button className="s-modal-button" onClick={this.subscribeForAppointment}>Request Assistance!</button>
 				<ErrorModal show={errorModal}>
-					No Mentors Available
+					An Error Occurred
 				</ErrorModal>
 			</div>
 		);

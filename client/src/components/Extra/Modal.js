@@ -39,6 +39,7 @@ class ButtonModal extends Component {
 	};
 
 	closeModal = () => {
+		console.log('hereeeeeeeeeee');
 		this.setState({ showModal: false });
 	}
 
