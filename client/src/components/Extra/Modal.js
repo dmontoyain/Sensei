@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 
 import classNames from 'classnames';
 
@@ -7,12 +8,10 @@ import closeIcon from '../../assets/images/close.png';
 // CSS
 import './Extra.css';
 
-import PropTypes from 'prop-types';
-
 // A modal wrapper for any component
 
 const withModal = (childComponents, closeModal) => {
-	const childrenWithProps = React.Children.map(childComponents, child => React.cloneElement(child, { closeModal: closeModal}));
+	const childrenWithProps = React.Children.map(childComponents, child => typeof(child) != 'string' ? React.cloneElement(child, { closemodal: closeModal}) : child);
 
 	return (
 		<Fragment>
@@ -40,6 +39,7 @@ class ButtonModal extends Component {
 	};
 
 	closeModal = () => {
+		console.log('hereeeeeeeeeee');
 		this.setState({ showModal: false });
 	}
 
@@ -51,15 +51,17 @@ class ButtonModal extends Component {
 		const { value, children, ...rest } = this.props;
 		const { showModal } = this.state;
 
-		const modal = (showModal ? withModal(children, this.closeModal) : <Fragment></Fragment>);
-
 		return (
 			<Fragment>
-				{modal}
+				{showModal ? withModal(children, this.closeModal) : null}
 				<button { ...rest } onClick={this.openModal}>{value}</button>
 			</Fragment>
 		);
 	};
+}
+
+ButtonModal.propTypes = {
+	value: PropTypes.any.isRequired,
 }
 
 // For Error messages that display for a few seconds
