@@ -1,2 +1,2 @@
 from .userUpdater import *
-from .statsUpdater import *
+# from .statsUpdater import *

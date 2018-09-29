@@ -36,6 +36,7 @@ class Appointment(db.Model):
 		newappointment.start_time = datetime.now() + timedelta(minutes=15)
 		db.session.add(newappointment)
 		db.session.commit()
+		# EMAIL THE MENTOR HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		return appointment_schema.dump(newappointment).data, None
 
 	@classmethod

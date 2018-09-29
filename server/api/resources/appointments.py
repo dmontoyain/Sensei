@@ -71,18 +71,17 @@ class apiAppointments(Resource):
 
 		#	Filters out any mentors who have an appointment pending
 		goodMentors = []
-		queryMentor = Mentor.query.filter(Mentor.id_project42==project['id_project42'], Mentor.active==True, Mentor.id_user42!=user['id_user42']).all()
+		queryMentor = Mentor.query \
+			.filter(Mentor.id_project42==project['id_project42'], Mentor.active==True, Mentor.id_user42!=user['id_user42']) \
+			.all()
+
+		#	Check that the mentor does not have an existing pending appointment
 		for q in queryMentor:
-			appointments = getattr(q, 'appointments')
-			hasPendingAppointment = False
-			for a in appointments:
-				if a.status == Status['pending']:
-					hasPendingAppointment = True
-					break
-			if hasPendingAppointment == False:
+			appointment = Appointment.query.filter(Appointment.id_mentor==q.id, Appointment.status==Status['Pending']).first()
+			if not appointment:
 				goodMentors.append(q)
 		if not goodMentors:
-			return res.resourceMissing('No mentors found for project {}'.format(data.get('project')))
+			return res.resourceMissing('No mentors without pending appointments found')
 
 		onlineUsers = Api42.onlineUsers()
 

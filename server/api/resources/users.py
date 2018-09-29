@@ -69,9 +69,17 @@ class apiUserProjectsAvailableMentors(Resource):
 		for rec in records:
 			data = mentor_schema.dump(rec).data
 
-			#	Retrieve registered users for project in 'rec'
+			#	Retrieve registered mentors for project in 'rec'
 			query = Mentor.query.filter_by(id_project42=data['id_project42'], active=True).all()
-			queryData = mentors_schema.dump(query).data
+
+			#	Ensure each mentor doesn't have a pending appointment
+			goodMentors = []
+			for q in query:
+				appointment = Appointment.query.filter(Appointment.id_mentor==q.id, Appointment.status==Status['Pending']).first()
+				if not appointment:
+					goodMentors.append(q)
+
+			queryData = mentors_schema.dump(goodMentors).data
 
 			#	Matching only online users and excluding self (user with login = login)
 			tmpList = [q for q in queryData for o in onlineUsers if q['id_user42'] == o['id'] and o['login'] != login]
