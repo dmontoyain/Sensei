@@ -58,7 +58,6 @@ const appointmentWrap = (apiCall, title, noDataIcon) => {
 							setTimeout(() => this.setHidden(object), apt - now);
 						}
 						else {
-							console.log(object.appointment);
 							object.appointment.hidden = 0;
 						}
 					});
