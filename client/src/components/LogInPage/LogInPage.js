@@ -65,7 +65,7 @@ const LogInPage = () =>  {
 		<div className="login-root">
 			<BackgroundImage/>
 			<div className="logInFull">
-				<div class="login-logo">
+				<div className="login-logo">
 					<img src={logo42} alt="42 logo"/>
 				</div>
 				<div className="logInSenseiTitle">

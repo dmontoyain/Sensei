@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
+import queryString from 'query-string';
 // import { OauthSender, OauthReceiver } from 'react-oauth-flow';
 
 // Components
@@ -64,6 +65,7 @@ class Auth extends Component {
 		super(props);
 		this.state = {
 			authenticated: authClient.isAuthenticated(),
+			redirectToLogin: queryString.parse(this.props.location.search).error === 'access_denied',
 			initialUser: false,
 			authError: false,
 		}
@@ -80,6 +82,10 @@ class Auth extends Component {
 	}
 
 	componentWillUnmount() {
+		this.clearTimeouts();
+	}
+
+	clearTimeouts = () => {
 		clearTimeout(this.initialUserTimeout);
 		clearTimeout(this.authErrorTimeout);
 	}
@@ -93,7 +99,7 @@ class Auth extends Component {
 					this.setState({ authenticated: authClient.isAuthenticated() });
 				})
 				.catch(err => {
-					this.setState({ authenticated: authClient.isAuthenticated() });
+					this.setState({ authenticated: false });
 					// Display Auth Error for 3 seconds on Fail
 					this.authErrorTimeout = setTimeout(() => this.setState({ authError: true }), 6000);
 				});
@@ -101,7 +107,11 @@ class Auth extends Component {
 	}
 
 	render() {
-		const { authenticated, initialUser, authError } = this.state;
+		const { authenticated, redirectToLogin, initialUser, authError } = this.state;
+
+		if (redirectToLogin) {
+			return (<Redirect to='/' />);
+		}
 
 		if (authenticated) {
 			return (<Redirect to="/home" />);
