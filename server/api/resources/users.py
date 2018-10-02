@@ -52,7 +52,6 @@ class apiUsersOnline(Resource):
 #	/api/user/:login/projects/availablementors
 class apiUserProjectsAvailableMentors(Resource):
 	def get(self, login):
-
 		#	Validate User exists
 		user, error = User.queryByLogin(login)
 		if error:
@@ -70,9 +69,17 @@ class apiUserProjectsAvailableMentors(Resource):
 		for rec in records:
 			data = mentor_schema.dump(rec).data
 
-			#	Retrieve registered users for project in 'rec'
+			#	Retrieve registered mentors for project in 'rec'
 			query = Mentor.query.filter_by(id_project42=data['id_project42'], active=True).all()
-			queryData = mentors_schema.dump(query).data
+
+			#	Ensure each mentor doesn't have a pending appointment
+			goodMentors = []
+			for q in query:
+				appointment = Appointment.query.filter(Appointment.id_mentor==q.id, Appointment.status==Status['Pending']).first()
+				if not appointment:
+					goodMentors.append(q)
+
+			queryData = mentors_schema.dump(goodMentors).data
 
 			#	Matching only online users and excluding self (user with login = login)
 			tmpList = [q for q in queryData for o in onlineUsers if q['id_user42'] == o['id'] and o['login'] != login]
@@ -137,7 +144,7 @@ class apiUser(Resource):
 #	api/users/:userId/pendingappointments	
 class apiUserPendingAppointments(Resource):
 	def get(self, userId):
-		#	Appointments Table query for the specified user
+		#	Appointments Table query for the specified user as mentee
 		queryAppointments = Appointment.query \
 			.join(User) \
 			.filter(Appointment.status==Status['Pending']) \
